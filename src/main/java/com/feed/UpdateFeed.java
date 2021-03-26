@@ -23,6 +23,7 @@ public class UpdateFeed extends HttpServlet {
     }
 
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
 		Feed f=new Feed();
 		FeedDao feed=new FeedOperations();
 		PrintWriter out=response.getWriter();
@@ -31,7 +32,7 @@ public class UpdateFeed extends HttpServlet {
 		String feedId = pathParts[1];
 		String req =pathParts[2];
 		
-	    if(req.equals("update")) {
+	    if(req.equals("feed-task")) {
 		    try 
 		    {    
 			    StringBuffer jb = new StringBuffer();
@@ -47,17 +48,17 @@ public class UpdateFeed extends HttpServlet {
 			    f.setFeed_id(json.get("feedId").asText());
 			    f.setCategory(json.get("category").asText());
 			    f.setDate(json.get("date").asText());
+			    
 			    feed.updateFeed(f);
 			} 
 		    catch (EntityNotFoundException e) {
 				e.printStackTrace();
 			}
 	    }
-	    else if(req.equals("like"))
+	    else if(req.equals("feed-likes"))
 	    {		   
 	    	try 
 	    	{    
-
 	    		f.setFeed_id(feedId);
 			    feed.setLike(f);
 			    int likes=feed.getLike(f);

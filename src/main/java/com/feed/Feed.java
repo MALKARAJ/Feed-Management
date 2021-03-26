@@ -11,6 +11,7 @@ public class Feed {
     public String getFeed_id() {
 		return feed_id;
 	}
+
 	public void setFeed_id(String feed_id) {
 		this.feed_id = feed_id;
 	}
@@ -32,12 +33,13 @@ public class Feed {
 	public void setCategory(String category) {
 		this.category = category;
 	}
-/*
-	public String getLike_count() {
-		return like_count;
+
+	@Override
+	public String toString() {
+		return "Feed [feed_id=" + feed_id + ", feed_content=" + feed_content + ", date=" + date + ", category="
+				+ category + "]";
 	}
-	public void setLike_count(String like_count) {
-		this.like_count = like_count;
-	}
-*/
+	
+
+
 }

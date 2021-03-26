@@ -1,9 +1,13 @@
 package com.feed;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 //import java.util.UUID;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -17,15 +21,20 @@ public class FeedOperations implements FeedDao{
 	   DatastoreService ds= DatastoreServiceFactory.getDatastoreService();
 	   
 	   
-	   public List<Entity> getNewsFeeds(){
-		   
-		   List<Entity> feeds=new ArrayList<Entity>();
+	   public List<String> getNewsFeeds() throws JsonProcessingException, IOException{
+		   Feed f=new Feed();
+		   List<String> feeds=new ArrayList<String>();
 		   Query q=new Query("Feed");
 		   for (Entity entity : ds.prepare(q).asIterable()) {	
-			   feeds.add(entity);
+			   	f.setFeed_id(entity.getProperty("feed_id").toString());
+			   	f.setCategory(entity.getProperty("category").toString());
+			   	f.setDate(entity.getProperty("date").toString());
+			   	f.setFeed_content(entity.getProperty("feed_content").toString());
+			   	ObjectMapper obj=new ObjectMapper();
+	            String jsonStr = obj.writeValueAsString(f);
+			   	feeds.add(jsonStr);
 			}	        
 		   return feeds;
-		   
 	   }
 	   
 	   public String addFeed(Feed f)
