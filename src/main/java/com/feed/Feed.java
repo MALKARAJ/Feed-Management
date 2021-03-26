@@ -6,7 +6,6 @@ public class Feed {
     String feed_content;
     String date;
 	String category;
-    boolean visible;
 
     public String getFeed_id() {
 		return feed_id;
@@ -32,16 +31,7 @@ public class Feed {
 	public void setCategory(String category) {
 		this.category = category;
 	}
-	public boolean isVisible() {
-		return visible;
-	}
-	public void setVisible(boolean visible) {
-		this.visible = visible;
-	}
-	@Override
-	public String toString() {
-		return "Feed [feed_id=" + feed_id + ", feed_content=" + feed_content + ", date=" + date + ", category="
-				+ category + ", visible=" + visible + "]";
-	}
+
+
 
 }

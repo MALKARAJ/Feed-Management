@@ -15,7 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebServlet(
     name = "newsfeed",
-    urlPatterns = {"/feeds"}
+    urlPatterns = {"/feed"}
 )
 public class AddFeed extends HttpServlet {
 
@@ -35,7 +35,7 @@ public class AddFeed extends HttpServlet {
 public void doPost(HttpServletRequest request, HttpServletResponse response) 
     throws IOException {
 	Feed f=new Feed();
-	FeedDao feed=new FeedDaoImplementation();
+	FeedDao feed=new FeedOperations();
     StringBuffer jb = new StringBuffer();
     String line = null;
     BufferedReader reader = request.getReader();
@@ -47,7 +47,6 @@ public void doPost(HttpServletRequest request, HttpServletResponse response)
     //Date date=new Date();
     f.setFeed_content(json.get("content").asText());
     f.setFeed_id(json.get("feedId").asText());
-    f.setVisible(json.get("visible").asBoolean());
     f.setCategory(json.get("category").asText());
     f.setDate(json.get("date").asText());
     feed.addFeed(f);

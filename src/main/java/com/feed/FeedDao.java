@@ -7,7 +7,7 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 
 public interface FeedDao {
 	   public List<Entity> getNewsFeeds();
-	   public void updateFeed() throws EntityNotFoundException;
-	   public void addFeed(Feed f);
-	   public void deleteFeed() throws EntityNotFoundException;
+	   public void updateFeed(Feed f) throws EntityNotFoundException;
+	   public String addFeed(Feed f);
+	   public void deleteFeed(Feed f) throws EntityNotFoundException;
 }
