@@ -58,8 +58,9 @@ public class UpdateFeed extends HttpServlet {
 	    	try 
 	    	{    
 
-			    feed.setLike(feedId);
-			    int likes=feed.getLike(feedId);
+	    		f.setFeed_id(feedId);
+			    feed.setLike(f);
+			    int likes=feed.getLike(f);
 			    out.println(likes);
 			} 
 		    catch (EntityNotFoundException e) {

@@ -10,6 +10,6 @@ public interface FeedDao {
 	   public void updateFeed(Feed f) throws EntityNotFoundException;
 	   public String addFeed(Feed f);
 	   public void deleteFeed(Feed f) throws EntityNotFoundException;
-	   public void setLike(String id) throws EntityNotFoundException;
-	   public int getLike(String id)throws EntityNotFoundException;
+	   public void setLike(Feed f) throws EntityNotFoundException;
+	   public int getLike(Feed f)throws EntityNotFoundException;
 }

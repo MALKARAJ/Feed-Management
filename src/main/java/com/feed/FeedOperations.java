@@ -13,6 +13,7 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
 
 public class FeedOperations implements FeedDao{
+	
 	   DatastoreService ds= DatastoreServiceFactory.getDatastoreService();
 	   
 	   
@@ -26,8 +27,6 @@ public class FeedOperations implements FeedDao{
 		   return feeds;
 		   
 	   }
-	   
-	   
 	   
 	   public String addFeed(Feed f)
 	   {
@@ -51,18 +50,18 @@ public class FeedOperations implements FeedDao{
 		   ds.put(feed);
 	   }
 	   
-	   public void setLike(String id) throws EntityNotFoundException
+	   public void setLike(Feed f) throws EntityNotFoundException
 	   {
-		   Key k=KeyFactory.createKey("Feed", id);
+		   Key k=KeyFactory.createKey("Feed", f.getFeed_id());
 		   Entity feed=ds.get(k);
 		   int like=Integer.parseInt(feed.getProperty("like").toString())+1;
 		   feed.setProperty("like", like);
 		   ds.put(feed);
 	   }
 	   
-	   public int getLike(String id) throws EntityNotFoundException
+	   public int getLike(Feed f) throws EntityNotFoundException
 	   {
-		   Key k=KeyFactory.createKey("Feed", id);
+		   Key k=KeyFactory.createKey("Feed", f.getFeed_id());
 		   Entity feed=ds.get(k);
 		   return Integer.parseInt(feed.getProperty("like").toString());
 		   

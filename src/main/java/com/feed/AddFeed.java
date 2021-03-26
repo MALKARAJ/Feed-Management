@@ -44,7 +44,6 @@ public void doPost(HttpServletRequest request, HttpServletResponse response)
     String str=jb.toString();
     ObjectMapper mapper = new ObjectMapper();
     JsonNode json = mapper.readTree(str);
-    //Date date=new Date();
     f.setFeed_content(json.get("content").asText());
     f.setFeed_id(json.get("feedId").asText());
     f.setCategory(json.get("category").asText());
