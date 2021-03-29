@@ -52,6 +52,7 @@ public void doPost(HttpServletRequest request, HttpServletResponse response) thr
 		Feed f=new Feed();
 		FeedDao feed=new FeedOperations();
 	    StringBuffer jb = new StringBuffer();
+	    PrintWriter out=response.getWriter();
 	    String line = null;
 	    BufferedReader reader = request.getReader();
 	    while ((line = reader.readLine()) != null)
@@ -66,12 +67,14 @@ public void doPost(HttpServletRequest request, HttpServletResponse response) thr
 			f.setDate(json.get("date").asText());
 			feed.addFeed(f);
 			response.setStatus(200);
+		    String result="{\"feedId\":\""+f.getFeed_id()+"\",\"Add\" :\"Success\"}";
+		    out.println(result);
 		} catch (Exception e) {
 			response.sendError(500);
 			e.printStackTrace();
 		}
 	}
-
+@Override
 protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	response.setContentType("application/json");
 	Feed f=new Feed();
@@ -106,6 +109,7 @@ protected void doPut(HttpServletRequest request, HttpServletResponse response) t
 		e.printStackTrace();
 	}
 }
+@Override
 protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	response.setContentType("application/json");
 	String pathInfo = request.getPathInfo(); 
