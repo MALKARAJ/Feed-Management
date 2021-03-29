@@ -15,22 +15,22 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 
-@WebServlet("/feed/*")
-public class UpdateFeed extends HttpServlet {
+@WebServlet("feed/comments/*")
+public class UpdateComment extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-    public UpdateFeed() {
+    public UpdateComment() {
         super();
     }
 
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("application/json");
-		Feed f=new Feed();
-		FeedDao feed=new FeedOperations();
+		Comment c =new Comment();
+		CommentDao comment=new CommentOperations();
 		PrintWriter out=response.getWriter();
 		String pathInfo = request.getPathInfo(); 
 		String[] pathParts = pathInfo.split("/");
-		String feedId = pathParts[1];
+		String commentId = pathParts[1];
 		try 
 	    {    
 		    StringBuffer jb = new StringBuffer();
@@ -42,13 +42,13 @@ public class UpdateFeed extends HttpServlet {
 		    ObjectMapper mapper = new ObjectMapper();
 		    JsonNode json = mapper.readTree(str);
 		    
-		    f.setFeed_content(json.get("content").asText());
-		    f.setFeed_id(json.get("feedId").asText());
-		    f.setCategory(json.get("category").asText());
-		    f.setDate(json.get("date").asText());
-		    feed.updateFeed(f);
+		    c.setComment(json.get("comment").asText());
+		    c.setFeed_id(json.get("feedId").asText());
+		    c.setComment_id(json.get("commentId").asText());
+		    c.setDate(json.get("date").asText());
+		    comment.updateComment(c);
+		    String result="{\"commentId\":\""+commentId+"\",\"Update\" :\"Successful\"}";
 			response.setStatus(200);
-		    String result="{\"feedId\":\""+feedId+"\",\"Update\" :\"Successful\"}";
 			out.println(result);
 
 		} 
@@ -61,15 +61,15 @@ public class UpdateFeed extends HttpServlet {
 		response.setContentType("application/json");
 		String pathInfo = request.getPathInfo(); 
 		String[] pathParts = pathInfo.split("/");
-		String feedId = pathParts[1];
+		String commentId = pathParts[1];
 		PrintWriter out=response.getWriter();
-		Feed f=new Feed();
-		FeedDao feed=new FeedOperations();
-		f.setFeed_id(feedId);
+		Comment c=new Comment();
+		CommentDao comment=new CommentOperations();
+		c.setComment_id(commentId);
 		try {
-			feed.deleteFeed(f);
+			comment.deleteComment(c);
 			response.setStatus(200);
-		    String result="{\"feedId\":\""+feedId+"\",\"Delete\" :\"Successful\"}";
+		    String result="{\"commentId\":\""+commentId+"\",\"Delete\" :\"Successful\"}";
 		    out.println(result);
 
 		} 
