@@ -2,16 +2,41 @@ package com.feed;
 
 
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.Query;
 
 public class CommentOperations implements CommentDao{
 	
 	   DatastoreService ds= DatastoreServiceFactory.getDatastoreService();
+	   
+	   public List<String> getComments(Comment c) throws JsonProcessingException, IOException, EntityNotFoundException{
+		   List<String> comments=new ArrayList<String>();
+		   Key k=KeyFactory.createKey("Feed",c.getFeed_id());
+		   Entity e=ds.get(k);
+		   Query q=new Query("Comment").setAncestor(e.getKey());
+		   for (Entity entity : ds.prepare(q).asIterable()) {	
+			   	c.setFeed_id(entity.getProperty("feed_id").toString());
+			   	c.setComment_id(entity.getProperty("comment_id").toString());
+			   	c.setDate(entity.getProperty("date").toString());
+			   	c.setComment(entity.getProperty("comment").toString());
+			   	ObjectMapper obj=new ObjectMapper();
+	            String jsonStr = obj.writeValueAsString(c);
+			   	comments.add(jsonStr);
+			}	        
+		   return comments;
+	   }
+	   
 	   public String addComment(Comment c) throws EntityNotFoundException
 	   {
 		   Key k=KeyFactory.createKey("Feed",c.getFeed_id());
