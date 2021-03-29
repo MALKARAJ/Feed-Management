@@ -12,10 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@WebServlet(
-    name = "newsfeed",
-    urlPatterns = {"/feed/comments"}
-)
+@WebServlet("/feed/comments")
 public class AddComment extends HttpServlet {
 
 

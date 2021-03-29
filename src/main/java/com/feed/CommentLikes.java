@@ -29,8 +29,6 @@ public class CommentLikes extends HttpServlet {
 		String[] pathParts = pathInfo.split("/");
 		String feedId = pathParts[1];
 		String commentId=pathParts[2];
-		//System.out.println(feedId);
-		//System.out.println(commentId);
 		try 
     	{    
 			c.setFeed_id(feedId);

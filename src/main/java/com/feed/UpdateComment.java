@@ -30,7 +30,8 @@ public class UpdateComment extends HttpServlet {
 		PrintWriter out=response.getWriter();
 		String pathInfo = request.getPathInfo(); 
 		String[] pathParts = pathInfo.split("/");
-		String commentId = pathParts[1];
+		String feedId = pathParts[1];
+		String commentId=pathParts[2];
 		try 
 	    {    
 		    StringBuffer jb = new StringBuffer();
@@ -61,11 +62,13 @@ public class UpdateComment extends HttpServlet {
 		response.setContentType("application/json");
 		String pathInfo = request.getPathInfo(); 
 		String[] pathParts = pathInfo.split("/");
-		String commentId = pathParts[1];
+		String feedId = pathParts[1];
+		String commentId=pathParts[2];
 		PrintWriter out=response.getWriter();
 		Comment c=new Comment();
 		CommentDao comment=new CommentOperations();
 		c.setComment_id(commentId);
+		c.setFeed_id(feedId);
 		try {
 			comment.deleteComment(c);
 			response.setStatus(200);

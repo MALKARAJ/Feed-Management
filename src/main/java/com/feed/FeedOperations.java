@@ -17,9 +17,7 @@ import com.google.appengine.api.datastore.Query;
 
 public class FeedOperations implements FeedDao{
 	
-	   DatastoreService ds= DatastoreServiceFactory.getDatastoreService();
-	   
-	   
+	   DatastoreService ds= DatastoreServiceFactory.getDatastoreService();   
 	   public List<String> getNewsFeeds() throws JsonProcessingException, IOException{
 		   Feed f=new Feed();
 		   List<String> feeds=new ArrayList<String>();

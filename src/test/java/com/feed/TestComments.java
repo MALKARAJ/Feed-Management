@@ -66,7 +66,7 @@ public class TestComments {
 	    c.setFeed_id("feed123123");
 	    c.setComment_id("comment123");
 	    c.setDate("25/03/2021 18:30");
-	    String e=comment.addComment(c);
+	    comment.addComment(c);
 		Key k=new KeyFactory.Builder("Feed", c.getFeed_id())
 			        .addChild("Comment", c.getComment_id())
 			        .getKey();

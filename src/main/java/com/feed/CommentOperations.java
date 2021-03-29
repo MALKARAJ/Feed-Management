@@ -12,8 +12,6 @@ import com.google.appengine.api.datastore.KeyFactory;
 public class CommentOperations implements CommentDao{
 	
 	   DatastoreService ds= DatastoreServiceFactory.getDatastoreService();
-	   
-
 	   public String addComment(Comment c) throws EntityNotFoundException
 	   {
 		   Key k=KeyFactory.createKey("Feed",c.getFeed_id());
@@ -63,8 +61,7 @@ public class CommentOperations implements CommentDao{
 		   Entity comment=ds.get(k);		   
 		   return Integer.parseInt(comment.getProperty("like").toString());
 		   
-	   }
-	   
+	   }	   
 	   public void deleteComment(Comment c) throws EntityNotFoundException {
 		   Key k=new KeyFactory.Builder("Feed", c.getFeed_id())
 			        .addChild("Comment", c.getComment_id())
