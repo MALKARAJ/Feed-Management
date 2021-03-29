@@ -27,7 +27,12 @@ public class TestComments {
 	  public void tearDown() {
 	    helper.tearDown();
 	  }
-	  
+	public void createFeed()
+	{
+		DatastoreService ds= DatastoreServiceFactory.getDatastoreService();
+		Entity e= new Entity("Feed","feed123123");
+		ds.put(e);
+	}
 	@Test
 	public void testFeedPojo()
 	{
@@ -40,6 +45,7 @@ public class TestComments {
 	}
 	@Test
 	public void testAddFeed() throws EntityNotFoundException {
+		createFeed();
 		CommentDao comment=new CommentOperations();
 		Comment c=new Comment();
 	    c.setComment("Comment");
@@ -51,6 +57,7 @@ public class TestComments {
 	}
 	@Test
 	public void testUpdateFeed() throws EntityNotFoundException {
+		createFeed();
 		DatastoreService ds=DatastoreServiceFactory.getDatastoreService();
 		testAddFeed();
 		CommentDao comment=new CommentOperations();
@@ -69,6 +76,7 @@ public class TestComments {
 	@Test
 	public void testFeedLike() throws EntityNotFoundException
 	{
+		createFeed();
 		testAddFeed();
 		CommentDao comment=new CommentOperations();
 		Comment c=new Comment();
