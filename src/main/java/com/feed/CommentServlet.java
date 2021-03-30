@@ -3,7 +3,9 @@ package com.feed;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -60,14 +62,20 @@ public void doPost(HttpServletRequest request, HttpServletResponse response)
 	    String str=jb.toString();
 	    ObjectMapper mapper = new ObjectMapper();
 	    JsonNode json = mapper.readTree(str);
+    	UUID commentId=UUID.randomUUID();
+    	
+
 	    try {
+	    	Date date=new Date();
+	    	Long millis = date.getTime();
+
 			c.setComment(json.get("comment").asText());
 			c.setFeed_id(json.get("feedId").asText());
-			c.setComment_id(json.get("commentId").asText());
-			c.setDate(json.get("date").asText());
+			c.setComment_id(commentId.toString());
+			c.setDate(millis.toString());
 			comment.addComment(c);
 			response.setStatus(200);
-		    String result="{\"commentId\":\""+json.get("commentId").asText()+"\",\"Operation\" :\"Successful\"}";
+		    String result="{\"commentId\":\""+c.getComment_id()+"\",\"Operation\" :\"Successful\"}";
 		    out.println(result);
 		    
 		} catch (Exception e) {
@@ -98,10 +106,13 @@ protected void doPut(HttpServletRequest request, HttpServletResponse response) t
 	    ObjectMapper mapper = new ObjectMapper();
 	    JsonNode json = mapper.readTree(str);
 	    
+    	Date date=new Date();
+    	Long millis = date.getTime();
+    	
 	    c.setComment(json.get("comment").asText());
 	    c.setFeed_id(json.get("feedId").asText());
 	    c.setComment_id(json.get("commentId").asText());
-	    c.setDate(json.get("date").asText());
+	    c.setDate(millis.toString());
 	   
 	    comment.updateComment(c);
 	    String result="{\"commentId\":\""+commentId+"\",\"Update\" :\"Successful\"}";
@@ -112,7 +123,7 @@ protected void doPut(HttpServletRequest request, HttpServletResponse response) t
     catch (EntityNotFoundException e) {
     	response.sendError(500);
 		e.printStackTrace();
-	}
+	} 
 }
 
 @Override

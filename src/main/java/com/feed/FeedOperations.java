@@ -27,6 +27,7 @@ public class FeedOperations implements FeedDao{
 			   	f.setCategory(entity.getProperty("category").toString());
 			   	f.setDate(entity.getProperty("date").toString());
 			   	f.setFeed_content(entity.getProperty("feed_content").toString());
+			   	f.setLikes(Integer.parseInt(entity.getProperty("like").toString()));
 			   	ObjectMapper obj=new ObjectMapper();
 	            String jsonStr = obj.writeValueAsString(f);
 			   	feeds.add(jsonStr);
@@ -69,7 +70,8 @@ public class FeedOperations implements FeedDao{
 	   {
 		   Key k=KeyFactory.createKey("Feed", f.getFeed_id());
 		   Entity feed=ds.get(k);
-		   return Integer.parseInt(feed.getProperty("like").toString());
+		   int like=Integer.parseInt(feed.getProperty("like").toString())+1;
+		   return like;
 		   
 	   }
 	   

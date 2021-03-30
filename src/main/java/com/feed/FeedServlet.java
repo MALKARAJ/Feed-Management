@@ -3,9 +3,9 @@ package com.feed;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-//import java.util.Date;
-//import java.util.UUID;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -61,10 +61,14 @@ public void doPost(HttpServletRequest request, HttpServletResponse response) thr
 	    ObjectMapper mapper = new ObjectMapper();
 	    JsonNode json = mapper.readTree(str);
 	    try {
+	    	
+	    	UUID id=UUID.randomUUID();
+	    	Date date=new Date();
+	    	Long millis = date.getTime();
 			f.setFeed_content(json.get("content").asText());
-			f.setFeed_id(json.get("feedId").asText());
+			f.setFeed_id(id.toString());
 			f.setCategory(json.get("category").asText());
-			f.setDate(json.get("date").asText());
+			f.setDate(millis.toString());
 			feed.addFeed(f);
 			response.setStatus(200);
 		    String result="{\"feedId\":\""+f.getFeed_id()+"\",\"Add\" :\"Success\"}";
@@ -94,10 +98,13 @@ protected void doPut(HttpServletRequest request, HttpServletResponse response) t
 	    ObjectMapper mapper = new ObjectMapper();
 	    JsonNode json = mapper.readTree(str);
 	    
+    	Date date=new Date();
+    	Long millis = date.getTime();
+    	
 	    f.setFeed_content(json.get("content").asText());
 	    f.setFeed_id(json.get("feedId").asText());
 	    f.setCategory(json.get("category").asText());
-	    f.setDate(json.get("date").asText());
+	    f.setDate(millis.toString());
 	    feed.updateFeed(f);
 		response.setStatus(200);
 	    String result="{\"feedId\":\""+feedId+"\",\"Update\" :\"Successful\"}";
@@ -107,7 +114,7 @@ protected void doPut(HttpServletRequest request, HttpServletResponse response) t
     catch (EntityNotFoundException e) {
     	response.sendError(500);
 		e.printStackTrace();
-	}
+	} 
 }
 @Override
 protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

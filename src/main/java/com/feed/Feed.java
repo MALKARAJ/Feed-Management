@@ -6,9 +6,17 @@ public class Feed {
     String feed_content;
     String date;
 	String category;
-	//String like_count;
+	int likes;
 	
-    public String getFeed_id() {
+    public int getLikes() {
+		return likes;
+	}
+
+	public void setLikes(int like) {
+		this.likes = like;
+	}
+
+	public String getFeed_id() {
 		return feed_id;
 	}
 
