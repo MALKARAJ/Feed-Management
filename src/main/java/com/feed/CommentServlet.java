@@ -72,7 +72,7 @@ public void doPost(HttpServletRequest request, HttpServletResponse response)
 			c.setComment(json.get("comment").asText());
 			c.setFeed_id(json.get("feedId").asText());
 			c.setComment_id(commentId.toString());
-			c.setDate(millis.toString());
+			c.setDate(millis);
 			comment.addComment(c);
 			response.setStatus(200);
 		    String result="{\"commentId\":\""+c.getComment_id()+"\",\"Operation\" :\"Successful\"}";
@@ -112,7 +112,7 @@ protected void doPut(HttpServletRequest request, HttpServletResponse response) t
 	    c.setComment(json.get("comment").asText());
 	    c.setFeed_id(json.get("feedId").asText());
 	    c.setComment_id(json.get("commentId").asText());
-	    c.setDate(millis.toString());
+	    c.setDate(millis);
 	   
 	    comment.updateComment(c);
 	    String result="{\"commentId\":\""+commentId+"\",\"Update\" :\"Successful\"}";

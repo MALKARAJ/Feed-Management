@@ -2,6 +2,8 @@ package com.feed;
 
 import static org.junit.Assert.*;
 
+import java.util.Date;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +37,9 @@ public class TestFeed {
 	    f.setFeed_content("Content");
 	    f.setFeed_id("feed123123");
 	    f.setCategory("movie");
-	    f.setDate("25/03/2021 18:30");
+    	Date date=new Date();
+    	Long millis = date.getTime();
+	    f.setDate(millis);
 	    assertEquals("Content",f.getFeed_content());
 	}
 	@Test
@@ -45,7 +49,9 @@ public class TestFeed {
 	    f.setFeed_content("Content");
 	    f.setFeed_id("feed123123");
 	    f.setCategory("movie");
-	    f.setDate("25/03/2021 18:30");
+    	Date date=new Date();
+    	Long millis = date.getTime();
+	    f.setDate(millis);
 	    String e=feed.addFeed(f);
 	    assertEquals(f.getFeed_id(),e);
 	}
@@ -58,7 +64,9 @@ public class TestFeed {
 	    f.setFeed_content("Updated Content");
 	    f.setFeed_id("feed123123");
 	    f.setCategory("movie");
-	    f.setDate("25/03/2021 18:30");
+    	Date date=new Date();
+    	Long millis = date.getTime();
+	    f.setDate(millis);
 	    String e=feed.addFeed(f);
 	    Key k=KeyFactory.createKey("Feed",e);
 	    Entity entity=ds.get(k);

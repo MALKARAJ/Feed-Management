@@ -28,8 +28,9 @@ public class CommentOperations implements CommentDao{
 		   for (Entity entity : ds.prepare(q).asIterable()) {	
 			   	c.setFeed_id(entity.getProperty("feed_id").toString());
 			   	c.setComment_id(entity.getProperty("comment_id").toString());
-			   	c.setDate(entity.getProperty("date").toString());
+			   	c.setDate((Long)entity.getProperty("date"));
 			   	c.setComment(entity.getProperty("comment").toString());
+			   	c.setLikes(entity.getProperty("like").toString());
 			   	ObjectMapper obj=new ObjectMapper();
 	            String jsonStr = obj.writeValueAsString(c);
 			   	comments.add(jsonStr);

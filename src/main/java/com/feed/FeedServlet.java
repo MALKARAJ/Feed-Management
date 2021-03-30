@@ -68,7 +68,7 @@ public void doPost(HttpServletRequest request, HttpServletResponse response) thr
 			f.setFeed_content(json.get("content").asText());
 			f.setFeed_id(id.toString());
 			f.setCategory(json.get("category").asText());
-			f.setDate(millis.toString());
+			f.setDate(millis);
 			feed.addFeed(f);
 			response.setStatus(200);
 		    String result="{\"feedId\":\""+f.getFeed_id()+"\",\"Add\" :\"Success\"}";
@@ -104,7 +104,7 @@ protected void doPut(HttpServletRequest request, HttpServletResponse response) t
 	    f.setFeed_content(json.get("content").asText());
 	    f.setFeed_id(json.get("feedId").asText());
 	    f.setCategory(json.get("category").asText());
-	    f.setDate(millis.toString());
+	    f.setDate(millis);
 	    feed.updateFeed(f);
 		response.setStatus(200);
 	    String result="{\"feedId\":\""+feedId+"\",\"Update\" :\"Successful\"}";

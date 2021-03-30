@@ -6,8 +6,8 @@ public class Comment {
 	String feed_id;
 	String comment_id;
 	String comment;
-	String date;
-	
+	Long date;
+	String likes;
 	public String getFeed_id() {
 		return feed_id;
 	}
@@ -26,11 +26,18 @@ public class Comment {
 	public void setComment(String comment) {
 		this.comment = comment;
 	}
-	public String getDate() {
+	public Long getDate() {
 		return date;
 	}
-	public void setDate(String date) {
+	public void setDate(Long date) {
 		this.date = date;
+	}
+	
+	public String getLikes() {
+		return likes;
+	}
+	public void setLikes(String likes) {
+		this.likes = likes;
 	}
 	@Override
 	public String toString() {

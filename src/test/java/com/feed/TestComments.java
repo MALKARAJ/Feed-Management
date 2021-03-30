@@ -2,6 +2,8 @@ package com.feed;
 
 import static org.junit.Assert.*;
 
+import java.util.Date;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,10 +29,10 @@ public class TestComments {
 	  public void tearDown() {
 	    helper.tearDown();
 	  }
-	public void createFeed()
+	public void createComment()
 	{
 		DatastoreService ds= DatastoreServiceFactory.getDatastoreService();
-		Entity e= new Entity("Feed","feed123123");
+		Entity e= new Entity("Comment","comment123123");
 		ds.put(e);
 	}
 	@Test
@@ -40,32 +42,38 @@ public class TestComments {
 	    c.setComment("Content");
 	    c.setFeed_id("feed123123");
 	    c.setComment_id("comment123");
-	    c.setDate("25/03/2021 18:30");
+    	Date date=new Date();
+    	Long millis = date.getTime();
+	    c.setDate(millis);
 	    assertEquals("Content",c.getComment());
 	}
 	@Test
-	public void testAddFeed() throws EntityNotFoundException {
-		createFeed();
+	public void testAddComment() throws EntityNotFoundException {
+		createComment();
 		CommentDao comment=new CommentOperations();
 		Comment c=new Comment();
 	    c.setComment("Comment");
 	    c.setFeed_id("feed123123");
 	    c.setComment_id("comment123");
-	    c.setDate("25/03/2021 18:30");
+    	Date date=new Date();
+    	Long millis = date.getTime();
+	    c.setDate(millis);
 	    String e=comment.addComment(c);
 	    assertEquals(c.getFeed_id(),e);
 	}
 	@Test
-	public void testUpdateFeed() throws EntityNotFoundException {
-		createFeed();
+	public void testUpdateComment() throws EntityNotFoundException {
+		createComment();
 		DatastoreService ds=DatastoreServiceFactory.getDatastoreService();
-		testAddFeed();
+		testAddComment();
 		CommentDao comment=new CommentOperations();
 		Comment c=new Comment();
 	    c.setComment("Updated comment");
 	    c.setFeed_id("feed123123");
 	    c.setComment_id("comment123");
-	    c.setDate("25/03/2021 18:30");
+    	Date date=new Date();
+    	Long millis = date.getTime();
+	    c.setDate(millis);
 	    comment.addComment(c);
 		Key k=new KeyFactory.Builder("Feed", c.getFeed_id())
 			        .addChild("Comment", c.getComment_id())
@@ -76,8 +84,8 @@ public class TestComments {
 	@Test
 	public void testFeedLike() throws EntityNotFoundException
 	{
-		createFeed();
-		testAddFeed();
+		createComment();
+		testAddComment();
 		CommentDao comment=new CommentOperations();
 		Comment c=new Comment();
 	    c.setFeed_id("feed123123");

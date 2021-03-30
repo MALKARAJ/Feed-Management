@@ -20,7 +20,8 @@ public class FeedLikes extends HttpServlet {
         super();
     }
 
-	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
+	{
 		Feed f=new Feed();
 		response.setContentType("application/json");
 		FeedDao feed=new FeedOperations();
@@ -38,10 +39,11 @@ public class FeedLikes extends HttpServlet {
 			response.setStatus(200);
 		    out.println(like);
 		} 
-	    catch (EntityNotFoundException e) {
+	    catch (EntityNotFoundException e) 
+		{
 			response.sendError(500);
 			e.printStackTrace();
 		}	
-	    }
+	}
 
 }
