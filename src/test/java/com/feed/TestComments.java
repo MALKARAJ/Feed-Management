@@ -14,6 +14,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.repackaged.org.joda.time.DateTime;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
@@ -42,10 +43,13 @@ public class TestComments {
 	    c.setComment("Content");
 	    c.setFeed_id("feed123123");
 	    c.setComment_id("comment123");
-    	Date date=new Date();
-    	Long millis = date.getTime();
+        DateTime now = new DateTime();
+        Date millis=new Date(now.getMillis());
 	    c.setDate(millis);
 	    assertEquals("Content",c.getComment());
+	    assertEquals("feed123123",c.getFeed_id());
+	    assertEquals("comment123",c.getComment_id());
+	    assertEquals(millis,c.getDate());
 	}
 	@Test
 	public void testAddComment() throws EntityNotFoundException {
@@ -55,8 +59,8 @@ public class TestComments {
 	    c.setComment("Comment");
 	    c.setFeed_id("feed123123");
 	    c.setComment_id("comment123");
-    	Date date=new Date();
-    	Long millis = date.getTime();
+        DateTime now = new DateTime();
+        Date millis=new Date(now.getMillis());
 	    c.setDate(millis);
 	    String e=comment.addComment(c);
 	    assertEquals(c.getFeed_id(),e);
@@ -71,8 +75,8 @@ public class TestComments {
 	    c.setComment("Updated comment");
 	    c.setFeed_id("feed123123");
 	    c.setComment_id("comment123");
-    	Date date=new Date();
-    	Long millis = date.getTime();
+        DateTime now = new DateTime();
+        Date millis=new Date(now.getMillis());
 	    c.setDate(millis);
 	    comment.addComment(c);
 		Key k=new KeyFactory.Builder("Feed", c.getFeed_id())

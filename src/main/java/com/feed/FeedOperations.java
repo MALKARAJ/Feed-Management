@@ -1,9 +1,17 @@
 package com.feed;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 //import java.util.UUID;
+
+import org.json.JSONObject;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,20 +25,43 @@ import com.google.appengine.api.datastore.Query;
 
 public class FeedOperations implements FeedDao{
 	
-	   DatastoreService ds= DatastoreServiceFactory.getDatastoreService();   
-	   public List<String> getNewsFeeds() throws JsonProcessingException, IOException{
+	   DatastoreService ds= DatastoreServiceFactory.getDatastoreService(); 
+	   
+		public JSONObject getSingleFeed(Feed f) throws JsonProcessingException, IOException, ParseException, EntityNotFoundException {
+			   Key k=KeyFactory.createKey("Feed", f.getFeed_id());
+			   Entity feed=ds.get(k);
+			   JSONObject obj= new JSONObject();
+			   obj.put("feedId", f.getFeed_id());
+			   obj.put("content", feed.getProperty("feed_content").toString());
+			   obj.put("category", feed.getProperty("category").toString());
+			   obj.put("date", feed.getProperty("date"));
+			   obj.put("likes", Integer.parseInt(feed.getProperty("like").toString()));
+			   return obj;
+		}
+	   
+	   public List<JSONObject> getNewsFeeds() throws JsonProcessingException, IOException, ParseException{
 		   Feed f=new Feed();
-		   List<String> feeds=new ArrayList<String>();
+		   List<JSONObject> feeds=new ArrayList<JSONObject>();
 		   Query q=new Query("Feed");
 		   for (Entity entity : ds.prepare(q).asIterable()) {	
-			   	f.setFeed_id(entity.getProperty("feed_id").toString());
-			   	f.setCategory(entity.getProperty("category").toString());
-			   	f.setDate((Long) entity.getProperty("date"));
-			   	f.setFeed_content(entity.getProperty("feed_content").toString());
-			   	f.setLikes(Integer.parseInt(entity.getProperty("like").toString()));
-			   	ObjectMapper obj=new ObjectMapper();
-	            String jsonStr = obj.writeValueAsString(f);
-			   	feeds.add(jsonStr);
+				/*
+				 * f.setFeed_id(entity.getProperty("feed_id").toString());
+				 * f.setCategory(entity.getProperty("category").toString()); String
+				 * datetime=entity.getProperty("date").toString(); System.out.println(datetime);
+				 * DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy"); Date
+				 * date = (Date)formatter.parse(datetime); f.setDate(date);
+				 * f.setFeed_content(entity.getProperty("feed_content").toString());
+				 * f.setLikes(Integer.parseInt(entity.getProperty("like").toString()));
+				 * ObjectMapper obj=new ObjectMapper(); 
+				 * String jsonStr = obj.writeValueAsString(f);
+				 */
+				   JSONObject obj= new JSONObject();
+				   obj.put("feedId", entity.getProperty("feed_id").toString());
+				   obj.put("content", entity.getProperty("feed_content").toString());
+				   obj.put("category", entity.getProperty("category").toString());
+				   obj.put("date", entity.getProperty("date").toString());
+				   obj.put("likes", Integer.parseInt(entity.getProperty("like").toString()));
+			   	   feeds.add(obj);
 			}	        
 		   return feeds;
 	   }
@@ -41,7 +72,7 @@ public class FeedOperations implements FeedDao{
 		   feed.setProperty("feed_id",f.getFeed_id());
 		   feed.setProperty("feed_content",f.getFeed_content());
 		   feed.setProperty("category", f.getCategory());
-		   feed.setProperty("date", f.getDate());
+		   feed.setProperty("date",f.getDate());
 		   feed.setProperty("like", 0);
 		   ds.put(feed);
 		   return feed.getProperty("feed_id").toString();
@@ -57,6 +88,7 @@ public class FeedOperations implements FeedDao{
 		   ds.put(feed);
 	   }
 	   
+
 	   public void setLike(Feed f) throws EntityNotFoundException
 	   {
 		   Key k=KeyFactory.createKey("Feed", f.getFeed_id());
@@ -84,4 +116,7 @@ public class FeedOperations implements FeedDao{
 			}	
 		   ds.delete(e.getKey());   
 	   }
+
+	
+
 }

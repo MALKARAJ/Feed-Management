@@ -1,13 +1,19 @@
 package com.feed;
 
+import java.time.LocalDateTime;
+import java.util.Date;
+
+import com.google.appengine.repackaged.com.google.protobuf.proto1api.Timestamp;
+import com.google.appengine.repackaged.org.joda.time.DateTime;
+
 public class Feed {
 	
     String feed_id;
     String feed_content;
-    Long date;
+    Date date;
 	String category;
 	int likes;
-	
+	String error;
     public int getLikes() {
 		return likes;
 	}
@@ -29,17 +35,25 @@ public class Feed {
 	public void setFeed_content(String feed_content) {
 		this.feed_content = feed_content;
 	}
-	public Long getDate() {
+	public Date getDate() {
 		return date;
 	}
-	public void setDate(Long date) {
-		this.date = date;
+	public void setDate(Date millis) {
+		this.date = millis;
 	}
 	public String getCategory() {
 		return category;
 	}
 	public void setCategory(String category) {
 		this.category = category;
+	}
+	
+	public String getError() {
+		return error;
+	}
+
+	public void setError(String error) {
+		this.error = error;
 	}
 
 	@Override

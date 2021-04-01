@@ -1,13 +1,15 @@
 package com.feed;
 
+import java.util.Date;
 
 public class Comment {
 	
 	String feed_id;
 	String comment_id;
 	String comment;
-	Long date;
-	String likes;
+	Date date;
+	int likes;
+	String error;
 	public String getFeed_id() {
 		return feed_id;
 	}
@@ -26,23 +28,31 @@ public class Comment {
 	public void setComment(String comment) {
 		this.comment = comment;
 	}
-	public Long getDate() {
+	public Date getDate() {
 		return date;
 	}
-	public void setDate(Long date) {
+	public void setDate(Date date) {
 		this.date = date;
 	}
 	
-	public String getLikes() {
+	public int getLikes() {
 		return likes;
 	}
-	public void setLikes(String likes) {
+	public void setLikes(int likes) {
 		this.likes = likes;
+	}
+	
+	public String getError() {
+		return error;
+	}
+	public void setError(String error) {
+		this.error = error;
 	}
 	@Override
 	public String toString() {
 		return "Comment [feed_id=" + feed_id + ", comment_id=" + comment_id + ", comment=" + comment + ", date=" + date
 				+ "]";
 	}
+
 
 }
