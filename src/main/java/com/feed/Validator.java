@@ -4,6 +4,9 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import org.json.JSONObject;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -15,14 +18,14 @@ import com.google.appengine.repackaged.org.joda.time.DateTime;
 
 public class Validator {
 
-	public boolean isValidFeed(JsonNode json,Feed f)
+	public boolean isValidFeed(JSONObject obj,Feed f)
 	{
-        if(!(json.size()==2 && json.has("content") && json.has("category")))
+        if(!(obj.length()==2 && obj.has("content") && obj.has("category")))
         {
         	f.setError("Insuffiencient data");
         	return false;
         }
-		if(json.get("content").asText()=="" || json.get("category").asText()=="")
+		if(obj.get("content").toString()=="" || obj.get("category").toString()=="")
 		{
 			f.setError("Either content or category has a null value");
 			return false;
@@ -30,17 +33,17 @@ public class Validator {
 		return true;
 		
 	}
-	public boolean isValidFeedUpdate(JsonNode json,Feed f) throws ParseException, EntityNotFoundException
+	public boolean isValidFeedUpdate(JSONObject json,Feed f) throws ParseException, EntityNotFoundException
 	{
         
-        if(!(json.size()==4 && json.has("feedId") && json.has("content") && json.has("category") && json.has("like")))
+        if(!(json.length()==4 && json.has("feedId") && json.has("content") && json.has("category") && json.has("like")))
         {
 			f.setError("Insufficient data");
 
         	return false;
         }
 
-		if(json.get("content").asText()=="" || json.get("category").asText()=="" || json.get("like").asText()=="" ||json.get("feedId").asText()=="")
+		if(json.get("content").toString()=="" || json.get("category").toString()=="" || json.get("like").toString()=="" ||json.get("feedId").toString()=="")
 		{
 			f.setError("Null values present in the request");
 
@@ -48,7 +51,7 @@ public class Validator {
 		}
 		
 		DatastoreService ds=DatastoreServiceFactory.getDatastoreService();
-		Key k=KeyFactory.createKey("Feed", json.get("feedId").asText());
+		Key k=KeyFactory.createKey("Feed", json.get("feedId").toString());
 		Entity feed=ds.get(k);
 		String feedDate=feed.getProperty("date").toString();
 	   	DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy");
@@ -66,14 +69,14 @@ public class Validator {
 
 		
 	}
-	public boolean isValidComment(JsonNode json,Comment c)
+	public boolean isValidComment(JSONObject json,Comment c)
 	{
-        if(!(json.size()==2 && json.has("comment") && json.has("feedId")))
+        if(!(json.length()==2 && json.has("comment") && json.has("feedId")))
         {
         	c.setError("Invalid request");
         	return false;
         }
-		if(json.get("comment").asText()=="" ||json.get("feedId").asText()=="")
+		if(json.get("comment").toString()=="" ||json.get("feedId").toString()=="")
 		{
         	c.setError("Invalid request either comment or feedId is empty");
 
@@ -83,11 +86,11 @@ public class Validator {
 		return true;
 		
 	}
-	public boolean isValidCommentUpdate(JsonNode json,Comment c) throws EntityNotFoundException, ParseException
+	public boolean isValidCommentUpdate(JSONObject json,Comment c) throws EntityNotFoundException, ParseException
 	{
 
         
-        if(!(json.size()==4 && json.has("feedId") && json.has("comment") && json.has("commentId") && json.has("like")))
+        if(!(json.length()==4 && json.has("feedId") && json.has("comment") && json.has("commentId") && json.has("like")))
         {
         	c.setError("Invalid request");
 
@@ -95,7 +98,7 @@ public class Validator {
         }
         
 
-		if(json.get("comment").asText()=="" || json.get("commentId").asText()=="" ||json.get("feedId").asText()==""|| json.get("like").asText()=="")
+		if(json.get("comment").toString()=="" || json.get("commentId").toString()=="" ||json.get("feedId").toString()==""|| json.get("like").toString()=="")
 		{
         	c.setError("Null values present in the request");
 
@@ -103,8 +106,8 @@ public class Validator {
 		}
 			
 		DatastoreService ds=DatastoreServiceFactory.getDatastoreService();
-		Key k=new KeyFactory.Builder("Feed", json.get("feedId").asText())
-			        .addChild("Comment", json.get("commentId").asText())
+		Key k=new KeyFactory.Builder("Feed", json.get("feedId").toString())
+			        .addChild("Comment", json.get("commentId").toString())
 			        .getKey();
 		Entity comment=ds.get(k);
 		String commentDate=comment.getProperty("date").toString();

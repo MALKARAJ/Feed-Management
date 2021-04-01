@@ -129,8 +129,8 @@ public void doPost(HttpServletRequest request, HttpServletResponse response)
 	    while ((line = reader.readLine()) != null)
 	        jb.append(line);
 	    String str=jb.toString();
-	    ObjectMapper mapper = new ObjectMapper();
-	    JsonNode json = mapper.readTree(str);
+		JSONObject json = new JSONObject(str);
+
     	UUID commentId=UUID.randomUUID();
     	
 
@@ -139,8 +139,8 @@ public void doPost(HttpServletRequest request, HttpServletResponse response)
 	        Date millis=new Date(now.getMillis());
 	    	if(validator.isValidComment(json,c)) 
 	    	{
-				c.setComment(json.get("comment").asText());
-				c.setFeed_id(json.get("feedId").asText());
+				c.setComment(json.get("comment").toString());
+				c.setFeed_id(json.get("feedId").toString());
 				c.setComment_id(commentId.toString());
 				c.setDate(millis);
 				c.setLikes(0);
@@ -198,52 +198,65 @@ protected void doPut(HttpServletRequest request, HttpServletResponse response) t
 	    while ((line = reader.readLine()) != null)
 	        jb.append(line);
 	    String str=jb.toString();
-	    ObjectMapper mapper = new ObjectMapper();
-	    JsonNode json = mapper.readTree(str);
-	    if(!json.get("like").asBoolean()) {
-	        DateTime now = new DateTime();
-	        Date millis=new Date(now.getMillis());
-	    	if(validator.isValidCommentUpdate(json,c))
-	    	{
-			    c.setComment(json.get("comment").asText());
-			    c.setFeed_id(json.get("feedId").asText());
-			    c.setComment_id(json.get("commentId").asText());
-			    c.setDate(millis);
-			   
-			    comment.updateComment(c);
-			    JSONObject rjson=new JSONObject(c);
-				response.setStatus(200);
-				JSONObject obj=new JSONObject();
+		JSONObject json = new JSONObject(str);
+
+	    if(json.get("like").equals("false")) {
+	    	
+		        DateTime now = new DateTime();
+		        Date millis=new Date(now.getMillis());
+		    	if(validator.isValidCommentUpdate(json,c))
+		    	{
+				    c.setComment(json.get("comment").toString());
+				    c.setFeed_id(json.get("feedId").toString());
+				    c.setComment_id(json.get("commentId").toString());
+				    c.setDate(millis);
+				   
+				    comment.updateComment(c);
+				    JSONObject rjson=new JSONObject(c);
+					response.setStatus(200);
+					JSONObject obj=new JSONObject();
+					obj.put("code", "200");
+					obj.put("status", "success");
+					obj.put("data", rjson);
+					out.println(obj);
+				}
+		    	else 
+		    	{
+			    	response.setStatus(400);
+			    	JSONObject obj=new JSONObject();
+			    	JSONObject obj1=new JSONObject();
+					obj1.put("code", "400");
+					obj.put("status", "failed");
+					obj1.put("details", c.getError());
+					obj.put("error", obj1);
+					out.println(obj);
+		    	}
+	    }
+	    
+	    else if(json.get("like").equals("true"))
+	    {
+				c.setFeed_id(feedId);
+	    		c.setComment_id(commentId);
+			    comment.setLike(c);
+			    int l=comment.getLike(c);
+			    JSONObject obj=new JSONObject();
 				obj.put("code", "200");
 				obj.put("status", "success");
-				obj.put("data", rjson);
-				out.println(obj);
-			}
-	    	else
-	    	{
+				obj.put("commentId", commentId);
+				obj.put("likes", l);
+				response.setStatus(200);
+			    out.println(obj);	    
+	    }
+	    else
+	    {
 		    	response.setStatus(400);
 		    	JSONObject obj=new JSONObject();
 		    	JSONObject obj1=new JSONObject();
 				obj1.put("code", "400");
 				obj.put("status", "failed");
-				obj1.put("details", c.getError());
+				obj1.put("details", "Invalid request");
 				obj.put("error", obj1);
 				out.println(obj);
-	    	}
-	    }
-	    else
-	    {
-			c.setFeed_id(feedId);
-    		c.setComment_id(commentId);
-		    comment.setLike(c);
-		    int l=comment.getLike(c);
-		    JSONObject obj=new JSONObject();
-			obj.put("code", "200");
-			obj.put("status", "success");
-			obj.put("commentId", commentId);
-			obj.put("likes", l);
-			response.setStatus(200);
-		    out.println(obj);	    
 	    }
 
 	} 

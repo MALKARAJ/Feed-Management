@@ -5,7 +5,9 @@ import static org.junit.Assert.*;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
+import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -111,10 +113,11 @@ public class TestFeed {
 	public void testFeedValidator() throws JsonProcessingException, IOException
 	{	Validator v=new Validator();
 		Feed f=new Feed();
-		String j="{\"content\":\"Content\",\"category\":\"movie\"}";
-	    ObjectMapper mapper = new ObjectMapper();
-	    JsonNode json = mapper.readTree(j);
-	    if(v.isValidFeed(json,f)) {
+		JSONObject obj = new JSONObject();
+		obj.put("content", "Content");
+		obj.put("category", "movie");
+
+	    if(v.isValidFeed(obj,f)) {
 		    f.setFeed_content("Content");
 		    f.setFeed_id("feed123123");
 		    f.setCategory("movie");
@@ -123,18 +126,37 @@ public class TestFeed {
 	}
 	
 	@Test
-	public void testFeedUpdateValidator() throws JsonProcessingException, IOException, ParseException, EntityNotFoundException
-	{	Validator v=new Validator();
+	public void testFeedUpdateValidator() throws JsonProcessingException, IOException, ParseException, EntityNotFoundException, InterruptedException
+	{	
+		testAddFeed();
+		Validator v=new Validator();
 		Feed f=new Feed();
-		String j="{\"content\":\"Content\",\"category\":\"movie\"}";
-	    ObjectMapper mapper = new ObjectMapper();
-	    JsonNode json = mapper.readTree(j);
-	    if(v.isValidFeedUpdate(json,f)) {
+		JSONObject obj = new JSONObject();
+		obj.put("content", "Content");
+		obj.put("feedId", "feed123123");
+		obj.put("category", "movie");
+		obj.put("like", "false");
+	    if(v.isValidFeedUpdate(obj,f)) {
 	    	
 		    f.setFeed_content("Content");
 		    f.setFeed_id("feed123123");
 		    f.setCategory("movie");
 	    }
 	    assertEquals("Content",f.getFeed_content());
+	}
+	
+	@Test
+	public void testUpdateTime() throws InterruptedException, EntityNotFoundException, ParseException
+	{
+		testAddFeed();
+		Validator v=new Validator();
+		Feed f=new Feed();
+		TimeUnit.SECONDS.sleep(16);
+		JSONObject obj = new JSONObject();
+		obj.put("content", "Content");
+		obj.put("feedId", "feed123123");
+		obj.put("category", "movie");
+		obj.put("like", "false");
+		assertFalse(v.isValidFeedUpdate(obj,f));
 	}
 }

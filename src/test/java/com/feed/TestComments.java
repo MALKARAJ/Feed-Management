@@ -2,12 +2,17 @@ package com.feed;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
+import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -37,7 +42,7 @@ public class TestComments {
 		ds.put(e);
 	}
 	@Test
-	public void testFeedPojo()
+	public void testCommentPojo()
 	{
 		Comment c=new Comment();
 	    c.setComment("Content");
@@ -53,12 +58,14 @@ public class TestComments {
 	}
 	@Test
 	public void testAddComment() throws EntityNotFoundException {
+		TestFeed f=new TestFeed();
+		f.testAddFeed();
 		createComment();
 		CommentDao comment=new CommentOperations();
 		Comment c=new Comment();
 	    c.setComment("Comment");
 	    c.setFeed_id("feed123123");
-	    c.setComment_id("comment123");
+	    c.setComment_id("comment123123");
         DateTime now = new DateTime();
         Date millis=new Date(now.getMillis());
 	    c.setDate(millis);
@@ -86,18 +93,72 @@ public class TestComments {
 	    assertEquals("Updated comment",entity.getProperty("comment"));
 	}
 	@Test
-	public void testFeedLike() throws EntityNotFoundException
+	public void testCommentLike() throws EntityNotFoundException
 	{
 		createComment();
 		testAddComment();
 		CommentDao comment=new CommentOperations();
 		Comment c=new Comment();
 	    c.setFeed_id("feed123123");
-	    c.setComment_id("comment123");
+	    c.setComment_id("comment123123");
 	    comment.setLike(c);
 	    comment.setLike(c);
 	    comment.setLike(c);
 	    int likes=comment.getLike(c);
 	    assertEquals(3,likes);
 	}
+	
+	
+	@Test
+	public void testCommentValidator() throws JsonProcessingException, IOException
+	{	Validator v=new Validator();
+		Comment c=new Comment();
+		JSONObject obj = new JSONObject();
+		obj.put("comment", "Content");
+		obj.put("feedId", "feed123123");
+
+	    if(v.isValidComment(obj,c)) {
+		    c.setComment("Content");
+		    c.setFeed_id("feed123123");
+		    c.setComment_id("comment123123");
+	    }
+	    assertEquals("Content",c.getComment());
+	}
+	
+	@Test
+	public void testCommentUpdateValidator() throws JsonProcessingException, IOException, ParseException, EntityNotFoundException, InterruptedException
+	{	
+		
+		testAddComment();
+		Validator v=new Validator();
+		Comment c=new Comment();
+		JSONObject obj = new JSONObject();
+		obj.put("comment", "Content");
+		obj.put("feedId", "feed123123");
+		obj.put("commentId", "comment123123");
+		obj.put("like", "false");
+	    if(v.isValidCommentUpdate(obj,c)) {
+	    	
+		    c.setComment("Content");
+		    c.setFeed_id("feed123123");
+		    c.setComment_id("comment123123");
+	    }
+	    assertEquals("Content",c.getComment());
+	}
+	
+	
+	  @Test public void testUpdateTime() throws InterruptedException,
+	  EntityNotFoundException, ParseException
+	  { 
+		  testAddComment();
+		  Validator v=new Validator(); 
+		  Feed f=new Feed();
+		  TimeUnit.SECONDS.sleep(16); 
+		  JSONObject obj = new JSONObject();
+		  obj.put("comment", "Content"); 
+		  obj.put("feedId", "feed123123");
+		  obj.put("commentId", "comment123123"); 
+		  obj.put("like", "false");
+		  assertFalse(v.isValidFeedUpdate(obj,f)); }
+	 
 }

@@ -159,9 +159,10 @@ public void doPost(HttpServletRequest request, HttpServletResponse response) thr
 	    while ((line = reader.readLine()) != null)
 	        jb.append(line);
 	    String str=jb.toString();
-	    ObjectMapper mapper = new ObjectMapper();
-	    JsonNode json = mapper.readTree(str);
-        DateTime now = new DateTime();
+	    //ObjectMapper mapper = new ObjectMapper();
+	    //JsonNode json = mapper.readTree(str);
+        JSONObject json=new JSONObject(str);
+	    DateTime now = new DateTime();
         Date millis=new Date(now.getMillis());
 	    if(validator.isValidFeed(json,f)) {
 		    try 
@@ -169,9 +170,9 @@ public void doPost(HttpServletRequest request, HttpServletResponse response) thr
 		    	
 		    	UUID id=UUID.randomUUID();
 
-				f.setFeed_content(json.get("content").asText());
+				f.setFeed_content(json.get("content").toString());
 				f.setFeed_id(id.toString());
-				f.setCategory(json.get("category").asText());
+				f.setCategory(json.get("category").toString());
 				f.setDate(millis);
 				f.setLikes(0);
 				feed.addFeed(f);
@@ -228,21 +229,22 @@ protected void doPut(HttpServletRequest request, HttpServletResponse response) t
 	    while ((line = reader.readLine()) != null)
 	        jb.append(line);
 	    String str=jb.toString();
-	    ObjectMapper mapper = new ObjectMapper();
-	    JsonNode json = mapper.readTree(str);
-	    
+	    //ObjectMapper mapper = new ObjectMapper();
+	    //JsonNode json = mapper.readTree(str);
+        JSONObject json=new JSONObject(str);
+
 
         DateTime now = new DateTime();
         Date millis=new Date(now.getMillis());
 
-        if(!(json.has("like"))||!(json.get("like").asBoolean())) 
+        if(json.has("like") && json.get("like").equals("false")) 
 	    {
 
 	    	if(validator.isValidFeedUpdate(json,f)) 
 	    	{
-			    f.setFeed_content(json.get("content").asText());
-			    f.setFeed_id(json.get("feedId").asText());
-			    f.setCategory(json.get("category").asText());
+			    f.setFeed_content(json.get("content").toString());
+			    f.setFeed_id(json.get("feedId").toString());
+			    f.setCategory(json.get("category").toString());
 			    f.setDate(millis);
 			    feed.updateFeed(f);
 			    JSONObject rjson=new JSONObject(f);
@@ -265,7 +267,7 @@ protected void doPut(HttpServletRequest request, HttpServletResponse response) t
 				out.println(obj);
 	    	}
 	    }
-	    else
+	    else if (json.has("like") && json.get("like").equals("true"))
 	    {
     		f.setFeed_id(feedId);
 		    feed.setLike(f);
@@ -277,6 +279,17 @@ protected void doPut(HttpServletRequest request, HttpServletResponse response) t
 			obj.put("likes", l);
 			response.setStatus(200);
 		    out.println(obj);
+	    }
+	    else
+	    {
+	    	response.setStatus(400);
+	    	JSONObject obj=new JSONObject();
+	    	JSONObject obj1=new JSONObject();
+			obj1.put("code", "400");
+			obj.put("status", "failed");
+			obj1.put("details", "Invalid request");
+			obj.put("error", obj1);
+			out.println(obj);
 	    }
 
 	} 
