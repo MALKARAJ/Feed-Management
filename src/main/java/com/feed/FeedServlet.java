@@ -272,11 +272,14 @@ protected void doPut(HttpServletRequest request, HttpServletResponse response) t
     		f.setFeed_id(feedId);
 		    feed.setLike(f);
 		    int l=feed.getLike(f);
+		    JSONObject obj1=new JSONObject();
+
 		    JSONObject obj=new JSONObject();
 			obj.put("code", "200");
 			obj.put("status", "success");
-			obj.put("feedId", feedId);
-			obj.put("likes", l);
+			obj1.put("feedId", feedId);
+			obj1.put("likes", l);
+			obj.put("data", obj1);
 			response.setStatus(200);
 		    out.println(obj);
 	    }

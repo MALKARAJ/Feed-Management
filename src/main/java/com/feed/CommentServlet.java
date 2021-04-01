@@ -36,11 +36,7 @@ public class CommentServlet extends HttpServlet {
 		PrintWriter out=response.getWriter();
 		String pathInfo = request.getPathInfo(); 
 		String[] pathParts = pathInfo.split("/");
-		System.out.println(pathParts.length);
-		for(String i:pathParts)
-		{
-			System.out.println(i);
-		}
+
 		if(pathParts.length>2)
 		{
 			String feedId = pathParts[1];
@@ -239,11 +235,14 @@ protected void doPut(HttpServletRequest request, HttpServletResponse response) t
 	    		c.setComment_id(commentId);
 			    comment.setLike(c);
 			    int l=comment.getLike(c);
+			    JSONObject obj1=new JSONObject();
+
 			    JSONObject obj=new JSONObject();
 				obj.put("code", "200");
 				obj.put("status", "success");
-				obj.put("commentId", commentId);
-				obj.put("likes", l);
+				obj1.put("commentId", commentId);
+				obj1.put("likes", l);
+				obj.put("data", obj1);
 				response.setStatus(200);
 			    out.println(obj);	    
 	    }

@@ -25,7 +25,7 @@ public class Validator {
         	f.setError("Insuffiencient data");
         	return false;
         }
-		if(obj.get("content").toString()=="" || obj.get("category").toString()=="")
+		if(obj.get("content").toString().replaceAll("\\s", "").equals("") || obj.get("category").toString().replaceAll("\\s", "").equals(""))
 		{
 			f.setError("Either content or category has a null value");
 			return false;
@@ -43,7 +43,7 @@ public class Validator {
         	return false;
         }
 
-		if(json.get("content").toString()=="" || json.get("category").toString()=="" || json.get("like").toString()=="" ||json.get("feedId").toString()=="")
+		if(json.get("content").toString().replaceAll("\\s", "").equals("") || json.get("category").toString().replaceAll("\\s", "").equals("") || json.get("like").toString().replaceAll("\\s", "").equals("") ||json.get("feedId").toString().replaceAll("\\s", "").equals(""))
 		{
 			f.setError("Null values present in the request");
 
@@ -76,7 +76,7 @@ public class Validator {
         	c.setError("Invalid request");
         	return false;
         }
-		if(json.get("comment").toString()=="" ||json.get("feedId").toString()=="")
+		if(json.get("comment").toString().replaceAll("\\s", "").equals("") ||json.get("feedId").toString().replaceAll("\\s", "").equals(""))
 		{
         	c.setError("Invalid request either comment or feedId is empty");
 
@@ -98,7 +98,7 @@ public class Validator {
         }
         
 
-		if(json.get("comment").toString()=="" || json.get("commentId").toString()=="" ||json.get("feedId").toString()==""|| json.get("like").toString()=="")
+		if(json.get("comment").toString().replaceAll("\\s", "").equals("") || json.get("commentId").toString().replaceAll("\\s", "").equals("") ||json.get("feedId").toString().replaceAll("\\s", "").equals("")|| json.get("like").toString().replaceAll("\\s", "").equals(""))
 		{
         	c.setError("Null values present in the request");
 

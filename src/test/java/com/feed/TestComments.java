@@ -116,19 +116,12 @@ public class TestComments {
 		JSONObject obj = new JSONObject();
 		obj.put("comment", "Content");
 		obj.put("feedId", "feed123123");
-
-	    if(v.isValidComment(obj,c)) {
-		    c.setComment("Content");
-		    c.setFeed_id("feed123123");
-		    c.setComment_id("comment123123");
-	    }
-	    assertEquals("Content",c.getComment());
+	    assertTrue(v.isValidComment(obj, c));
 	}
 	
 	@Test
 	public void testCommentUpdateValidator() throws JsonProcessingException, IOException, ParseException, EntityNotFoundException, InterruptedException
-	{	
-		
+	{		
 		testAddComment();
 		Validator v=new Validator();
 		Comment c=new Comment();
@@ -137,13 +130,7 @@ public class TestComments {
 		obj.put("feedId", "feed123123");
 		obj.put("commentId", "comment123123");
 		obj.put("like", "false");
-	    if(v.isValidCommentUpdate(obj,c)) {
-	    	
-		    c.setComment("Content");
-		    c.setFeed_id("feed123123");
-		    c.setComment_id("comment123123");
-	    }
-	    assertEquals("Content",c.getComment());
+	    assertTrue(v.isValidCommentUpdate(obj, c));
 	}
 	
 	

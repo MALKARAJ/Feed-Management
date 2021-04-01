@@ -116,13 +116,7 @@ public class TestFeed {
 		JSONObject obj = new JSONObject();
 		obj.put("content", "Content");
 		obj.put("category", "movie");
-
-	    if(v.isValidFeed(obj,f)) {
-		    f.setFeed_content("Content");
-		    f.setFeed_id("feed123123");
-		    f.setCategory("movie");
-	    }
-	    assertEquals("Content",f.getFeed_content());
+	    assertTrue(v.isValidFeed(obj, f));
 	}
 	
 	@Test
@@ -136,13 +130,7 @@ public class TestFeed {
 		obj.put("feedId", "feed123123");
 		obj.put("category", "movie");
 		obj.put("like", "false");
-	    if(v.isValidFeedUpdate(obj,f)) {
-	    	
-		    f.setFeed_content("Content");
-		    f.setFeed_id("feed123123");
-		    f.setCategory("movie");
-	    }
-	    assertEquals("Content",f.getFeed_content());
+	    assertTrue(v.isValidFeedUpdate(obj, f));
 	}
 	
 	@Test
