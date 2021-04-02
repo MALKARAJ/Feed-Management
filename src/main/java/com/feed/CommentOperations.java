@@ -3,17 +3,12 @@ package com.feed;
 
 
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import org.json.JSONObject;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -21,6 +16,8 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.repackaged.org.joda.time.DateTime;
 
 public class CommentOperations implements CommentDao{
 	
@@ -34,51 +31,57 @@ public class CommentOperations implements CommentDao{
 			   
 			   Entity comment=ds.get(k);
 			   JSONObject obj= new JSONObject();
-			   obj.put("feedId", c.getFeed_id());
-			   obj.put("comment", comment.getProperty("comment").toString());
-			   obj.put("commentId", comment.getProperty("comment_id").toString());
-			   obj.put("date", comment.getProperty("date"));
-			   obj.put("likes", Integer.parseInt(comment.getProperty("like").toString()));
+
+			   if(comment.getProperty("delete").toString().equals("false")) 
+			   {
+				   obj.put("feedId", c.getFeed_id());
+				   obj.put("comment", comment.getProperty("comment").toString());
+				   obj.put("commentId", comment.getProperty("comment_id").toString());
+				   long d=Long.parseLong(comment.getProperty("date").toString());
+				   Date date=new Date(d);
+				   obj.put("date", date);
+				   obj.put("likes", Integer.parseInt(comment.getProperty("like").toString()));
+			   }
 			   return obj;
+
 		}
 		
 	   public JSONObject getComments(Comment c) throws JsonProcessingException, IOException, EntityNotFoundException, ParseException{
 		   List<JSONObject> comments=new ArrayList<JSONObject>();
 		   Key k=KeyFactory.createKey("Feed",c.getFeed_id());
 		   Entity e=ds.get(k);
-		   
 		   JSONObject obj= new JSONObject();
-		   obj.put("feedId", c.getFeed_id());
-		   obj.put("content", e.getProperty("feed_content").toString());
-		   obj.put("category", e.getProperty("category").toString());
-		   obj.put("date", e.getProperty("date"));
-		   obj.put("likes", Integer.parseInt(e.getProperty("like").toString()));
-		   
-		   Query q=new Query("Comment").setAncestor(e.getKey());
-		   for (Entity entity : ds.prepare(q).asIterable()) {	
-				/*
-				 * c.setFeed_id(entity.getProperty("feed_id").toString());
-				 * c.setComment_id(entity.getProperty("comment_id").toString()); String
-				 * datetime=entity.getProperty("date").toString(); System.out.println(datetime);
-				 * DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy"); Date
-				 * date = (Date)formatter.parse(datetime); c.setDate(date);
-				 * c.setComment(entity.getProperty("comment").toString());
-				 * c.setLikes(Integer.parseInt(entity.getProperty("like").toString()));
-				 * ObjectMapper obj=new ObjectMapper(); String jsonStr =
-				 * obj.writeValueAsString(c); comments.add(jsonStr);
-				 */
-			   JSONObject obj1= new JSONObject();
-			   obj1.put("feedId", c.getFeed_id());
-			   obj1.put("comment", entity.getProperty("comment").toString());
-			   obj1.put("commentId", entity.getProperty("comment_id").toString());
-			   obj1.put("date", entity.getProperty("date"));
-			   obj1.put("likes", Integer.parseInt(entity.getProperty("like").toString()));
-			   comments.add(obj1);
-			}	  
-		   JSONObject objResult= new JSONObject();
-		   objResult.put("feed", obj);
-		   objResult.put("Comments", comments);
-		   return objResult;
+		   if(e.getProperty("delete").toString().equals("false")) {
+			   obj.put("feedId", c.getFeed_id());
+			   obj.put("content", e.getProperty("feed_content").toString());
+			   obj.put("category", e.getProperty("category").toString());
+			   long d=Long.parseLong(e.getProperty("date").toString());
+			   Date date=new Date(d);
+			   obj.put("date", date);
+			   obj.put("likes", Integer.parseInt(e.getProperty("like").toString()));
+			   
+			   Query q=new Query("Comment").setAncestor(e.getKey()).addSort("Updation_date", SortDirection.DESCENDING);
+			   for (Entity entity : ds.prepare(q).asIterable()) {	
+				   if(entity!=null && e.getProperty("delete").toString().equals("false")) 
+				   {
+					   JSONObject obj1= new JSONObject();
+					   obj1.put("feedId", c.getFeed_id());
+					   obj1.put("comment", entity.getProperty("comment").toString());
+					   obj1.put("commentId", entity.getProperty("comment_id").toString());
+					   long d1=Long.parseLong(e.getProperty("date").toString());
+					   Date date1=new Date(d1);
+					   obj1.put("date", date1);
+					   obj1.put("likes", Integer.parseInt(entity.getProperty("like").toString()));
+					   comments.add(obj1);
+				   }
+				}	  
+			   JSONObject objResult= new JSONObject();
+			   obj.put("Comments", comments);
+			   objResult.put("feed", obj);
+			   return objResult;
+		   }
+		   return obj;
+
 	   }
 	   
 	   public String addComment(Comment c) throws EntityNotFoundException
@@ -89,8 +92,12 @@ public class CommentOperations implements CommentDao{
 		   comment.setProperty("feed_id",c.getFeed_id());
 		   comment.setProperty("comment_id",c.getComment_id());
 		   comment.setProperty("comment",c.getComment());
-		   comment.setProperty("date", c.getDate());
+		   Date date=c.getDate();
+		   DateTime d=new DateTime(date);
+		   comment.setProperty("date",d.getMillis());
+		   comment.setProperty("Updation_date",d.getMillis());		  
 		   comment.setProperty("like", 0);
+		   comment.setProperty("delete", false);
 		   ds.put(comment);
 		   int like=(int) comment.getProperty("like");
 		   System.out.println(like);
@@ -102,41 +109,38 @@ public class CommentOperations implements CommentDao{
 				        .addChild("Comment", c.getComment_id())
 				        .getKey();		   
 		   Entity comment=ds.get(k);
-
 		   comment.setProperty("feed_id",c.getFeed_id());
 		   comment.setProperty("comment_id",c.getComment_id());
 		   comment.setProperty("comment",c.getComment());
-		   comment.setProperty("date", c.getDate());
+		   Date date=c.getUpdateDate();
+		   DateTime d=new DateTime(date);
+		   comment.setProperty("Updation_date", d.getMillis());
+		   if(c.isLike())
+		   {
+			   comment.setProperty("like", c.getLikes()+1);
+			   c.setLikes(Integer.parseInt(comment.getProperty("like").toString()));
+
+		   }
 		   ds.put(comment);
 	   }
 	   
-	   public void setLike(Comment c) throws EntityNotFoundException
+	   public void setLikePojo(Comment c) throws EntityNotFoundException
 	   {
 		   Key k=new KeyFactory.Builder("Feed", c.getFeed_id())
 			        .addChild("Comment", c.getComment_id())
 			        .getKey();	
 		   Entity comment=ds.get(k);	   
 		   int like=Integer.parseInt(comment.getProperty("like").toString())+1;
-		   comment.setProperty("like", like);
-		   ds.put(comment);
+		   c.setLikes(like);
 	   }
-	   
-	   public int getLike(Comment c) throws EntityNotFoundException
-	   {
-
-		   Key k=new KeyFactory.Builder("Feed", c.getFeed_id())
-			        .addChild("Comment", c.getComment_id())
-			        .getKey();	
-		   Entity comment=ds.get(k);		   
-		   return Integer.parseInt(comment.getProperty("like").toString());
-		   
-	   }	   
+	      
 	   public void deleteComment(Comment c) throws EntityNotFoundException {
 		   Key k=new KeyFactory.Builder("Feed", c.getFeed_id())
 			        .addChild("Comment", c.getComment_id())
 			        .getKey();	
 		   Entity comment=ds.get(k);
-		   ds.delete(comment.getKey());   
+		   comment.setProperty("delete", true);
+		   ds.put(comment);
 	   }
 
 

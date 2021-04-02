@@ -3,23 +3,16 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.repackaged.org.joda.time.DateTime;
 
@@ -48,11 +41,22 @@ public class FeedServlet extends HttpServlet {
 
 				JSONObject obj=new JSONObject();
 				JSONObject result=feed.getSingleFeed(f);
-				response.setStatus(200);
-				obj.put("status", "success");
-				obj.put("code","200");
-				obj.put("feed", result);
-				out.println(obj);
+				if(result.length()>0) {
+					response.setStatus(200);
+					obj.put("success", true);
+					obj.put("code","200");
+					obj.put("feed", result);
+					out.println(obj);
+				}
+				else
+				{
+					response.setStatus(400);
+					obj.put("success", false);
+					result.put("code","400");
+					result.put("detail", "Feed not found or deleted");
+					obj.put("error", result);
+					out.println(obj);
+				}
 			} 
 			
 			catch (JsonProcessingException e) {
@@ -60,7 +64,7 @@ public class FeedServlet extends HttpServlet {
 		    	JSONObject obj=new JSONObject();
 		    	JSONObject obj1=new JSONObject();
 				obj1.put("code", "500");
-				obj.put("status", "failed");
+				obj.put("success", false);
 				obj1.put("details", "Server error");
 				obj.put("error", obj1);
 				e.printStackTrace();
@@ -70,7 +74,7 @@ public class FeedServlet extends HttpServlet {
 		    	JSONObject obj=new JSONObject();
 		    	JSONObject obj1=new JSONObject();
 				obj1.put("code", "500");
-				obj.put("status", "failed");
+				obj.put("success", false);
 				obj1.put("details", "Server error");
 				obj.put("error", obj1);				
 				e.printStackTrace();
@@ -80,7 +84,7 @@ public class FeedServlet extends HttpServlet {
 		    	JSONObject obj=new JSONObject();
 		    	JSONObject obj1=new JSONObject();
 				obj1.put("code", "500");
-				obj.put("status", "failed");
+				obj.put("success", false);
 				obj1.put("details", "Server error");
 				obj.put("error", obj1);
 				e.printStackTrace();
@@ -90,7 +94,7 @@ public class FeedServlet extends HttpServlet {
 		    	JSONObject obj=new JSONObject();
 		    	JSONObject obj1=new JSONObject();
 				obj1.put("code", "500");
-				obj.put("status", "failed");
+				obj.put("success", false);
 				obj1.put("details", "Enitity not found");
 				obj.put("error", obj1);
 				out.println(obj);
@@ -101,21 +105,34 @@ public class FeedServlet extends HttpServlet {
 		{
 			FeedDao feed=new FeedOperations();
 			try {
-				JSONObject obj=new JSONObject();
-				List<JSONObject> result=feed.getNewsFeeds();
-				response.setStatus(200);
-				obj.put("status", "success");
-				obj.put("code","200");
-				obj.put("feeds", result);
 
-				out.println(obj);
+				List<JSONObject> result;
+				result = feed.getNewsFeeds();
+				if (result.size()>0) {
+					JSONObject obj = new JSONObject();
+					response.setStatus(200);
+					obj.put("success", true);
+					obj.put("code", "200");
+					obj.put("feeds", result);
+					out.println(obj);
+				}
+				else{
+					JSONObject obj=new JSONObject();
+					JSONObject obj1=new JSONObject();
+					response.setStatus(400);
+					obj.put("success", false);
+					obj1.put("code","400");
+					obj1.put("detail", "No feeds present at the moment");
+					obj.put("error", obj1);
+					out.println(obj);
+				}
 			} catch (JsonProcessingException e) {
 				e.printStackTrace();
 				response.setStatus(500);
 		    	JSONObject obj=new JSONObject();
 		    	JSONObject obj1=new JSONObject();
 				obj1.put("code", "500");
-				obj.put("status", "failed");
+				obj.put("success", false);
 				obj1.put("details", "Server error");
 				obj.put("error", obj1);
 				out.println(obj);
@@ -124,7 +141,7 @@ public class FeedServlet extends HttpServlet {
 		    	JSONObject obj=new JSONObject();
 		    	JSONObject obj1=new JSONObject();
 				obj1.put("code", "500");
-				obj.put("status", "failed");
+				obj.put("success", false);
 				obj1.put("details", "Server error");
 				obj.put("error", obj1);
 				out.println(obj);
@@ -134,7 +151,7 @@ public class FeedServlet extends HttpServlet {
 		    	JSONObject obj=new JSONObject();
 		    	JSONObject obj1=new JSONObject();
 				obj1.put("code", "500");
-				obj.put("status", "failed");
+				obj.put("success", false);
 				obj1.put("details", "Server error");
 				obj.put("error", obj1);
 				out.println(obj);
@@ -159,8 +176,7 @@ public void doPost(HttpServletRequest request, HttpServletResponse response) thr
 	    while ((line = reader.readLine()) != null)
 	        jb.append(line);
 	    String str=jb.toString();
-	    //ObjectMapper mapper = new ObjectMapper();
-	    //JsonNode json = mapper.readTree(str);
+
         JSONObject json=new JSONObject(str);
 	    DateTime now = new DateTime();
         Date millis=new Date(now.getMillis());
@@ -181,7 +197,8 @@ public void doPost(HttpServletRequest request, HttpServletResponse response) thr
 				response.setStatus(200);
 				JSONObject obj=new JSONObject();
 				obj.put("code", "200");
-				obj.put("status", "success");
+				obj.put("success", true);
+				rjson.remove("like");
 				obj.put("data", rjson);
 				out.println(obj);
 			} 
@@ -191,7 +208,7 @@ public void doPost(HttpServletRequest request, HttpServletResponse response) thr
 		    	JSONObject obj=new JSONObject();
 		    	JSONObject obj1=new JSONObject();
 				obj1.put("code", "500");
-				obj.put("status", "failed");
+				obj.put("success", false);
 				obj1.put("details", "Server error");
 				obj.put("error", obj1);
 				out.println(obj);
@@ -205,7 +222,7 @@ public void doPost(HttpServletRequest request, HttpServletResponse response) thr
 	    	JSONObject obj1=new JSONObject();
 
 			obj1.put("code", "400");
-			obj.put("status", "failed");
+			obj.put("success", false);
 			obj1.put("details", f.getError());
 			obj.put("error", obj1);
 			out.println(obj);
@@ -218,9 +235,7 @@ protected void doPut(HttpServletRequest request, HttpServletResponse response) t
 	FeedDao feed=new FeedOperations();
 	Validator validator=new Validator();
 	PrintWriter out=response.getWriter();
-	String pathInfo = request.getPathInfo(); 
-	String[] pathParts = pathInfo.split("/");
-	String feedId = pathParts[1];
+
 	try 
     {    
 	    StringBuffer jb = new StringBuffer();
@@ -229,71 +244,77 @@ protected void doPut(HttpServletRequest request, HttpServletResponse response) t
 	    while ((line = reader.readLine()) != null)
 	        jb.append(line);
 	    String str=jb.toString();
-	    //ObjectMapper mapper = new ObjectMapper();
-	    //JsonNode json = mapper.readTree(str);
+
         JSONObject json=new JSONObject(str);
 
 
         DateTime now = new DateTime();
         Date millis=new Date(now.getMillis());
-
-        if(json.has("like") && json.get("like").equals("false")) 
-	    {
-
-	    	if(validator.isValidFeedUpdate(json,f)) 
-	    	{
-			    f.setFeed_content(json.get("content").toString());
-			    f.setFeed_id(json.get("feedId").toString());
-			    f.setCategory(json.get("category").toString());
-			    f.setDate(millis);
-			    feed.updateFeed(f);
-			    JSONObject rjson=new JSONObject(f);
-				response.setStatus(200);
-				JSONObject obj=new JSONObject();
-				obj.put("code", "200");
-				obj.put("status", "success");
-				obj.put("data", rjson);
-				out.println(obj);
-	    	}
-	    	else
-	    	{
-		    	response.setStatus(400);
-		    	JSONObject obj=new JSONObject();
-		    	JSONObject obj1=new JSONObject();
-				obj1.put("code", "400");
-				obj.put("status", "failed");
-				obj1.put("details", f.getError());
-				obj.put("error", obj1);
-				out.println(obj);
-	    	}
-	    }
-	    else if (json.has("like") && json.get("like").equals("true"))
-	    {
-    		f.setFeed_id(feedId);
-		    feed.setLike(f);
-		    int l=feed.getLike(f);
-		    JSONObject obj1=new JSONObject();
-
-		    JSONObject obj=new JSONObject();
-			obj.put("code", "200");
-			obj.put("status", "success");
-			obj1.put("feedId", feedId);
-			obj1.put("likes", l);
-			obj.put("data", obj1);
-			response.setStatus(200);
-		    out.println(obj);
-	    }
-	    else
-	    {
+    	if(validator.isValidFeedUpdate(json,f)) 
+    	{
+		        if(json.has("like") && json.get("like").equals("false")) 
+			    {
+		
+		
+					    f.setFeed_content(json.get("content").toString());
+					    f.setFeed_id(json.get("feedId").toString());
+					    f.setCategory(json.get("category").toString());
+					    f.setUpdateDate(millis);
+			    		f.setLike(false);
+					    feed.updateFeed(f);
+					    JSONObject rjson=new JSONObject(f);
+						response.setStatus(200);
+						JSONObject obj=new JSONObject();
+						obj.put("code", "200");
+						obj.put("success", true);
+						rjson.remove("like");
+						obj.put("feed", rjson);
+						out.println(obj);
+		
+			    }
+			    else if (json.has("like") && json.get("like").equals("true"))
+			    {
+		    		f.setLike(true);
+				    f.setFeed_content(json.get("content").toString());
+				    f.setFeed_id(json.get("feedId").toString());
+				    f.setCategory(json.get("category").toString());
+				    f.setUpdateDate(millis);
+				    feed.setLikePojo(f);
+				    feed.updateFeed(f);
+				    
+				    
+				    JSONObject rjson=new JSONObject(f);
+					response.setStatus(200);
+					JSONObject obj=new JSONObject();
+					obj.put("code", "200");
+					obj.put("success", true);
+					rjson.remove("like");
+					obj.put("feed", rjson);
+					out.println(obj);
+			    }
+			    else
+			    {
+			    	response.setStatus(400);
+			    	JSONObject obj=new JSONObject();
+			    	JSONObject obj1=new JSONObject();
+					obj1.put("code", "400");
+					obj.put("success", false);
+					obj1.put("details", "Invalid request");
+					obj.put("error", obj1);
+					out.println(obj);
+			    }
+    	}
+    	else
+    	{
 	    	response.setStatus(400);
 	    	JSONObject obj=new JSONObject();
 	    	JSONObject obj1=new JSONObject();
 			obj1.put("code", "400");
-			obj.put("status", "failed");
-			obj1.put("details", "Invalid request");
+			obj.put("success", false);
+			obj1.put("details", f.getError());
 			obj.put("error", obj1);
 			out.println(obj);
-	    }
+    	}
 
 	} 
     catch (EntityNotFoundException e) {
@@ -301,7 +322,7 @@ protected void doPut(HttpServletRequest request, HttpServletResponse response) t
     	JSONObject obj=new JSONObject();
     	JSONObject obj1=new JSONObject();
 		obj1.put("code", "500");
-		obj.put("status", "failed");
+		obj.put("success", false);
 		obj1.put("details", "Enitity not found");
 		obj.put("error", obj1);
 		out.println(obj);		
@@ -311,7 +332,7 @@ protected void doPut(HttpServletRequest request, HttpServletResponse response) t
     	JSONObject obj=new JSONObject();
     	JSONObject obj1=new JSONObject();
 		obj1.put("code", "500");
-		obj.put("status", "failed");
+		obj.put("success", false);
 		obj1.put("details", "Server error");
 		obj.put("error", obj1);
 		out.println(obj);
@@ -329,13 +350,26 @@ protected void doDelete(HttpServletRequest request, HttpServletResponse response
 	FeedDao feed=new FeedOperations();
 	f.setFeed_id(feedId);
 	try {
-		feed.deleteFeed(f);
-		response.setStatus(200);
-    	JSONObject obj=new JSONObject();
-		obj.put("code", "200");
-		obj.put("status", "success");
-		obj.put("feedId", feedId);
-		out.println(obj);	    
+    	JSONObject deleted=new JSONObject();
+    	deleted=feed.getSingleFeed(f);
+    	if(deleted.length()!=0) {
+			feed.deleteFeed(f);
+			response.setStatus(200);
+	    	JSONObject obj=new JSONObject();
+			obj.put("code", "200");
+			obj.put("success", true);
+			obj.put("feed", deleted);
+			out.println(obj);	    
+    	}
+    	else
+    	{
+        	JSONObject obj=new JSONObject();
+        	JSONObject obj1=new JSONObject();
+    		obj1.put("code", "400");
+    		obj.put("success", false);
+    		obj1.put("details", "Feed not found or already deleted");
+    		obj.put("error", obj1);
+    	}
 
 	} 
 	catch (EntityNotFoundException e) {
@@ -343,8 +377,17 @@ protected void doDelete(HttpServletRequest request, HttpServletResponse response
     	JSONObject obj=new JSONObject();
     	JSONObject obj1=new JSONObject();
 		obj1.put("code", "500");
-		obj.put("status", "failed");
+		obj.put("success", true);
 		obj1.put("details", "Enitity not found");
+		obj.put("error", obj1);
+		e.printStackTrace();
+	} catch (ParseException e) {
+		response.setStatus(500);
+    	JSONObject obj=new JSONObject();
+    	JSONObject obj1=new JSONObject();
+		obj1.put("code", "500");
+		obj.put("success", false);
+		obj1.put("details", "Server error");
 		obj.put("error", obj1);
 		e.printStackTrace();
 	}

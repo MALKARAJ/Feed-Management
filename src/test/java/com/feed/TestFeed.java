@@ -1,20 +1,15 @@
 package com.feed;
 
 import static org.junit.Assert.*;
-
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
-
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -71,7 +66,6 @@ public class TestFeed {
 	    assertEquals("Content",entity.getProperty("feed_content"));	    
 	    assertEquals("feed123123",entity.getProperty("feed_id"));
 	    assertEquals("movie",entity.getProperty("category"));
-	    assertEquals(millis,entity.getProperty("date"));	
 	    }
 	
 	@Test
@@ -83,6 +77,7 @@ public class TestFeed {
 	    f.setFeed_content("Updated Content");
 	    f.setFeed_id("feed123123");
 	    f.setCategory("movie");
+	    f.setLike(false);
         DateTime now = new DateTime();
         Date millis=new Date(now.getMillis());
 	    f.setDate(millis);
@@ -92,20 +87,31 @@ public class TestFeed {
 	    assertEquals("Updated Content",entity.getProperty("feed_content"));	    
 	    assertEquals("feed123123",entity.getProperty("feed_id"));
 	    assertEquals("movie",entity.getProperty("category"));
-	    assertEquals(millis,entity.getProperty("date"));
 	    
 	}
 	@Test
 	public void testFeedLike() throws EntityNotFoundException
 	{
+		DatastoreService ds=DatastoreServiceFactory.getDatastoreService();
 		testAddFeed();
 		FeedDao feed=new FeedOperations();
 		Feed f=new Feed();
+		
+	    f.setFeed_content("Updated Content");
 	    f.setFeed_id("feed123123");
-	    feed.setLike(f);
-	    feed.setLike(f);
-	    feed.setLike(f);
-	    int likes=feed.getLike(f);
+	    f.setCategory("movie");
+	    f.setLike(true);
+        DateTime now = new DateTime();
+        Date millis=new Date(now.getMillis());
+	    f.setDate(millis);
+	   
+	    feed.updateFeed(f);
+	    feed.updateFeed(f);
+	    feed.updateFeed(f);
+	    
+	    Key k=KeyFactory.createKey("Feed",f.getFeed_id());
+	    Entity entity=ds.get(k);
+	    int likes=Integer.parseInt(entity.getProperty("like").toString());
 	    assertEquals(3,likes);
 	}
 	
@@ -146,5 +152,27 @@ public class TestFeed {
 		obj.put("category", "movie");
 		obj.put("like", "false");
 		assertFalse(v.isValidFeedUpdate(obj,f));
+	}
+	
+	@Test
+	public void testDelete() throws EntityNotFoundException
+	{
+		DatastoreService ds=DatastoreServiceFactory.getDatastoreService();
+		TestComments tc=new TestComments();
+		tc.testAddComment();
+		FeedDao feed=new FeedOperations();
+		Feed f=new Feed();
+		f.setFeed_id("feed123123");
+
+		feed.deleteFeed(f);
+	    Key k=KeyFactory.createKey("Feed",f.getFeed_id());
+	    Entity entity=ds.get(k);
+	    Key k1=new KeyFactory.Builder("Feed", "feed123123")
+		        .addChild("Comment", "comment123123")
+		        .getKey();
+	    Entity comment=ds.get(k1);
+		assertEquals("true",entity.getProperty("delete").toString());
+		assertEquals("true",comment.getProperty("delete").toString());
+		
 	}
 }

@@ -1,17 +1,14 @@
 package com.feed;
 
 import static org.junit.Assert.*;
-
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
-
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -51,6 +48,7 @@ public class TestComments {
         DateTime now = new DateTime();
         Date millis=new Date(now.getMillis());
 	    c.setDate(millis);
+	    c.setLikes(0);
 	    assertEquals("Content",c.getComment());
 	    assertEquals("feed123123",c.getFeed_id());
 	    assertEquals("comment123",c.getComment_id());
@@ -81,11 +79,11 @@ public class TestComments {
 		Comment c=new Comment();
 	    c.setComment("Updated comment");
 	    c.setFeed_id("feed123123");
-	    c.setComment_id("comment123");
+	    c.setComment_id("comment123123");
         DateTime now = new DateTime();
         Date millis=new Date(now.getMillis());
 	    c.setDate(millis);
-	    comment.addComment(c);
+	    comment.updateComment(c);
 		Key k=new KeyFactory.Builder("Feed", c.getFeed_id())
 			        .addChild("Comment", c.getComment_id())
 			        .getKey();
@@ -94,18 +92,28 @@ public class TestComments {
 	}
 	@Test
 	public void testCommentLike() throws EntityNotFoundException
-	{
+	{		
+		DatastoreService ds=DatastoreServiceFactory.getDatastoreService();
 		createComment();
 		testAddComment();
 		CommentDao comment=new CommentOperations();
 		Comment c=new Comment();
 	    c.setFeed_id("feed123123");
 	    c.setComment_id("comment123123");
-	    comment.setLike(c);
-	    comment.setLike(c);
-	    comment.setLike(c);
-	    int likes=comment.getLike(c);
-	    assertEquals(3,likes);
+	    c.setComment("Updated comment");
+	    c.setFeed_id("feed123123");
+	    c.setLike(true);
+	    c.setComment_id("comment123123");
+        DateTime now = new DateTime();
+        Date millis=new Date(now.getMillis());
+	    c.setDate(millis);
+	    comment.updateComment(c);
+	    comment.updateComment(c);
+	    Key k=new KeyFactory.Builder("Feed", c.getFeed_id())
+		        .addChild("Comment", c.getComment_id())
+		        .getKey();
+	    Entity entity=ds.get(k);	 
+	    assertEquals(2,Integer.parseInt(entity.getProperty("like").toString()));
 	}
 	
 	
@@ -146,6 +154,27 @@ public class TestComments {
 		  obj.put("feedId", "feed123123");
 		  obj.put("commentId", "comment123123"); 
 		  obj.put("like", "false");
-		  assertFalse(v.isValidFeedUpdate(obj,f)); }
+		  assertFalse(v.isValidFeedUpdate(obj,f)); 
+	 }
+	  
+		@Test
+		public void testDelete() throws EntityNotFoundException
+		{
+			DatastoreService ds=DatastoreServiceFactory.getDatastoreService();
+			TestComments tc=new TestComments();
+			tc.testAddComment();
+			CommentDao comment=new CommentOperations();
+			Comment c=new Comment();
+			c.setFeed_id("feed123123");
+			c.setComment_id("comment123123");
+			comment.deleteComment(c);
+
+		    Key k1=new KeyFactory.Builder("Feed", "feed123123")
+			        .addChild("Comment", "comment123123")
+			        .getKey();
+		    Entity c1=ds.get(k1);
+			assertEquals("true",c1.getProperty("delete").toString());
+			
+		}
 	 
 }

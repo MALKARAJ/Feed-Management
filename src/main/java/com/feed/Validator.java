@@ -1,13 +1,7 @@
 package com.feed;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import org.json.JSONObject;
-
-import com.fasterxml.jackson.databind.JsonNode;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -49,22 +43,24 @@ public class Validator {
 
 			return false;
 		}
-		
-		DatastoreService ds=DatastoreServiceFactory.getDatastoreService();
-		Key k=KeyFactory.createKey("Feed", json.get("feedId").toString());
-		Entity feed=ds.get(k);
-		String feedDate=feed.getProperty("date").toString();
-	   	DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy");
-		Date dateFeed = (Date)formatter.parse(feedDate);
-        DateTime now = new DateTime();
-        Date millis=new Date(now.getMillis());
-        
-        if(millis.getTime()-dateFeed.getTime()>15000)
-        {
-			f.setError("Time limit for updation exceeded");
+		if(json.get("like").toString().equals("false")){
+			
+			DatastoreService ds=DatastoreServiceFactory.getDatastoreService();
+			Key k=KeyFactory.createKey("Feed", json.get("feedId").toString());
+			Entity feed=ds.get(k);
+			long feedDate=Long.parseLong(feed.getProperty("date").toString());
 
-        	return false;
-        }
+	        DateTime now = new DateTime();
+	        
+	        if(now.getMillis()-feedDate>15000)
+	        {
+				f.setError("Time limit for updation exceeded");
+
+	        	return false;
+	        }
+		}
+		
+
 		return true;
 
 		
@@ -110,13 +106,10 @@ public class Validator {
 			        .addChild("Comment", json.get("commentId").toString())
 			        .getKey();
 		Entity comment=ds.get(k);
-		String commentDate=comment.getProperty("date").toString();
-	   	DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy");
-		Date dateComment = (Date)formatter.parse(commentDate);
+		long feedDate=Long.parseLong(comment.getProperty("date").toString());
+
         DateTime now = new DateTime();
-        Date millis=new Date(now.getMillis());
-        
-        if(millis.getTime()-dateComment.getTime()>15000)
+        if(now.getMillis()-feedDate>15000)
         {
 			c.setError("Time limit for updation exceeded");
 

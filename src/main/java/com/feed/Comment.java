@@ -7,8 +7,10 @@ public class Comment {
 	String feed_id;
 	String comment_id;
 	String comment;
+	Date updateDate;
 	Date date;
 	int likes;
+	boolean like;
 	String error;
 	public String getFeed_id() {
 		return feed_id;
@@ -48,6 +50,24 @@ public class Comment {
 	public void setError(String error) {
 		this.error = error;
 	}
+	public Date getUpdateDate() {
+		return updateDate;
+	}
+
+	public void setUpdateDate(Date updateDate) {
+		this.updateDate = updateDate;
+	}
+    public boolean isLike() {
+		return like;
+	}
+
+	public void setLike(boolean like) {
+		this.like = like;
+	}
+
+
+
+	
 	@Override
 	public String toString() {
 		return "Comment [feed_id=" + feed_id + ", comment_id=" + comment_id + ", comment=" + comment + ", date=" + date

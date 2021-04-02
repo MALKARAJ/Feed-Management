@@ -1,20 +1,27 @@
 package com.feed;
 
-import java.time.LocalDateTime;
 import java.util.Date;
-
-import com.google.appengine.repackaged.com.google.protobuf.proto1api.Timestamp;
-import com.google.appengine.repackaged.org.joda.time.DateTime;
 
 public class Feed {
 	
     String feed_id;
     String feed_content;
     Date date;
+    Date updateDate;
 	String category;
+	boolean like;
 	int likes;
 	String error;
-    public int getLikes() {
+	
+    public boolean isLike() {
+		return like;
+	}
+
+	public void setLike(boolean like) {
+		this.like = like;
+	}
+
+	public int getLikes() {
 		return likes;
 	}
 
@@ -54,6 +61,14 @@ public class Feed {
 
 	public void setError(String error) {
 		this.error = error;
+	}
+	
+	public Date getUpdateDate() {
+		return updateDate;
+	}
+
+	public void setUpdateDate(Date updateDate) {
+		this.updateDate = updateDate;
 	}
 
 	@Override
