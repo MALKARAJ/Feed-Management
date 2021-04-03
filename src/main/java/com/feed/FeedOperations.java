@@ -92,6 +92,42 @@ public class FeedOperations implements FeedDao{
 		   return feeds;
 	   }
 	   
+	   
+	   public List<JSONObject> getDeletedFeeds() throws JsonProcessingException, IOException, ParseException{
+		   List<JSONObject> feeds=new ArrayList<JSONObject>();
+		   Filter delete = new FilterPredicate("delete", FilterOperator.EQUAL,true);
+		   Query q=new Query("Feed").addSort("Updation_date", SortDirection.DESCENDING).setFilter(delete);
+		   for (Entity entity : ds.prepare(q).asIterable()) {	
+				   JSONObject obj= new JSONObject();
+				   obj.put("feedId", entity.getProperty("feed_id").toString());
+				   obj.put("content", entity.getProperty("feed_content").toString());
+				   obj.put("category", entity.getProperty("category").toString());
+				   long d=Long.parseLong(entity.getProperty("date").toString());
+				   Date date=new Date(d);
+				   obj.put("date", date);
+				   obj.put("likes", Integer.parseInt(entity.getProperty("like").toString()));
+				   Query qq=new Query("Comment").setAncestor(entity.getKey()).addSort("Updation_date", SortDirection.DESCENDING).setFilter(delete);
+				   List<JSONObject> comments=new ArrayList<JSONObject>();
+				   for (Entity e : ds.prepare(qq).asIterable()) {
+					   if (e!=null) {
+						JSONObject commentobj = new JSONObject();
+						commentobj.put("feedId", e.getProperty("feed_id").toString());
+						commentobj.put("comment", e.getProperty("comment").toString());
+						commentobj.put("commentId", e.getProperty("comment_id").toString());
+						long d1 = Long.parseLong(e.getProperty("date").toString());
+						Date date1 = new Date(d1);
+						commentobj.put("date", date1);
+						commentobj.put("likes", Integer.parseInt(e.getProperty("like").toString()));
+						comments.add(commentobj);
+					}
+				   }
+				   obj.put("comments", comments);
+			   	   feeds.add(obj);
+			}	        
+		   return feeds;
+	   }
+	   
+	   
 	   public String addFeed(Feed f)
 	   {
 		   Entity feed=new Entity("Feed",f.getFeed_id());

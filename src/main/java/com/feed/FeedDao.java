@@ -12,6 +12,7 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 
 public interface FeedDao {
 	   public JSONObject getSingleFeed(Feed f) throws JsonProcessingException, IOException, ParseException, EntityNotFoundException;
+	   public List<JSONObject> getDeletedFeeds() throws JsonProcessingException, IOException, ParseException;
 	   public List<JSONObject> getNewsFeeds() throws JsonProcessingException, IOException, ParseException;
 	   public void updateFeed(Feed f) throws EntityNotFoundException;
 	   public String addFeed(Feed f);

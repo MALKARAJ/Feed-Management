@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -29,137 +31,142 @@ public class FeedServlet extends HttpServlet {
 		response.setContentType("application/json");
 		PrintWriter out=response.getWriter();
 		String pathInfo = request.getPathInfo(); 
-		System.out.println(pathInfo);
-		
-		if(pathInfo!=null)
-		{
-			String[] pathParts = pathInfo.split("/");
-			FeedDao feed=new FeedOperations();
-			Feed f=new Feed();
-			f.setFeed_id(pathParts[1]);
-			try {
 
-				JSONObject obj=new JSONObject();
-				JSONObject result=feed.getSingleFeed(f);
-				if(result.length()>0) {
-					response.setStatus(200);
-					obj.put("success", true);
-					obj.put("code","200");
-					obj.put("feed", result);
-					out.println(obj);
-				}
+		try {
+			
+				if(pathInfo!=null)
+				{
+					String[] pathParts = pathInfo.split("/");
+					FeedDao feed=new FeedOperations();
+					Feed f=new Feed();
+					
+						List<String> path=new ArrayList<String>();
+						path=Arrays.asList(pathParts);
+						
+						if(path.contains("trash"))
+						{
+							List<JSONObject> result;
+							result = feed.getDeletedFeeds();
+							if (result.size()>0) 
+							{
+								JSONObject obj = new JSONObject();
+								response.setStatus(200);
+								obj.put("success", true);
+								obj.put("code", "200");
+								obj.put("feeds", result);
+								out.println(obj);
+							}
+							else
+							{
+								JSONObject obj=new JSONObject();
+								JSONObject obj1=new JSONObject();
+								response.setStatus(400);
+								obj.put("success", false);
+								obj1.put("code","400");
+								obj1.put("detail", "No feeds present at the moment");
+								obj.put("error", obj1);
+								out.println(obj);
+							}
+						}
+						else
+						{				
+							f.setFeed_id(pathParts[1]);
+							JSONObject obj=new JSONObject();
+							JSONObject result=feed.getSingleFeed(f);
+							if(result.length()>0) 
+	     					{
+								response.setStatus(200);
+								obj.put("success", true);
+								obj.put("code","200");
+								obj.put("feed", result);
+								out.println(obj);
+							}
+							else
+							{
+								response.setStatus(400);
+								obj.put("success", false);
+								result.put("code","400");
+								result.put("detail", "Feed not found or deleted");
+								obj.put("error", result);
+								out.println(obj);
+							}
+					    }
+
+			
+				} 
+				
 				else
 				{
-					response.setStatus(400);
-					obj.put("success", false);
-					result.put("code","400");
-					result.put("detail", "Feed not found or deleted");
-					obj.put("error", result);
-					out.println(obj);
+					FeedDao feed=new FeedOperations();
+		
+						List<JSONObject> result;
+						result = feed.getNewsFeeds();
+						if (result.size()>0) 
+						{
+							JSONObject obj = new JSONObject();
+							response.setStatus(200);
+							obj.put("success", true);
+							obj.put("code", "200");
+							obj.put("feeds", result);
+							out.println(obj);
+						}
+						else
+						{
+							JSONObject obj=new JSONObject();
+							JSONObject obj1=new JSONObject();
+							response.setStatus(400);
+							obj.put("success", false);
+							obj1.put("code","400");
+							obj1.put("detail", "No feeds present at the moment");
+							obj.put("error", obj1);
+							out.println(obj);
+						}
+					
 				}
-			} 
+		}
+		 catch (JsonProcessingException e) {
+			e.printStackTrace();
+			response.setStatus(500);
+	    	JSONObject obj=new JSONObject();
+	    	JSONObject obj1=new JSONObject();
+			obj1.put("code", "500");
+			obj.put("success", false);
+			obj1.put("details", "Server error");
+			obj.put("error", obj1);
+			out.println(obj);
+		} catch (IOException e) {
+			response.setStatus(500);
+	    	JSONObject obj=new JSONObject();
+	    	JSONObject obj1=new JSONObject();
+			obj1.put("code", "500");
+			obj.put("success", false);
+			obj1.put("details", "Server error");
+			obj.put("error", obj1);
+			out.println(obj);
+			e.printStackTrace();
+		} catch (ParseException e) {
+			response.setStatus(500);
+	    	JSONObject obj=new JSONObject();
+	    	JSONObject obj1=new JSONObject();
+			obj1.put("code", "500");
+			obj.put("success", false);
+			obj1.put("details", "Server error");
+			obj.put("error", obj1);
+			out.println(obj);
+			e.printStackTrace();
 			
-			catch (JsonProcessingException e) {
-				response.setStatus(500);
-		    	JSONObject obj=new JSONObject();
-		    	JSONObject obj1=new JSONObject();
-				obj1.put("code", "500");
-				obj.put("success", false);
-				obj1.put("details", "Server error");
-				obj.put("error", obj1);
-				e.printStackTrace();
-			} 
-			catch (IOException e) {
-				response.setStatus(500);
-		    	JSONObject obj=new JSONObject();
-		    	JSONObject obj1=new JSONObject();
-				obj1.put("code", "500");
-				obj.put("success", false);
-				obj1.put("details", "Server error");
-				obj.put("error", obj1);				
-				e.printStackTrace();
-			}
-			catch (ParseException e) {
-				response.setStatus(500);
-		    	JSONObject obj=new JSONObject();
-		    	JSONObject obj1=new JSONObject();
-				obj1.put("code", "500");
-				obj.put("success", false);
-				obj1.put("details", "Server error");
-				obj.put("error", obj1);
-				e.printStackTrace();
-			} 
-			catch (EntityNotFoundException e) {
-				response.setStatus(500);
-		    	JSONObject obj=new JSONObject();
-		    	JSONObject obj1=new JSONObject();
-				obj1.put("code", "500");
-				obj.put("success", false);
-				obj1.put("details", "Enitity not found");
-				obj.put("error", obj1);
-				out.println(obj);
-				e.printStackTrace();
-			}
+		} catch (EntityNotFoundException e) {
+			response.setStatus(500);
+	    	JSONObject obj=new JSONObject();
+	    	JSONObject obj1=new JSONObject();
+			obj1.put("code", "500");
+			obj.put("success", false);
+			obj1.put("details", "Server error");
+			obj.put("error", obj1);
+			out.println(obj);
+			e.printStackTrace();
 		}
-		else
-		{
-			FeedDao feed=new FeedOperations();
-			try {
-
-				List<JSONObject> result;
-				result = feed.getNewsFeeds();
-				if (result.size()>0) {
-					JSONObject obj = new JSONObject();
-					response.setStatus(200);
-					obj.put("success", true);
-					obj.put("code", "200");
-					obj.put("feeds", result);
-					out.println(obj);
-				}
-				else{
-					JSONObject obj=new JSONObject();
-					JSONObject obj1=new JSONObject();
-					response.setStatus(400);
-					obj.put("success", false);
-					obj1.put("code","400");
-					obj1.put("detail", "No feeds present at the moment");
-					obj.put("error", obj1);
-					out.println(obj);
-				}
-			} catch (JsonProcessingException e) {
-				e.printStackTrace();
-				response.setStatus(500);
-		    	JSONObject obj=new JSONObject();
-		    	JSONObject obj1=new JSONObject();
-				obj1.put("code", "500");
-				obj.put("success", false);
-				obj1.put("details", "Server error");
-				obj.put("error", obj1);
-				out.println(obj);
-			} catch (IOException e) {
-				response.setStatus(500);
-		    	JSONObject obj=new JSONObject();
-		    	JSONObject obj1=new JSONObject();
-				obj1.put("code", "500");
-				obj.put("success", false);
-				obj1.put("details", "Server error");
-				obj.put("error", obj1);
-				out.println(obj);
-				e.printStackTrace();
-			} catch (ParseException e) {
-				response.setStatus(500);
-		    	JSONObject obj=new JSONObject();
-		    	JSONObject obj1=new JSONObject();
-				obj1.put("code", "500");
-				obj.put("success", false);
-				obj1.put("details", "Server error");
-				obj.put("error", obj1);
-				out.println(obj);
-				e.printStackTrace();
-			}
-		}
-
-	
+		
 
 	}
 @Override
