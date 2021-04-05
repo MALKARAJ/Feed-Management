@@ -42,10 +42,12 @@ public class CommentServlet extends HttpServlet {
 				comments = comment.getSingleComment(c);
 				if (comments.length()>=1) 
 				{
+					JSONObject j=new JSONObject();
 					response.setStatus(200);
-					comments.put("code", "200");
-					comments.put("success", true);
-					out.println(comments);
+					j.put("code", "200");
+					j.put("success", true);
+					j.put("comment", comments);
+					out.println(j);
 				}
 				else
 				{
@@ -87,7 +89,6 @@ public class CommentServlet extends HttpServlet {
 			JSONObject comments;
 			try {
 				comments = comment.getComments(c);
-				System.out.println(comments.length());
 				if (comments.length()!=0) 
 				{
 					response.setStatus(200);
@@ -160,7 +161,18 @@ public void doPost(HttpServletRequest request, HttpServletResponse response)
 				c.setComment_id(commentId.toString());
 				c.setDate(millis);
 				c.setLikes(0);
-				comment.addComment(c);
+				String a=comment.addComment(c);
+				if(a.equals("")) {
+			    	response.setStatus(400);
+			    	JSONObject obj=new JSONObject();
+			    	JSONObject obj1=new JSONObject();
+					obj1.put("code", "400");
+					obj.put("success", false);
+					obj1.put("details", "Feed not found or deleted ");
+					obj.put("error", obj1);
+					out.println(obj);
+				}
+				else {
 			    JSONObject rjson=new JSONObject(c);
 			    rjson.remove("like");
 				response.setStatus(200);
@@ -169,6 +181,7 @@ public void doPost(HttpServletRequest request, HttpServletResponse response)
 				obj.put("success", true);
 				obj.put("comment", rjson);
 				out.println(obj);
+				}
 	    	}
 	    	else
 	    	{
@@ -215,7 +228,7 @@ protected void doPut(HttpServletRequest request, HttpServletResponse response) t
 		JSONObject json = new JSONObject(str);
     	if(validator.isValidCommentUpdate(json,c))
     	{
-			    if(json.get("like").equals("false")) {
+			    if(json.get("like").toString().equals("false")) {
 			    	
 				        DateTime now = new DateTime();
 				        Date millis=new Date(now.getMillis());
@@ -236,7 +249,7 @@ protected void doPut(HttpServletRequest request, HttpServletResponse response) t
 		
 			    }
 			    
-			    else if(json.get("like").equals("true"))
+			    else if(json.get("like").toString().equals("true"))
 			    {
 
 			    		c.setLike(true);
@@ -246,6 +259,7 @@ protected void doPut(HttpServletRequest request, HttpServletResponse response) t
 						c.setFeed_id(json.get("feedId").toString());
 						c.setComment_id(json.get("commentId").toString());
 						c.setDate(millis);
+						comment.setLikePojo(c);
 						comment.updateComment(c);
 					    JSONObject obj1=new JSONObject(c);
 					    obj1.remove("like");

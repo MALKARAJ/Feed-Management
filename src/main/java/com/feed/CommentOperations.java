@@ -68,7 +68,7 @@ public class CommentOperations implements CommentDao{
 					   obj1.put("feedId", c.getFeed_id());
 					   obj1.put("comment", entity.getProperty("comment").toString());
 					   obj1.put("commentId", entity.getProperty("comment_id").toString());
-					   long d1=Long.parseLong(e.getProperty("date").toString());
+					   long d1=Long.parseLong(entity.getProperty("date").toString());
 					   Date date1=new Date(d1);
 					   obj1.put("date", date1);
 					   obj1.put("likes", Integer.parseInt(entity.getProperty("like").toString()));
@@ -76,7 +76,7 @@ public class CommentOperations implements CommentDao{
 				   }
 				}	  
 			   JSONObject objResult= new JSONObject();
-			   obj.put("Comments", comments);
+			   obj.put("comments", comments);
 			   objResult.put("feed", obj);
 			   return objResult;
 		   }
@@ -86,22 +86,26 @@ public class CommentOperations implements CommentDao{
 	   
 	   public String addComment(Comment c) throws EntityNotFoundException
 	   {
+		   
 		   Key k=KeyFactory.createKey("Feed",c.getFeed_id());
 		   Entity e=ds.get(k);
-		   Entity comment=new Entity("Comment",c.getComment_id(),e.getKey());
-		   comment.setProperty("feed_id",c.getFeed_id());
-		   comment.setProperty("comment_id",c.getComment_id());
-		   comment.setProperty("comment",c.getComment());
-		   Date date=c.getDate();
-		   DateTime d=new DateTime(date);
-		   comment.setProperty("date",d.getMillis());
-		   comment.setProperty("Updation_date",d.getMillis());		  
-		   comment.setProperty("like", 0);
-		   comment.setProperty("delete", false);
-		   ds.put(comment);
-		   int like=(int) comment.getProperty("like");
-		   System.out.println(like);
-		   return comment.getProperty("feed_id").toString();
+		   if(e.getProperty("delete").toString().equals("false")) {
+			   Entity comment=new Entity("Comment",c.getComment_id(),e.getKey());
+			   comment.setProperty("feed_id",c.getFeed_id());
+			   comment.setProperty("comment_id",c.getComment_id());
+			   comment.setProperty("comment",c.getComment());
+			   Date date=c.getDate();
+			   DateTime d=new DateTime(date);
+			   comment.setProperty("date",d.getMillis());
+			   comment.setProperty("Updation_date",d.getMillis());		  
+			   comment.setProperty("like", 0);
+			   comment.setProperty("delete", false);
+			   ds.put(comment);
+			   int like=(int) comment.getProperty("like");
+			   System.out.println(like);
+			   return comment.getProperty("feed_id").toString();
+		   }
+		   return "";
 	   }
 	   
 	   public void updateComment(Comment c) throws EntityNotFoundException {
@@ -109,19 +113,22 @@ public class CommentOperations implements CommentDao{
 				        .addChild("Comment", c.getComment_id())
 				        .getKey();		   
 		   Entity comment=ds.get(k);
-		   comment.setProperty("feed_id",c.getFeed_id());
-		   comment.setProperty("comment_id",c.getComment_id());
-		   comment.setProperty("comment",c.getComment());
-		   Date date=c.getUpdateDate();
-		   DateTime d=new DateTime(date);
-		   comment.setProperty("Updation_date", d.getMillis());
-		   if(c.isLike())
-		   {
-			   comment.setProperty("like", c.getLikes()+1);
-			   c.setLikes(Integer.parseInt(comment.getProperty("like").toString()));
-
+		   if(comment.getProperty("delete").toString().equals("false")) {
+	
+			   comment.setProperty("feed_id",c.getFeed_id());
+			   comment.setProperty("comment_id",c.getComment_id());
+			   comment.setProperty("comment",c.getComment());
+			   Date date=c.getUpdateDate();
+			   DateTime d=new DateTime(date);
+			   comment.setProperty("Updation_date", d.getMillis());
+			   if(c.isLike())
+			   {
+				   comment.setProperty("like", c.getLikes()+1);
+				   c.setLikes(Integer.parseInt(comment.getProperty("like").toString()));
+	
+			   }
+			   ds.put(comment);
 		   }
-		   ds.put(comment);
 	   }
 	   
 	   public void setLikePojo(Comment c) throws EntityNotFoundException
@@ -130,7 +137,7 @@ public class CommentOperations implements CommentDao{
 			        .addChild("Comment", c.getComment_id())
 			        .getKey();	
 		   Entity comment=ds.get(k);	   
-		   int like=Integer.parseInt(comment.getProperty("like").toString())+1;
+		   int like=Integer.parseInt(comment.getProperty("like").toString());
 		   c.setLikes(like);
 	   }
 	      

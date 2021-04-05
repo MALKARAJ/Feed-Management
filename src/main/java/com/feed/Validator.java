@@ -109,12 +109,12 @@ public class Validator {
 		long feedDate=Long.parseLong(comment.getProperty("date").toString());
 
         DateTime now = new DateTime();
-        if(now.getMillis()-feedDate>15000)
+        /*if(now.getMillis()-feedDate>3000000)
         {
 			c.setError("Time limit for updation exceeded");
 
         	return false;
-        }
+        }*/
 		return true;
 	}
 }

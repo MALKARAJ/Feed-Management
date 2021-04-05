@@ -166,7 +166,8 @@ public class FeedOperations implements FeedDao{
 		   f.setLikes(Integer.parseInt(en.getProperty("like").toString()));
 	   }
 
-	   public void deleteFeed(Feed f) throws EntityNotFoundException {
+	   public void deleteFeed(Feed f) throws EntityNotFoundException 
+	   {
 		   Key k=KeyFactory.createKey("Feed",f.getFeed_id());
 		   Entity e= ds.get(k);
 		   Query q = new Query("Comment").setAncestor(e.getKey());
@@ -178,7 +179,4 @@ public class FeedOperations implements FeedDao{
 		   
 		   ds.put(e);
 	   }
-
-	
-
 }
