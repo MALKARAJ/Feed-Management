@@ -285,7 +285,6 @@ protected void doPut(HttpServletRequest request, HttpServletResponse response) t
 				    f.setFeed_content(json.get("content").toString());
 				    f.setFeed_id(json.get("feedId").toString());
 				    f.setCategory(json.get("category").toString());
-				    f.setUpdateDate(millis);
 				    feed.setLikePojo(f);
 				    feed.updateFeed(f);
 				    

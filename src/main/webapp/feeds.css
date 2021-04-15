@@ -1,0 +1,25 @@
+@charset "ISO-8859-1";
+
+.title
+{
+   text-align:center;
+}
+.feed
+{
+   border:1px solid black;
+   padding:20px;
+   margin-right:300px;
+   border-radius:10px;
+   margin-left:300px;
+   margin-bottom:50px;
+}
+.opBars
+{
+   display:block;
+   padding:5px;
+}
+.comments{
+   border:1px solid black;
+   border-radius:10px;
+	padding:10px;
+}
