@@ -18,4 +18,5 @@ public interface FeedDao {
 	   public String addFeed(Feed f);
 	   public void deleteFeed(Feed f) throws EntityNotFoundException;
 	   public void setLikePojo(Feed f) throws EntityNotFoundException;
+	   public List<JSONObject> getCategoryFeeds(String category) throws JsonProcessingException, IOException, ParseException;
 }

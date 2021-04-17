@@ -52,7 +52,7 @@ public class Validator {
 
 	        DateTime now = new DateTime();
 	        
-	        if(now.getMillis()-feedDate>15000)
+	        if(now.getMillis()-feedDate>60000)
 	        {
 				f.setError("Time limit for updation exceeded");
 
@@ -100,21 +100,26 @@ public class Validator {
 
 			return false;
 		}
-			
-		DatastoreService ds=DatastoreServiceFactory.getDatastoreService();
-		Key k=new KeyFactory.Builder("Feed", json.get("feedId").toString())
-			        .addChild("Comment", json.get("commentId").toString())
-			        .getKey();
-		Entity comment=ds.get(k);
-		long feedDate=Long.parseLong(comment.getProperty("date").toString());
+		if(json.get("like").toString().equals("false"))
+		{
 
-        DateTime now = new DateTime();
-        /*if(now.getMillis()-feedDate>3000000)
-        {
-			c.setError("Time limit for updation exceeded");
-
-        	return false;
-        }*/
+			DatastoreService ds=DatastoreServiceFactory.getDatastoreService();
+			Key k=new KeyFactory.Builder("Feed", json.get("feedId").toString())
+				        .addChild("Comment", json.get("commentId").toString())
+				        .getKey();
+			Entity comment=ds.get(k);
+			long feedDate=Long.parseLong(comment.getProperty("date").toString());
+	
+	        DateTime now = new DateTime();
+	        if(now.getMillis()-feedDate>60000)
+	        {
+				c.setError("Time limit for updation exceeded");
+	
+	        	return false;
+	        }
+	        
+		}
 		return true;
+	
 	}
 }

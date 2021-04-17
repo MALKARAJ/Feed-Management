@@ -16,6 +16,9 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.repackaged.org.joda.time.DateTime;
 
@@ -51,7 +54,8 @@ public class CommentOperations implements CommentDao{
 		   Key k=KeyFactory.createKey("Feed",c.getFeed_id());
 		   Entity e=ds.get(k);
 		   JSONObject obj= new JSONObject();
-		   if(e.getProperty("delete").toString().equals("false")) {
+		   if(e.getProperty("delete").toString().equals("false")) 
+		   {
 			   obj.put("feedId", c.getFeed_id());
 			   obj.put("content", e.getProperty("feed_content").toString());
 			   obj.put("category", e.getProperty("category").toString());
@@ -59,11 +63,10 @@ public class CommentOperations implements CommentDao{
 			   Date date=new Date(d);
 			   obj.put("date", date);
 			   obj.put("likes", Integer.parseInt(e.getProperty("like").toString()));
-			   
-			   Query q=new Query("Comment").setAncestor(e.getKey()).addSort("Updation_date", SortDirection.DESCENDING);
+			   Filter delete = new FilterPredicate("delete", FilterOperator.EQUAL,false);
+
+			   Query q=new Query("Comment").setAncestor(e.getKey()).addSort("Updation_date", SortDirection.DESCENDING).setFilter(delete);
 			   for (Entity entity : ds.prepare(q).asIterable()) {	
-				   if(entity!=null && e.getProperty("delete").toString().equals("false")) 
-				   {
 					   JSONObject obj1= new JSONObject();
 					   obj1.put("feedId", c.getFeed_id());
 					   obj1.put("comment", entity.getProperty("comment").toString());
@@ -73,15 +76,14 @@ public class CommentOperations implements CommentDao{
 					   obj1.put("date", date1);
 					   obj1.put("likes", Integer.parseInt(entity.getProperty("like").toString()));
 					   comments.add(obj1);
-				   }
-				}	  
-			   JSONObject objResult= new JSONObject();
+				   }	  
 			   obj.put("comments", comments);
+			   JSONObject objResult= new JSONObject();
 			   objResult.put("feed", obj);
 			   return objResult;
 		   }
-		   return obj;
 
+		   return obj;
 	   }
 	   
 	   public String addComment(Comment c) throws EntityNotFoundException
@@ -118,9 +120,13 @@ public class CommentOperations implements CommentDao{
 			   comment.setProperty("feed_id",c.getFeed_id());
 			   comment.setProperty("comment_id",c.getComment_id());
 			   comment.setProperty("comment",c.getComment());
-			   Date date=c.getUpdateDate();
-			   DateTime d=new DateTime(date);
-			   comment.setProperty("Updation_date", d.getMillis());
+
+			   if(!c.isLike())
+			   {
+				   Date date=c.getUpdateDate();
+				   DateTime d=new DateTime(date);
+				   comment.setProperty("Updation_date", d.getMillis());
+			   }
 			   if(c.isLike())
 			   {
 				   comment.setProperty("like", c.getLikes()+1);
@@ -149,6 +155,4 @@ public class CommentOperations implements CommentDao{
 		   comment.setProperty("delete", true);
 		   ds.put(comment);
 	   }
-
-
 }

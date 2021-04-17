@@ -68,6 +68,31 @@ public class FeedServlet extends HttpServlet {
 								out.println(obj);
 							}
 						}
+						else if(path.contains("category"))
+						{
+							List<JSONObject> result;
+							result = feed.getCategoryFeeds(pathParts[2]);
+							if (result.size()>0) 
+							{
+								JSONObject obj = new JSONObject();
+								response.setStatus(200);
+								obj.put("success", true);
+								obj.put("code", "200");
+								obj.put("feeds", result);
+								out.println(obj);
+							}
+							else
+							{
+								JSONObject obj=new JSONObject();
+								JSONObject obj1=new JSONObject();
+								response.setStatus(400);
+								obj.put("success", false);
+								obj1.put("code","400");
+								obj1.put("detail", "No feeds present at the moment");
+								obj.put("error", obj1);
+								out.println(obj);
+							}
+						}
 						else
 						{				
 							f.setFeed_id(pathParts[1]);
