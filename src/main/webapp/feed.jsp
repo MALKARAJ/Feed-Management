@@ -41,6 +41,7 @@
  </div>
   
   <div id="myData"></div>
-  <script type="text/javascript" src="operations.js"></script>
+  <script type="text/javascript" src="feedOperation.js"></script>
+  <script type="text/javascript" src="commentOperation.js"></script>
 </body>
 </html>

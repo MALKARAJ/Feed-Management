@@ -11,6 +11,7 @@ var getFeeds=()=>{
 	}
 }
 
+
 var getCategoryFeed=()=>{
 	
 	var xhr = new XMLHttpRequest();
@@ -31,6 +32,8 @@ var getCategoryFeed=()=>{
 		}
 	}
 }
+
+
 var getDeletedFeeds=()=>{
 	var xhr = new XMLHttpRequest();
 	xhr.open("GET", "/feed/trash", true);
@@ -43,16 +46,6 @@ var getDeletedFeeds=()=>{
 	}
 }
 
-var addLike=(id,content,category)=>{
-		var obj = {"feedId":id,"content":content,"category":category,"like":"true"};
-		var xhr = new XMLHttpRequest();
-		xhr.open("PUT", "/feed",true);
-		xhr.setRequestHeader('Content-Type', 'application/json');
-		xhr.send(JSON.stringify(obj));
-		xhr.onload = function() {
-			 getFeeds();
-		}
-}
 
 var addFeed=()=>{
 		var content=document.getElementById("addFeed").value;
@@ -70,26 +63,13 @@ var addFeed=()=>{
 	
 }
 
-var addComment=(fId)=>{
-		var comment=document.getElementById("addComment"+fId).value;
-		comment=comment.replace(/(\n)/gm," ");
-		var obj = {"feedId":fId,"comment":comment};
-		console.log(fId);
-		console.log(comment);
-		var xhr = new XMLHttpRequest();
-		xhr.open("POST", "/feed/comments",true);
-		xhr.setRequestHeader('Content-Type', 'application/json');
-		xhr.send(JSON.stringify(obj));
-		xhr.onload = function() {
-			 updateCommentDiv(fId,"mainComment"+fId);
-		}
-}
 
-var updateFeed=(id)=>{
-	var content=document.getElementById("updateText"+id).value;
-	var category=document.getElementById("cat"+id).selectedOptions[0].value;
-	content=content.replace(/(\n)/gm," ");
-	var obj = {"feedId":id,"content":content,"category":category,"like":"false"};
+var updateFeed=(id,cat)=>{
+	//var content=document.getElementById("updateText"+id).value;
+	var lis = document.getElementById("datac"+id).getElementsByTagName("li")[0];
+	//var category=document.getElementById("cat"+id).selectedOptions[0].value;
+	lis=lis.innerText.replace(/(\n)/gm," ");
+	var obj = {"feedId":id,"content":lis,"category":cat,"like":"false"};
 	console.log(obj);
 	var xhr = new XMLHttpRequest();
 	xhr.open("PUT", "/feed",true);
@@ -101,34 +81,16 @@ var updateFeed=(id)=>{
 }
 
 
-var updateComment=(fid,cid)=>{
-	var comment=document.getElementById("updateComment"+cid).value;
-	comment=comment.replace(/(\n)/gm," ");
-	var obj = {"feedId":fid,"comment":comment,"commentId":cid,"like":false};
-	console.log(obj);
-	var xhr = new XMLHttpRequest();
-	xhr.open("PUT", "/feed/comments/",true);
-	xhr.setRequestHeader('Content-Type', 'application/json');
-	xhr.send(JSON.stringify(obj));
-	xhr.onload = function() {
-			 updateCommentDiv(fid,"mainComment"+fid);
-	}
-}
-
-
-var addCommentLike=(comId,fId,cId,comment)=>{
-		console.log(comId);
-		var obj = {"feedId":fId,"commentId":cId,"comment":comment,"like":true};
+var addLike=(id,content,category)=>{
+		var obj = {"feedId":id,"content":content,"category":category,"like":"true"};
 		var xhr = new XMLHttpRequest();
-		xhr.open("PUT", "/feed/comments",true);
+		xhr.open("PUT", "/feed",true);
 		xhr.setRequestHeader('Content-Type', 'application/json');
 		xhr.send(JSON.stringify(obj));
 		xhr.onload = function() {
-			 updateCommentDiv(fId,comId);
-
+			 getFeeds();
 		}
 }
-
 
 
 var deleteFeed=(id)=>{
@@ -140,17 +102,6 @@ var deleteFeed=(id)=>{
 			 getFeeds();
 		}
 }
-var deleteComment=(commentDivId,fId,cId)=>{
-		var xhr = new XMLHttpRequest();
-		xhr.open("DELETE", "/feed/comments/"+fId+"/"+cId,true);
-		xhr.setRequestHeader('Content-Type', 'application/json');
-		xhr.send();
-		xhr.onload = function() {
-			 updateCommentDiv(fId,commentDivId);
-		}
-}
-
-
 
 
 
@@ -174,11 +125,11 @@ var appendData=(data)=> {
 							
 						  <div id="opBar${data["feeds"][i]["feedId"]}" class="opBars">	
 							<img alt="like" src="images/like.png" width="20" height="20" id="image" onclick="addLike('${data["feeds"][i]["feedId"]}','${data["feeds"][i]["content"]}','${data["feeds"][i]["category"]}')"> &nbsp;
-							(${data["feeds"][i]["likes"]}) &nbsp; &nbsp;	
+							${data["feeds"][i]["likes"]} &nbsp; &nbsp;	
 							<img src="images/comment.png" width="20" height="20" id="image" onclick="toggle('mainComment${data["feeds"][i]["feedId"]}')"> &nbsp</a> <br><br>
 						  </div>
 						  <div id="dbBar${data["feeds"][i]["feedId"]}" class=opBars1>
-								<a id="editFeed${data["feeds"][i]["feedId"]}" onclick="editFeed('datac${data["feeds"][i]["feedId"]}','${data["feeds"][i]["feedId"]}')">edit</a> &nbsp;&nbsp;&nbsp;
+								<a id="editFeed${data["feeds"][i]["feedId"]}" onclick="editFeed('datac${data["feeds"][i]["feedId"]}','${data["feeds"][i]["feedId"]}','${data["feeds"][i]["category"]}')">edit</a> &nbsp;&nbsp;&nbsp;
 								<a onclick="deleteFeed('${data["feeds"][i]["feedId"]}')">delete</a>
 						  </div>
 						</div>	
@@ -289,82 +240,20 @@ var appendDeletedData=(data)=> {
 
 
 
-var updateCommentDiv=(fid,commentId)=>{
-	var xhr = new XMLHttpRequest();
-	xhr.open("GET", "/feed/comments/"+fid, true);
-	xhr.setRequestHeader('Content-Type', 'application/json');
-	xhr.send();
-	xhr.onload = function() {
-	  var data = JSON.parse(this.responseText);
-	  var txt="";
-      var mainContainer = document.getElementById(commentId);
-	  console.log(data);
-	  txt+=`<textarea class="addComment" id="addComment${data["feed"]["feedId"]}" placeholder="Enter you comment for this feed"></textarea>
-		    <input type="button" value="share" onclick="addComment('${data["feed"]["feedId"]}')">`;
-				if(data.feed.comments.length>0){
 
- 			txt+=`<div class="commentContainer">`;
-
-		for(let i=0;i<data["feed"]["comments"].length;i++){
-			  txt+=`
-			<div class="comments" id="com${data["feed"]["comments"][i]["commentId"]}">
-			  <div id="dataComment${data["feed"]["comments"][i]["commentId"]}" class="dataComment">
-				<ul>
-					<li>${data["feed"]["comments"][i]["comment"]}</li>
-					<li>${data["feed"]["comments"][i]["date"]}</li>
-				</ul>
-			  </div>
-			  <div id="Cbar${data["feed"]["comments"][i]["commentId"]}" class="Cbar">
-					<div id="cOpBar" class="opBars">
-						<img alt="like" src="images/like.png" width="20" height="20" id="image" onclick="addCommentLike('mainComment${data["feed"]["feedId"]}','${data["feed"]["feedId"]}','${data["feed"]["comments"][i]["commentId"]}','${data["feed"]["comments"][i]["comment"]}')"> &nbsp; &nbsp;
-						${data["feed"]["comments"][i]["likes"]}
-					</div>
-					<div id="cdbBars${data["feed"]["comments"][i]["commentId"]}" class="cOpBars1">
-						<a id="editComment${data["feed"]["comments"][i]["commentId"]}" onclick="editComment('dataComment${data["feed"]["comments"][i]["commentId"]}','${data["feed"]["comments"][i]["commentId"]}','${data["feed"]["feedId"]}')">edit</a> &nbsp;&nbsp;&nbsp;
-						<a onclick="deleteComment('mainComment${data["feed"]["feedId"]}','${data["feed"]["feedId"]}','${data["feed"]["comments"][i]["commentId"]}')">delete</a>
-					</div>
-			 </div>
-		</div>`
-			}
-		}
-		txt+=`</div>`
-		
-   		mainContainer.innerHTML=txt;
-	}
-}
-
-var editFeed=(feedDivId,feedId)=>{
+var editFeed=(feedDivId,feedId,cat)=>{
 	
 	var lis = document.getElementById(feedDivId).getElementsByTagName("li");
 	var element=document.getElementById(feedDivId);	
 	var editb=document.getElementById("editFeed"+feedId);	
+	lis[0].contentEditable=true;
+	lis[0].style["border"]="1px solid black";
 	editb.remove();
-	txt=`<textarea class="addComment" id="updateText${feedId}" placeholder="update your feed here" >${lis[0].innerText}</textarea>
-		 <label for="category">Category:</label>
-			<select name="category" id="cat${feedId}" style="width:100px;">
-			  <option value="Music">Music</option>
-			  <option value="Movies">Movies</option>
-			  <option value="Technology">Technology</option>
-			  <option value="Sports">Sports</option>
-			</select>
-		  <input type="button" value="share" onclick="updateFeed('${feedId}')">`
-	element.innerHTML=txt;
-
-	
-}
-
-var editComment=(commentDivId,commentId,feedId)=>{
-	console.log(commentDivId);
-	console.log(commentId);
-	console.log(feedId);
-	var lis = document.getElementById(commentDivId).getElementsByTagName("li");
-	var element=document.getElementById(commentDivId);	
-	var editb=document.getElementById("editComment"+commentId);	
-	editb.remove();
-	txt=`<textarea class="addComment" id="updateComment${commentId}" placeholder="update your comment here" >${lis[0].innerText}</textarea>
-
-		  <input type="button" value="share" onclick="updateComment('${feedId}','${commentId}')">`
-	element.innerHTML=txt;
+	txt=`<div class="editer" style="display:flex;">
+				<input type="button" value="save" onclick="updateFeed('${feedId}','${cat}')">
+				<input type="button" value="close" onclick="getFeeds()">
+		</div>`;
+	element.innerHTML+=txt;
 
 	
 }
@@ -384,19 +273,6 @@ var toggleBin=(id)=>{
 	bin.onclick=function(){getFeeds()};
 	bin.src="images/feed.png"
 	}
-
-var toggle=(id)=>{
-	var div1=document.getElementById(id);
-	if(div1.style["display"]=="none")
-	{
-		div1.style["display"]="block";
-
-	}
-	else
-	{
-		div1.style["display"]="none";
-	}
-}
 
 
 
@@ -425,39 +301,3 @@ var toggleAdd=()=>{
 	}
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-var appendAllComment=(data,commentId)=> {
-		console.log(commentId);
-		var txt="";
-        var mainContainer = document.getElementById(commentId);
-		txt+=`<textarea class="addComment" id="addComment${data["feed"]["feedId"]}" placeholder="Enter you comment for this feed"></textarea>
-			  <input type="button" value="share" onclick="addComment('${data["feed"]["feedId"]}')">`;
-		for(let i=0;i<data["feed"]["comments"].length;i++){
-		txt+=`<div class="comments" id="com${data["feed"]["comments"][i]["commentId"]}">
-			  <h4>${data["feed"]["comments"][i]["comment"]}</h4>
-			  <div id="cOpBar" class="opBars">
-			  <img alt="like" src="images/like.png" width="20" height="20" id="image" onclick="addCommentLike('${commentId}','${data["feed"]["feedId"]}','${data["feed"]["comments"][i]["commentId"]}','${data["feed"]["comments"][i]["comment"]}')"> &nbsp; &nbsp;
-			  ${data["feed"]["comments"][i]["likes"]}</div></div>`;
-		}
-   		mainContainer.innerHTML=txt;
-}
-*/
