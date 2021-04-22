@@ -22,7 +22,6 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
 public class TestFeed {
 	  private final LocalServiceTestHelper helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
-
 	  @Before
 	  public void setUp() {
 	    helper.setUp();

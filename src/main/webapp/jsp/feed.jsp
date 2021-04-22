@@ -1,15 +1,20 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+
+
+<%
+HttpSession session1 =request.getSession(false);
+if (session1.getAttribute("email")!=null ){%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="ISO-8859-1">
 <title>Feed Management</title>
-<link rel="stylesheet" href="feeds.css">
+<link rel="stylesheet" href="./css/feeds.css">
 </head>
 <body  onload="getFeeds()">
   <div class="title"><h1>Feeds</h1></div>
-  <img alt="like" src="images/plus.png" width="50" height="50" class="add" id="add"  style="display:block;" onclick="toggleAdd()">
-  <img alt="like" src="images/sub.png" width="40" height="50" class="sub" id="sub"  style="display:none;" onclick="toggleAdd()"><br><br>
+  <img alt="add" src="images/plus.png" width="50" height="50" class="add" id="add"  style="display:block;" onclick="toggleAdd()">
+  <img alt="sub" src="images/sub.png" width="40" height="50" class="sub" id="sub"  style="display:none;" onclick="toggleAdd()"><br><br>
 
   <div class="addData" id="adder" style="display:none;">
   		<textarea class="addFeed" id="addFeed" placeholder="Want to share anything?"></textarea>
@@ -38,10 +43,20 @@
 			</select>
 	  		<input type="button" value="search" onclick="getCategoryFeed()">
 	  </div>
+	  <input type="button" value="logout" onclick="logout()">
  </div>
   
   <div id="myData"></div>
-  <script type="text/javascript" src="feedOperation.js"></script>
-  <script type="text/javascript" src="commentOperation.js"></script>
+  
+  <script type="text/javascript" src="./js/feedOperation.js"></script>
+    <script type="text/javascript" src="./js/user.js"></script>
+  
+  <script type="text/javascript" src="./js/commentOperation.js"></script>
+  
+  
 </body>
 </html>
+<%}
+else{
+	response.sendRedirect("/login");
+	} %>

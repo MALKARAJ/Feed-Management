@@ -1,4 +1,7 @@
 
+//import isValidFeed  from "./validateApi.js";
+//import isValidFeedUpdate  from "./validateApi.js";
+//var validate=require('./validateApi');
 var getFeeds=()=>{
 	var xhr = new XMLHttpRequest();
 	xhr.open("GET", "/feed", true);
@@ -10,7 +13,19 @@ var getFeeds=()=>{
 	  appendData(data);
 	}
 }
-
+/*
+function getFeeds(){
+	var xhr = new XMLHttpRequest();
+	xhr.open("GET", "/feed", true);
+	xhr.setRequestHeader('Content-Type', 'application/json');
+	xhr.send();
+	xhr.onload = function() {
+	  var data = JSON.parse(this.responseText);
+	  toggleFeed("bin");
+	  appendData(data);
+	}
+}
+*/
 
 var getCategoryFeed=()=>{
 	
@@ -52,6 +67,8 @@ var addFeed=()=>{
 		var category=document.getElementById("cat").selectedOptions[0].value;
 		content=content.replace(/(\n)/gm," ");
 		var obj = {"content":content,"category":category};
+		if(isValidFeed(obj))
+		{
 		var xhr = new XMLHttpRequest();
 		xhr.open("POST", "/feed",true);
 		xhr.setRequestHeader('Content-Type', 'application/json');
@@ -60,7 +77,10 @@ var addFeed=()=>{
 			 document.getElementById("addFeed").value="";
 			 getFeeds();
 		}
-	
+	}
+	else{
+		console.log("error");
+	}
 }
 
 
@@ -70,6 +90,7 @@ var updateFeed=(id,cat)=>{
 	//var category=document.getElementById("cat"+id).selectedOptions[0].value;
 	lis=lis.innerText.replace(/(\n)/gm," ");
 	var obj = {"feedId":id,"content":lis,"category":cat,"like":"false"};
+	if(isValidFeedUpdate(obj)){
 	console.log(obj);
 	var xhr = new XMLHttpRequest();
 	xhr.open("PUT", "/feed",true);
@@ -77,6 +98,7 @@ var updateFeed=(id,cat)=>{
 	xhr.send(JSON.stringify(obj));
 	xhr.onload = function() {
 		 getFeeds();
+	}
 	}
 }
 
@@ -107,7 +129,6 @@ var deleteFeed=(id)=>{
 
 
 var appendData=(data)=> {
-		
 		var txt="";
         var mainContainer = document.getElementById("myData");
 		if(data.code=="200")
@@ -300,4 +321,30 @@ var toggleAdd=()=>{
 		adder.style["opacity"]=0;
 	}
 }
+
+
+
+
+var isValidFeed=(obj)=>{
+	
+	if(Object.keys(obj).length!=2||obj["category"].replace(/\s/g, '')==""||obj["content"].replace(/\s/g, '')=="")
+	{
+		return false;
+	}
+	return true;
+	
+}
+var isValidFeedUpdate=(obj)=>{
+	
+	if(Object.keys(obj).length!=4||obj["category"].replace(/\s/g, '')==""||obj["content"].replace(/\s/g, '')==""||obj["feedId"].replace(/\s/g, '')==""||obj["like"].replace(/\s/g, '')=="")
+	{
+		return false;
+	}
+	return true;
+	
+}
+
+
+
+module.exports={isValidFeed,isValidFeedUpdate};
 
