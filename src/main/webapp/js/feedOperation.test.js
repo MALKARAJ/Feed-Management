@@ -2,7 +2,7 @@
 
 var server=require("./mockServer.js")
 
-var validate=require("/src/main/webapp/feedOperation.js")
+var validate=require("./feedOperation.js")
 
 describe('Mock CRUD operations',()=>
 {
