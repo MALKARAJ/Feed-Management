@@ -9,11 +9,15 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+
+import javax.cache.CacheException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.repackaged.org.joda.time.DateTime;
@@ -31,6 +35,7 @@ public class FeedServlet extends HttpServlet {
 		response.setContentType("application/json");
 		PrintWriter out=response.getWriter();
 		String pathInfo = request.getPathInfo(); 
+		HttpSession session=request.getSession(false);
 
 		try {
 			
@@ -45,8 +50,9 @@ public class FeedServlet extends HttpServlet {
 						
 						if(path.contains("trash"))
 						{
+							f.setUserId((String)session.getAttribute("userId"));
 							List<JSONObject> result;
-							result = feed.getDeletedFeeds();
+							result = feed.getDeletedFeeds(f);
 							if (result.size()>0) 
 							{
 								JSONObject obj = new JSONObject();
@@ -124,16 +130,18 @@ public class FeedServlet extends HttpServlet {
 				{
 					FeedDao feed=new FeedOperations();
 		
-						List<JSONObject> result;
-						result = feed.getNewsFeeds();
-						if (result.size()>0) 
+					JSONObject result;
+					String cursor=request.getParameter("cursor");
+					result = feed.getNewsFeeds(cursor);
+					if (result.get("feeds")!=null) 
 						{
-							JSONObject obj = new JSONObject();
+						//	JSONObject obj = new JSONObject();
 							response.setStatus(200);
-							obj.put("success", true);
-							obj.put("code", "200");
-							obj.put("feeds", result);
-							out.println(obj);
+							//response.addHeader("Cache-Control", "private,max-age=15552000,must-revalidate");
+						//	obj.put("success", true);
+						//	obj.put("code", "200");
+						//	obj.put("feeds", result);
+							out.println(result);
 						}
 						else
 						{
@@ -190,6 +198,9 @@ public class FeedServlet extends HttpServlet {
 			obj.put("error", obj1);
 			out.println(obj);
 			e.printStackTrace();
+		} catch (CacheException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 
@@ -217,12 +228,13 @@ public void doPost(HttpServletRequest request, HttpServletResponse response) thr
 		    {
 		    	
 		    	UUID id=UUID.randomUUID();
-
+		    	HttpSession session=request.getSession(false);	    	
 				f.setFeed_content(json.get("content").toString());
 				f.setFeed_id(id.toString());
 				f.setCategory(json.get("category").toString());
 				f.setDate(millis);
 				f.setLikes(0);
+				f.setUserId((String)session.getAttribute("userId"));
 				feed.addFeed(f);
 				response.setStatus(200);
 			    JSONObject rjson=new JSONObject(f);
@@ -266,6 +278,8 @@ protected void doPut(HttpServletRequest request, HttpServletResponse response) t
 	Feed f=new Feed();
 	FeedDao feed=new FeedOperations();
 	Validator validator=new Validator();
+	HttpSession session=request.getSession(false);	    	
+
 	PrintWriter out=response.getWriter();
 
 	try 
@@ -292,6 +306,7 @@ protected void doPut(HttpServletRequest request, HttpServletResponse response) t
 					    f.setFeed_id(json.get("feedId").toString());
 					    f.setCategory(json.get("category").toString());
 					    f.setUpdateDate(millis);
+					    f.setUserId((String)session.getAttribute("userId"));
 			    		f.setLike(false);
 					    feed.updateFeed(f);
 					    JSONObject rjson=new JSONObject(f);
@@ -310,6 +325,8 @@ protected void doPut(HttpServletRequest request, HttpServletResponse response) t
 				    f.setFeed_content(json.get("content").toString());
 				    f.setFeed_id(json.get("feedId").toString());
 				    f.setCategory(json.get("category").toString());
+				    f.setUserId(json.get("userId").toString());
+
 				    feed.setLikePojo(f);
 				    feed.updateFeed(f);
 				    
@@ -420,6 +437,9 @@ protected void doDelete(HttpServletRequest request, HttpServletResponse response
 		obj.put("success", false);
 		obj1.put("details", "Server error");
 		obj.put("error", obj1);
+		e.printStackTrace();
+	} catch (CacheException e) {
+		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
 }

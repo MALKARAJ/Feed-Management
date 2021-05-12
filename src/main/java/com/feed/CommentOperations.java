@@ -40,6 +40,7 @@ public class CommentOperations implements CommentDao{
 				   obj.put("feedId", c.getFeed_id());
 				   obj.put("comment", comment.getProperty("comment").toString());
 				   obj.put("commentId", comment.getProperty("comment_id").toString());
+				   obj.put("userId", comment.getProperty("userId"));
 				   long d=Long.parseLong(comment.getProperty("date").toString());
 				   Date date=new Date(d);
 				   obj.put("date", date);
@@ -60,6 +61,8 @@ public class CommentOperations implements CommentDao{
 			   obj.put("content", e.getProperty("feed_content").toString());
 			   obj.put("category", e.getProperty("category").toString());
 			   long d=Long.parseLong(e.getProperty("date").toString());
+			   obj.put("userId", e.getProperty("userId"));
+
 			   Date date=new Date(d);
 			   obj.put("date", date);
 			   obj.put("likes", Integer.parseInt(e.getProperty("like").toString()));
@@ -71,6 +74,8 @@ public class CommentOperations implements CommentDao{
 					   obj1.put("feedId", c.getFeed_id());
 					   obj1.put("comment", entity.getProperty("comment").toString());
 					   obj1.put("commentId", entity.getProperty("comment_id").toString());
+					   obj1.put("userId", entity.getProperty("userId"));
+
 					   long d1=Long.parseLong(entity.getProperty("date").toString());
 					   Date date1=new Date(d1);
 					   obj1.put("date", date1);
@@ -96,6 +101,7 @@ public class CommentOperations implements CommentDao{
 			   comment.setProperty("feed_id",c.getFeed_id());
 			   comment.setProperty("comment_id",c.getComment_id());
 			   comment.setProperty("comment",c.getComment());
+			   comment.setProperty("userId", c.getUser_id());
 			   Date date=c.getDate();
 			   DateTime d=new DateTime(date);
 			   comment.setProperty("date",d.getMillis());
@@ -104,7 +110,6 @@ public class CommentOperations implements CommentDao{
 			   comment.setProperty("delete", false);
 			   ds.put(comment);
 			   int like=(int) comment.getProperty("like");
-			   System.out.println(like);
 			   return comment.getProperty("feed_id").toString();
 		   }
 		   return "";
@@ -119,6 +124,8 @@ public class CommentOperations implements CommentDao{
 	
 			   comment.setProperty("feed_id",c.getFeed_id());
 			   comment.setProperty("comment_id",c.getComment_id());
+			   comment.setProperty("userId", c.getUser_id());
+
 			   comment.setProperty("comment",c.getComment());
 
 			   if(!c.isLike())

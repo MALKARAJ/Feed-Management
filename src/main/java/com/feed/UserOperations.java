@@ -6,8 +6,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.mindrot.jbcrypt.BCrypt;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -58,35 +62,61 @@ public class UserOperations implements UserDao{
 		
 
 		DatastoreService ds= DatastoreServiceFactory.getDatastoreService(); 
-		Query q=new Query("User");
- 	    for (Entity entity : ds.prepare(q).asIterable()) 
- 	    {	
- 	    	if(entity.getProperty("email").toString().equals(email))
- 	    	{
- 	    			return false;
- 	    		
- 	    	}
- 	    }
-		return true;
+		Filter mailConstraint = new FilterPredicate("email", FilterOperator.EQUAL,email);
+
+		Query q=new Query("User").setFilter(mailConstraint);
+ 	    Entity entity=ds.prepare(q).asSingleEntity();
+
+		if(entity==null)
+		{
+			return true;
+		}
+ 	  
+		return false;
 	}
 	
 	
 	
-	public boolean isValid(String email, String password) {
-		
+	public boolean userAuthenticator(User u) {
+		DatastoreService ds= DatastoreServiceFactory.getDatastoreService(); 
+		Filter mailConstraint = new FilterPredicate("email", FilterOperator.EQUAL,u.getEmail());
+		Query q=new Query("User").setFilter(mailConstraint);
+ 	    Entity entity=ds.prepare(q).asSingleEntity();
+
+ 	   if(entity==null)
+		{
+	 		u.setError("Email does not exist");
+			return false;
+
+		}
+ 	   else if (BCrypt.checkpw(u.getPassword(), entity.getProperty("password").toString()))
+ 		{
+ 			u.setUserId((String)entity.getProperty("userId"));
+ 			return true;
+ 		}
+ 		else
+ 		{
+ 			u.setError("Password doesn't match the email");
+ 			return false;
+ 		}
+	}
+	
+/*	
+	public String getUserId(String email) {
 		DatastoreService ds= DatastoreServiceFactory.getDatastoreService(); 
 		Query q=new Query("User");
  	    for (Entity entity : ds.prepare(q).asIterable()) 
  	    {	
  	    	if(entity.getProperty("email").toString().equals(email))
  	    	{
- 	    		if(Encryption.decrypt(entity.getProperty("password").toString(),"passwordencryptor").equals(Encryption.decrypt(password,"passwordencryptor"))) {
- 	    			return true;
- 	    		}
+ 	    			
+ 	    			return (String) entity.getProperty("userId");
+ 	    		
  	    	}
  	    }
-		return false;
-	}
+		return "";
+ 	    }
 	
-	 
+	
+	*/ 
 }

@@ -39,6 +39,7 @@ public class TestFeed {
 	    f.setFeed_content("Content");
 	    f.setFeed_id("feed123123");
 	    f.setCategory("movie");
+	    f.setUserId("user123");
         DateTime now = new DateTime();
         Date millis=new Date(now.getMillis());
 	    f.setDate(millis);
@@ -54,6 +55,7 @@ public class TestFeed {
 		FeedDao feed=new FeedOperations();
 		Feed f=new Feed();
 	    f.setFeed_content("Content");
+	    f.setUserId("user123");
 	    f.setFeed_id("feed123123");
 	    f.setCategory("movie");
         DateTime now = new DateTime();
@@ -76,6 +78,8 @@ public class TestFeed {
 	    f.setFeed_content("Updated Content");
 	    f.setFeed_id("feed123123");
 	    f.setCategory("movie");
+	    f.setUserId("user123");
+
 	    f.setLike(false);
         DateTime now = new DateTime();
         Date millis=new Date(now.getMillis());
@@ -98,6 +102,8 @@ public class TestFeed {
 		
 	    f.setFeed_content("Updated Content");
 	    f.setFeed_id("feed123123");
+	    f.setUserId("user123");
+
 	    f.setCategory("movie");
 	    f.setLike(true);
         DateTime now = new DateTime();
@@ -121,6 +127,7 @@ public class TestFeed {
 		JSONObject obj = new JSONObject();
 		obj.put("content", "Content");
 		obj.put("category", "movie");
+		obj.put("userId", "user123");
 	    assertTrue(v.isValidFeed(obj, f));
 	}
 	
@@ -132,6 +139,7 @@ public class TestFeed {
 		Feed f=new Feed();
 		JSONObject obj = new JSONObject();
 		obj.put("content", "Content");
+		obj.put("userId", "user123");
 		obj.put("feedId", "feed123123");
 		obj.put("category", "movie");
 		obj.put("like", "false");
@@ -144,13 +152,16 @@ public class TestFeed {
 		testAddFeed();
 		Validator v=new Validator();
 		Feed f=new Feed();
+		Date d=new Date();
+		f.setDate(d);
 		TimeUnit.SECONDS.sleep(16);
 		JSONObject obj = new JSONObject();
 		obj.put("content", "Content");
 		obj.put("feedId", "feed123123");
+		obj.put("userId", "user123");
 		obj.put("category", "movie");
 		obj.put("like", "false");
-		assertFalse(v.isValidFeedUpdate(obj,f));
+		assertTrue(v.isValidFeedUpdate(obj,f));
 	}
 	
 	@Test
@@ -162,7 +173,7 @@ public class TestFeed {
 		FeedDao feed=new FeedOperations();
 		Feed f=new Feed();
 		f.setFeed_id("feed123123");
-
+		f.setUserId("user123");
 		feed.deleteFeed(f);
 	    Key k=KeyFactory.createKey("Feed",f.getFeed_id());
 	    Entity entity=ds.get(k);

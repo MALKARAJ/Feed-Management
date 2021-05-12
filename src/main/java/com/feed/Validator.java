@@ -14,12 +14,12 @@ public class Validator {
 
 	public boolean isValidFeed(JSONObject obj,Feed f)
 	{
-        if(!(obj.length()==2 && obj.has("content") && obj.has("category")))
+        if(!(obj.length()==3 && obj.has("userId") && obj.has("content") && obj.has("category")))
         {
         	f.setError("Insuffiencient data");
         	return false;
         }
-		if(obj.get("content").toString().replaceAll("\\s", "").equals("") || obj.get("category").toString().replaceAll("\\s", "").equals(""))
+		if(obj.get("userId").toString().replaceAll("\\s", "").equals("") ||obj.get("content").toString().replaceAll("\\s", "").equals("") || obj.get("category").toString().replaceAll("\\s", "").equals(""))
 		{
 			f.setError("Either content or category has a null value");
 			return false;
@@ -30,14 +30,14 @@ public class Validator {
 	public boolean isValidFeedUpdate(JSONObject json,Feed f) throws ParseException, EntityNotFoundException
 	{
         
-        if(!(json.length()==4 && json.has("feedId") && json.has("content") && json.has("category") && json.has("like")))
+        if(!(json.length()==5 && json.has("userId")  &&json.has("feedId") && json.has("content") && json.has("category") && json.has("like")))
         {
 			f.setError("Insufficient data");
 
         	return false;
         }
 
-		if(json.get("content").toString().replaceAll("\\s", "").equals("") || json.get("category").toString().replaceAll("\\s", "").equals("") || json.get("like").toString().replaceAll("\\s", "").equals("") ||json.get("feedId").toString().replaceAll("\\s", "").equals(""))
+		if(json.get("userId").toString().replaceAll("\\s", "").equals("")||json.get("content").toString().replaceAll("\\s", "").equals("") || json.get("category").toString().replaceAll("\\s", "").equals("") || json.get("like").toString().replaceAll("\\s", "").equals("") ||json.get("feedId").toString().replaceAll("\\s", "").equals(""))
 		{
 			f.setError("Null values present in the request");
 
@@ -67,12 +67,12 @@ public class Validator {
 	}
 	public boolean isValidComment(JSONObject json,Comment c)
 	{
-        if(!(json.length()==2 && json.has("comment") && json.has("feedId")))
+        if(!(json.length()==3 && json.has("userId")  && json.has("comment") && json.has("feedId")))
         {
         	c.setError("Invalid request");
         	return false;
         }
-		if(json.get("comment").toString().replaceAll("\\s", "").equals("") ||json.get("feedId").toString().replaceAll("\\s", "").equals(""))
+		if(json.get("userId").toString().replaceAll("\\s", "").equals("") || json.get("comment").toString().replaceAll("\\s", "").equals("") ||json.get("feedId").toString().replaceAll("\\s", "").equals(""))
 		{
         	c.setError("Invalid request either comment or feedId is empty");
 
@@ -86,7 +86,7 @@ public class Validator {
 	{
 
         
-        if(!(json.length()==4 && json.has("feedId") && json.has("comment") && json.has("commentId") && json.has("like")))
+        if(!(json.length()==5 && json.has("userId")   && json.has("feedId") && json.has("comment") && json.has("commentId") && json.has("like")))
         {
         	c.setError("Invalid request");
 
@@ -94,7 +94,7 @@ public class Validator {
         }
         
 
-		if(json.get("comment").toString().replaceAll("\\s", "").equals("") || json.get("commentId").toString().replaceAll("\\s", "").equals("") ||json.get("feedId").toString().replaceAll("\\s", "").equals("")|| json.get("like").toString().replaceAll("\\s", "").equals(""))
+		if(json.get("userId").toString().replaceAll("\\s", "").equals("") || json.get("comment").toString().replaceAll("\\s", "").equals("") || json.get("commentId").toString().replaceAll("\\s", "").equals("") ||json.get("feedId").toString().replaceAll("\\s", "").equals("")|| json.get("like").toString().replaceAll("\\s", "").equals(""))
 		{
         	c.setError("Null values present in the request");
 

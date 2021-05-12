@@ -63,6 +63,7 @@ public class TestComments {
 		Comment c=new Comment();
 	    c.setComment("Comment");
 	    c.setFeed_id("feed123123");
+	    c.setUser_id("user123");
 	    c.setComment_id("comment123123");
         DateTime now = new DateTime();
         Date millis=new Date(now.getMillis());
@@ -79,6 +80,8 @@ public class TestComments {
 		Comment c=new Comment();
 	    c.setComment("Updated comment");
 	    c.setFeed_id("feed123123");
+	    c.setUser_id("user123");
+
 	    c.setComment_id("comment123123");
         DateTime now = new DateTime();
         Date millis=new Date(now.getMillis());
@@ -99,6 +102,8 @@ public class TestComments {
 		CommentDao comment=new CommentOperations();
 		Comment c=new Comment();
 	    c.setFeed_id("feed123123");
+	    c.setUser_id("user123");
+
 	    c.setComment_id("comment123123");
 	    c.setComment("Updated comment");
 	    c.setFeed_id("feed123123");
@@ -124,6 +129,7 @@ public class TestComments {
 		JSONObject obj = new JSONObject();
 		obj.put("comment", "Content");
 		obj.put("feedId", "feed123123");
+		obj.put("userId","user123");
 	    assertTrue(v.isValidComment(obj, c));
 	}
 	
@@ -137,6 +143,7 @@ public class TestComments {
 		obj.put("comment", "Content");
 		obj.put("feedId", "feed123123");
 		obj.put("commentId", "comment123123");
+		obj.put("userId","user123");
 		obj.put("like", "false");
 	    assertTrue(v.isValidCommentUpdate(obj, c));
 	}
@@ -147,14 +154,17 @@ public class TestComments {
 	  { 
 		  testAddComment();
 		  Validator v=new Validator(); 
-		  Feed f=new Feed();
+		  Comment c=new Comment();
+		  Date d=new Date();
+		  c.setDate(d);
 		  TimeUnit.SECONDS.sleep(16); 
 		  JSONObject obj = new JSONObject();
 		  obj.put("comment", "Content"); 
 		  obj.put("feedId", "feed123123");
 		  obj.put("commentId", "comment123123"); 
+		  obj.put("userId","user123");
 		  obj.put("like", "false");
-		  assertFalse(v.isValidFeedUpdate(obj,f)); 
+		  assertTrue(v.isValidCommentUpdate(obj,c)); 
 	 }
 	  
 		@Test
@@ -167,6 +177,7 @@ public class TestComments {
 			Comment c=new Comment();
 			c.setFeed_id("feed123123");
 			c.setComment_id("comment123123");
+			c.setUser_id("user123");
 			comment.deleteComment(c);
 
 		    Key k1=new KeyFactory.Builder("Feed", "feed123123")

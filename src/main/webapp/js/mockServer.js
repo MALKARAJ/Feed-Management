@@ -3,9 +3,11 @@ var mocks={
     "success": true,
     "feeds": [
         {
-			"feedId":"2f05986e-a343-421a-8d16-deb35ea44aa3",
+			"feedId":"feed1",
             "category": "Music",
             "content": "Hello",
+			"comments":[{"commentId":"comment1","userId":"user123123","comment":"hi"}],
+			"userId":"user123123"
         }
     ]
 };
@@ -23,8 +25,8 @@ let postServer = {
     setRequestHeader: jest.fn(),
 
     send: (data)=>{
-			data["feedId"]=UUID().toString();
-			
+			data["feedId"]="feed"+(mocks.feeds.length+1)
+			data["comments"]=[]
 			mocks.feeds.push(data);
 
 		},
@@ -46,8 +48,60 @@ let putServer = {
 			{
 				if(mocks.feeds[i]["feedId"]==data["feedId"])
 				{
-					delete data.like;
-					mocks.feeds[i]=data;
+					//delete data.like;
+					mocks.feeds[i]["content"]=data["content"];
+				}
+			}
+		},
+    onload: ()=>{
+					return JSON.stringify(mocks);
+				},
+    status: 200
+}
+
+
+let getCommentServer = {
+    open: jest.fn(),
+    setRequestHeader: jest.fn(),
+    onload: ()=>{return JSON.stringify(mocks)},
+    send: jest.fn(),
+    status: 200
+}
+
+let postCommentServer = {
+    open: jest.fn(),
+    setRequestHeader: jest.fn(),
+
+    send: (data)=>{
+			
+			for(let i=0;i<mocks["feeds"].length;i++)
+			{
+				if(mocks.feeds[i].feedId==data["feedId"])
+				{
+					data["commentId"]="comment"+(mocks.feeds[i].comments.length+1)
+					mocks.feeds[i].comments.push(data);
+				}
+			}
+		},
+    onload: ()=>{
+					return JSON.stringify(mocks);
+				},
+    status: 200
+}
+
+
+
+let putCommentServer = {
+    open: jest.fn(),
+    setRequestHeader: jest.fn(),
+
+    send: (data)=>{
+			
+			for(let i=0;i<mocks.feeds[0].comments.length;i++)
+			{
+				if(mocks.feeds[0].comments[i]["commentId"]==data["commentId"])
+				{
+					mocks.feeds[0].comments[i]["comment"]=data["comment"];
 				}
 			}
 		},
@@ -75,4 +129,4 @@ function UUID(){
     return uuid;
 }
 
-module.exports={getServer,postServer,putServer};
+module.exports={getServer,postServer,putServer,postCommentServer,putCommentServer};

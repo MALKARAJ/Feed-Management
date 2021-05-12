@@ -7,6 +7,7 @@ import java.util.Date;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mindrot.jbcrypt.BCrypt;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -37,7 +38,7 @@ public class TestUser {
 		
 	    user.setUserId("user123");
 	    user.setEmail("george@123");
-	    user.setPassword("user123123");
+	    user.setPassword(BCrypt.hashpw("user123123",BCrypt.gensalt()));
 	    
         DateTime now = new DateTime();
         Date millis=new Date(now.getMillis());
@@ -51,10 +52,29 @@ public class TestUser {
 	@Test
 	public void testLogin() throws EntityNotFoundException
 	{
-		UserDao u=new UserOperations();
+		UserDao user=new UserOperations();
 		testRegister();
-		boolean b=u.isValid("george@123","user123123");
+		User u=new User();
+		u.setEmail("george@123");
+	    u.setPassword(BCrypt.hashpw("user123123", BCrypt.gensalt()));
+		boolean b=user.userAuthenticator(u);
 		assertTrue(b);
 	}
-
+	
+	@Test
+	public void testValidator() throws EntityNotFoundException
+	{
+		CredentialValidator c=new CredentialValidator();
+		testRegister();
+		User u=new User();
+		assertTrue(c.isValidateCredentials("george@123.com"));
+	}
+	@Test
+	public void testValidator2() throws EntityNotFoundException
+	{
+		CredentialValidator c=new CredentialValidator();
+		testRegister();
+		User u=new User();
+		assertFalse(c.isValidateCredentials("george"));
+	}
 }

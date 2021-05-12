@@ -14,6 +14,6 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 
 public interface UserDao {
 	 
-		public boolean isValid(String email,String password);
+		public boolean userAuthenticator(User u);
 		public JSONObject addUser(User user);
 }

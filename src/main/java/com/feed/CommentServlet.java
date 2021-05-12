@@ -11,6 +11,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import com.google.appengine.api.datastore.EntityNotFoundException;
@@ -30,13 +32,14 @@ public class CommentServlet extends HttpServlet {
 		PrintWriter out=response.getWriter();
 		String pathInfo = request.getPathInfo(); 
 		String[] pathParts = pathInfo.split("/");
-
+		HttpSession session = request.getSession(false);
 		if(pathParts.length>2)
 		{
 			String feedId = pathParts[1];
 			String commentId = pathParts[2];
 			c.setFeed_id(feedId);
 			c.setComment_id(commentId);
+			c.setUser_id((String)session.getAttribute("userId"));
 			JSONObject comments;
 			try {
 				comments = comment.getSingleComment(c);
@@ -86,6 +89,8 @@ public class CommentServlet extends HttpServlet {
 		{
 			String feedId = pathParts[1];
 			c.setFeed_id(feedId);
+			c.setUser_id((String)session.getAttribute("userId"));
+
 			JSONObject comments;
 			try {
 				comments = comment.getComments(c);
@@ -147,7 +152,7 @@ public void doPost(HttpServletRequest request, HttpServletResponse response)
 	        jb.append(line);
 	    String str=jb.toString();
 		JSONObject json = new JSONObject(str);
-
+		HttpSession session=request.getSession(false);
     	UUID commentId=UUID.randomUUID();
     	
 
@@ -160,6 +165,7 @@ public void doPost(HttpServletRequest request, HttpServletResponse response)
 				c.setFeed_id(json.get("feedId").toString());
 				c.setComment_id(commentId.toString());
 				c.setDate(millis);
+				c.setUser_id((String)session.getAttribute("userId"));
 				c.setLikes(0);
 				String a=comment.addComment(c);
 				if(a.equals("")) {
@@ -226,6 +232,7 @@ protected void doPut(HttpServletRequest request, HttpServletResponse response) t
 	        jb.append(line);
 	    String str=jb.toString();
 		JSONObject json = new JSONObject(str);
+		HttpSession session=request.getSession(false);
     	if(validator.isValidCommentUpdate(json,c))
     	{
 			    if(json.get("like").toString().equals("false")) {
@@ -235,6 +242,7 @@ protected void doPut(HttpServletRequest request, HttpServletResponse response) t
 				        c.setLike(false);
 						c.setComment(json.get("comment").toString());
 						c.setFeed_id(json.get("feedId").toString());
+						c.setUser_id((String)session.getAttribute("userId"));
 						c.setComment_id(json.get("commentId").toString());
 						c.setDate(millis);
 						comment.updateComment(c);
@@ -245,17 +253,18 @@ protected void doPut(HttpServletRequest request, HttpServletResponse response) t
 						obj.put("success", true);
 						rjson.remove("like");
 						obj.put("comment", rjson);
+						
 						out.println(obj);
 		
 			    }
 			    
 			    else if(json.get("like").toString().equals("true"))
 			    {
-
 			    		c.setLike(true);
 				        DateTime now = new DateTime();
 				        Date millis=new Date(now.getMillis());		
 						c.setComment(json.get("comment").toString());
+						c.setUser_id(json.get("userId").toString());
 						c.setFeed_id(json.get("feedId").toString());
 						c.setComment_id(json.get("commentId").toString());
 						c.setDate(millis);

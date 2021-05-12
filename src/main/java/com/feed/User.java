@@ -9,7 +9,7 @@ public class User {
 		 String password;
 		 String userId;
 		 Date date;
-		
+		 String error;
 		public Date getDate() {
 			return date;
 		}
@@ -34,4 +34,12 @@ public class User {
 		public String getUserId() {
 			return userId;
 		}
+		public String getError() {
+			return error;
+		}
+		public void setError(String error) {
+			this.error = error;
+		}
+
+		
 }

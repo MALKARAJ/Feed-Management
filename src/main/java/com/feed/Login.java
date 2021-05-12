@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.json.JSONObject;
+import org.mindrot.jbcrypt.BCrypt;
 
 
 @WebServlet("/login")
@@ -47,16 +48,19 @@ public class Login extends HttpServlet {
 	        jb.append(line);
 	    String str=jb.toString();
         JSONObject json=new JSONObject(str);
+        User u=new User();
         UserDao user=new UserOperations();
         response.setContentType("application/json");
-
-        if(user.isValid(json.get("email").toString(),Encryption.encrypt(json.get("password").toString(),"passwordencryptor")))
+        u.setEmail(json.get("email").toString());
+        u.setPassword(json.get("password").toString());
+        if(user.userAuthenticator(u))
         {
-            HttpSession session=request.getSession(true);
-            session.setAttribute("email", json.get("email").toString());
+            HttpSession session=request.getSession(true);            
+            session.setAttribute("userId", u.getUserId());
             JSONObject obj=new JSONObject();
             JSONObject obj1=new JSONObject();
             response.setStatus(200);
+            //response.addHeader("Cache-Control", "private,max-age=15552000,must-revalidate");
             obj1.put("email", json.get("email").toString());
             obj.put("success", true);
             obj.put("code", 200);
@@ -71,7 +75,7 @@ public class Login extends HttpServlet {
             response.setStatus(400);
             obj.put("success", false);
             obj.put("code", 400);
-            obj.put("message", "Invalid user");
+            obj.put("message", u.getError());
             out.println(obj);
 
         }

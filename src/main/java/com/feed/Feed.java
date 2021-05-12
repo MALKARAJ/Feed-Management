@@ -12,8 +12,20 @@ public class Feed {
 	boolean like;
 	int likes;
 	String error;
+	String userId;
 	
-    public boolean isLike() {
+	
+	
+	
+    public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	public boolean isLike() {
 		return like;
 	}
 
@@ -73,11 +85,12 @@ public class Feed {
 
 	@Override
 	public String toString() {
-		return "Feed [feed_id=" + feed_id + ", feed_content=" + feed_content + ", date=" + date + ", category="
-				+ category + "]";
+		return "Feed [feed_id=" + feed_id + ", feed_content=" + feed_content + ", date=" + date + ", updateDate="
+				+ updateDate + ", category=" + category + ", like=" + like + ", likes=" + likes + ", error=" + error
+				+ ", userId=" + userId + "]";
 	}
 
-
+	
 
 
 }

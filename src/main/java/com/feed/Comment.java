@@ -7,11 +7,20 @@ public class Comment {
 	String feed_id;
 	String comment_id;
 	String comment;
+	String user_id;
 	Date updateDate;
 	Date date;
 	int likes;
 	boolean like;
 	String error;
+	
+	
+	public String getUser_id() {
+		return user_id;
+	}
+	public void setUser_id(String user_id) {
+		this.user_id = user_id;
+	}
 	public String getFeed_id() {
 		return feed_id;
 	}
@@ -64,15 +73,15 @@ public class Comment {
 	public void setLike(boolean like) {
 		this.like = like;
 	}
+	@Override
+	public String toString() {
+		return "Comment [feed_id=" + feed_id + ", comment_id=" + comment_id + ", comment=" + comment + ", user_id="
+				+ user_id + ", updateDate=" + updateDate + ", date=" + date + ", likes=" + likes + ", like=" + like
+				+ ", error=" + error + "]";
+	}
 
 
 
 	
-	@Override
-	public String toString() {
-		return "Comment [feed_id=" + feed_id + ", comment_id=" + comment_id + ", comment=" + comment + ", date=" + date
-				+ "]";
-	}
-
 
 }
