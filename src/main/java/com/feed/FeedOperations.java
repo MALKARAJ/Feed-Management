@@ -44,9 +44,9 @@ public class FeedOperations implements FeedDao{
 			   JSONObject obj= new JSONObject();  
 			if(feed.getProperty("delete").toString().equals("false")) 
 			   {  
-				   obj.put("feedId", f.getFeed_id());
+				   obj.put("feed_id", f.getFeed_id());
 				   obj.put("userId",feed.getProperty("userId").toString());
-				   obj.put("content", feed.getProperty("feed_content").toString());
+				   obj.put("feed_content", feed.getProperty("feed_content").toString());
 				   obj.put("category", feed.getProperty("category").toString());
 				   long d=Long.parseLong(feed.getProperty("date").toString());
 	 			   Date date=new Date(d);
@@ -58,9 +58,9 @@ public class FeedOperations implements FeedDao{
 				   for (Entity e : ds.prepare(qq).asIterable()) {
 					   if (e!=null && e.getProperty("delete").toString().equals("false")) {
 						JSONObject commentobj = new JSONObject();
-						commentobj.put("feedId", e.getProperty("feed_id").toString());
+						commentobj.put("feed_id", e.getProperty("feed_id").toString());
 						commentobj.put("comment", new StringBuilder(e.getProperty("comment").toString()));
-						commentobj.put("commentId", e.getProperty("comment_id").toString());
+						commentobj.put("comment_id", e.getProperty("comment_id").toString());
 						commentobj.put("userId", e.getProperty("userId").toString());
 						long d1 = Long.parseLong(e.getProperty("date").toString());
 						Date date1 = new Date(d1);
@@ -91,8 +91,8 @@ public class FeedOperations implements FeedDao{
 				   QueryResultList<Entity> results=ds.prepare(q).asQueryResultList(fetchOptions);
 				   for (Entity entity : results) {	
 						   JSONObject obj= new JSONObject();
-						   obj.put("feedId", entity.getProperty("feed_id").toString());
-						   obj.put("content", entity.getProperty("feed_content").toString());
+						   obj.put("feed_id", entity.getProperty("feed_id").toString());
+						   obj.put("feed_content", entity.getProperty("feed_content").toString());
 						   obj.put("category", entity.getProperty("category").toString());
 						   obj.put("userId", entity.getProperty("userId").toString());
 						   long d=Long.parseLong(entity.getProperty("date").toString());
@@ -104,9 +104,9 @@ public class FeedOperations implements FeedDao{
 						   for (Entity e : ds.prepare(qq).asIterable()) {
 							   if (e!=null ) {
 								JSONObject commentobj = new JSONObject();
-								commentobj.put("feedId", e.getProperty("feed_id").toString());
+								commentobj.put("feed_id", e.getProperty("feed_id").toString());
 								commentobj.put("comment", e.getProperty("comment").toString());
-								commentobj.put("commentId", e.getProperty("comment_id").toString());
+								commentobj.put("comment_id", e.getProperty("comment_id").toString());
 								commentobj.put("userId", e.getProperty("userId").toString());
 								long d1 = Long.parseLong(e.getProperty("date").toString());
 								Date date1 = new Date(d1);
@@ -194,8 +194,8 @@ public class FeedOperations implements FeedDao{
 		   for (Entity entity : ds.prepare(q).asIterable()) 
 		   {	
 				   JSONObject obj= new JSONObject();
-				   obj.put("feedId", entity.getProperty("feed_id").toString());
-				   obj.put("content", entity.getProperty("feed_content").toString());
+				   obj.put("feed_id", entity.getProperty("feed_id").toString());
+				   obj.put("feed_content", entity.getProperty("feed_content").toString());
 				   obj.put("category", entity.getProperty("category").toString());
 				   long d=Long.parseLong(entity.getProperty("date").toString());
 				   obj.put("userId", entity.getProperty("userId").toString());
@@ -209,9 +209,9 @@ public class FeedOperations implements FeedDao{
 					   if (e!=null) 
 					   {
 						JSONObject commentobj = new JSONObject();
-						commentobj.put("feedId", e.getProperty("feed_id").toString());
+						commentobj.put("feed_id", e.getProperty("feed_id").toString());
 						commentobj.put("comment", e.getProperty("comment").toString());
-						commentobj.put("commentId", e.getProperty("comment_id").toString());
+						commentobj.put("comment_id", e.getProperty("comment_id").toString());
 						long d1 = Long.parseLong(e.getProperty("date").toString());
 						commentobj.put("userId", e.getProperty("userId").toString());
 						Date date1 = new Date(d1);
@@ -239,8 +239,8 @@ public class FeedOperations implements FeedDao{
 		   Query q=new Query("Feed").addSort("Updation_date", SortDirection.DESCENDING).setFilter(catdel);
 		   for (Entity entity : ds.prepare(q).asIterable()) {	
 				   JSONObject obj= new JSONObject();
-				   obj.put("feedId", entity.getProperty("feed_id").toString());
-				   obj.put("content", entity.getProperty("feed_content").toString());
+				   obj.put("feed_id", entity.getProperty("feed_id").toString());
+				   obj.put("feed_content", entity.getProperty("feed_content").toString());
 				   obj.put("category", entity.getProperty("category").toString());
 				   long d=Long.parseLong(entity.getProperty("date").toString());
 				   Date date=new Date(d);
@@ -252,9 +252,9 @@ public class FeedOperations implements FeedDao{
 					   if (e!=null && e.getProperty("delete").toString().equals("false")) 
 					   {
 						JSONObject commentobj = new JSONObject();
-						commentobj.put("feedId", e.getProperty("feed_id").toString());
+						commentobj.put("feed_id", e.getProperty("feed_id").toString());
 						commentobj.put("comment", e.getProperty("comment").toString());
-						commentobj.put("commentId", e.getProperty("comment_id").toString());
+						commentobj.put("comment_id", e.getProperty("comment_id").toString());
 						long d1 = Long.parseLong(e.getProperty("date").toString());
 						Date date1 = new Date(d1);
 						commentobj.put("date", date1);

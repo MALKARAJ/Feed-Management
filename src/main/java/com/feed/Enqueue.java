@@ -1,5 +1,6 @@
 package com.feed;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -47,46 +48,20 @@ public class Enqueue extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	    
 		try {
-		    FetchOptions fetchOptions = FetchOptions.Builder.withLimit(100);
+		    StringBuffer jb = new StringBuffer();
+		    PrintWriter out=response.getWriter();
+		    String line = null;
+		    BufferedReader reader = request.getReader();
+		    while ((line = reader.readLine()) != null)
+		        jb.append(line);
+		    String str=jb.toString();
+
+	        JSONObject json=new JSONObject(str);
+	        System.out.println(json);
 		    Queue queue = QueueFactory.getDefaultQueue();
-			DatastoreService ds= DatastoreServiceFactory.getDatastoreService(); 
-			HttpSession session=request.getSession(false);
-			Filter cat = new FilterPredicate("userId", FilterOperator.EQUAL,session.getAttribute("userId"));
-			Filter del = new FilterPredicate("delete", FilterOperator.EQUAL,false);
-			CompositeFilter catdel =   CompositeFilterOperator.and(cat, del);
-			Query q=new Query("Feed").setFilter(catdel);		
-			q.addProjection(new PropertyProjection("feed_id",String.class));
-		    String currentCursorString = "";
-		    List<String> list=new ArrayList<String>();
-		    JSONObject obj=new JSONObject();
-		    QueryResultList<Entity> results = ds.prepare(q).asQueryResultList(fetchOptions);
-		    String nextCursorString = results.getCursor().toWebSafeString();	
+		    queue.add(TaskOptions.Builder.withUrl("/worker").param("key", json.toString()));
 
-		    while(results.size()!=0)
-		    {
-		    	for(Entity e:results)
-		    	{
-		    		list.add(e.getProperty("feed_id").toString());
-		    	}
-		    	//obj.put("feedId", list);
-		    	queue.add(TaskOptions.Builder.withUrl("/worker").param("key", list.toString()));
-		    	//obj.clear();
-		    	list.clear();
-		        if (nextCursorString != null) {
-		            fetchOptions.startCursor(Cursor.fromWebSafeString(nextCursorString));
-		          }
-		    	results = ds.prepare(q).asQueryResultList(fetchOptions);
-		    	currentCursorString=nextCursorString;
-			    nextCursorString = results.getCursor().toWebSafeString();	
-		    }
-			response.sendRedirect("/");
 
-			/*PrintWriter out=response.getWriter();	
-			JSONObject obj1=new JSONObject();
-			obj1.put("success",true);
-			obj1.put("code", 200);
-			obj1.put("message", "deletion added to queue");
-			out.println(obj1);*/
 		} 
 		catch (JSONException e) {
 			e.printStackTrace();

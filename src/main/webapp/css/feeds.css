@@ -4,6 +4,7 @@
 *{
 	scroll-behavior:smooth;
 }
+
 .headerContainer{
 	position:fixed;
 	background-color:#c8ebeb;
@@ -27,6 +28,7 @@ input[type=button]{
 }
 body{
 	margin:0px;
+	background-color: #e4ffff;
 }
 a{
 	cursor:pointer;
@@ -59,7 +61,7 @@ li{
 	margin-right:300px;
 	display:flex;
 }
-.container{
+.feedContainer{
 	display:flex;
 	flex-direction:column;
 }
@@ -166,8 +168,7 @@ li{
 	overflow-y:scroll;
 }
 #load_more{
-	   margin-left:300px;
-	   margin-right:300px;
+	  text-align:center;
 	
 }
 #message{
@@ -181,7 +182,6 @@ li{
 }
 #myData{
 	padding-top:300px;    
-	background-color: #e4ffff;
 }
 @keyframes fadeIn {
     from { opacity:0; }

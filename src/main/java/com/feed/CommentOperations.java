@@ -37,9 +37,9 @@ public class CommentOperations implements CommentDao{
 
 			   if(comment.getProperty("delete").toString().equals("false")) 
 			   {
-				   obj.put("feedId", c.getFeed_id());
+				   obj.put("feed_id", c.getFeed_id());
 				   obj.put("comment", comment.getProperty("comment").toString());
-				   obj.put("commentId", comment.getProperty("comment_id").toString());
+				   obj.put("comment_id", comment.getProperty("comment_id").toString());
 				   obj.put("userId", comment.getProperty("userId"));
 				   long d=Long.parseLong(comment.getProperty("date").toString());
 				   Date date=new Date(d);
@@ -57,7 +57,7 @@ public class CommentOperations implements CommentDao{
 		   JSONObject obj= new JSONObject();
 		   if(e.getProperty("delete").toString().equals("false")) 
 		   {
-			   obj.put("feedId", c.getFeed_id());
+			   obj.put("feed_id", c.getFeed_id());
 			   obj.put("content", e.getProperty("feed_content").toString());
 			   obj.put("category", e.getProperty("category").toString());
 			   long d=Long.parseLong(e.getProperty("date").toString());
@@ -71,9 +71,9 @@ public class CommentOperations implements CommentDao{
 			   Query q=new Query("Comment").setAncestor(e.getKey()).addSort("Updation_date", SortDirection.DESCENDING).setFilter(delete);
 			   for (Entity entity : ds.prepare(q).asIterable()) {	
 					   JSONObject obj1= new JSONObject();
-					   obj1.put("feedId", c.getFeed_id());
+					   obj1.put("feed_id", c.getFeed_id());
 					   obj1.put("comment", entity.getProperty("comment").toString());
-					   obj1.put("commentId", entity.getProperty("comment_id").toString());
+					   obj1.put("comment_id", entity.getProperty("comment_id").toString());
 					   obj1.put("userId", entity.getProperty("userId"));
 
 					   long d1=Long.parseLong(entity.getProperty("date").toString());

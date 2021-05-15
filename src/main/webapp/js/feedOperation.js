@@ -5,20 +5,21 @@ var getFeeds=(cursor="")=>{
 
 
 
-	if(Cache.has(cursor))
-	{
-		
+	if(cursor=="" && Cache.has("Feeds"))
+	{   
+		document.getElementById("myData").innerHTML="";
 		console.log("From cache");
+		console.log(cache.get("Feeds"))
 		done=false;
 		window.onscroll = ()=> {
 		    if (done==false && (window.innerHeight + window.scrollY) >= document.body.scrollHeight) {
 		         //console.log("Bottom of page");
 				 done=true;
-				 getFeeds(Cache.get(cursor)["cursor"])
+				 getFeeds(Cache.get("cursor"))
 				
 		     }
 		}
-		appendData(Cache.get(cursor),cursor);
+		appendData(Cache.get("Feeds"),Cache.get("cursor"))
 		selectFeed()	
 	}
 	else
@@ -32,7 +33,29 @@ var getFeeds=(cursor="")=>{
 		{
 			var data = JSON.parse(this.responseText);
 			if(data["success"]==true){
-				Cache.set(cursor,data);
+				console.log(Cache.has("Feeds"))
+				if(Cache.has("Feeds"))
+				{
+					console.log("in")
+					var r=Cache.get("Feeds")
+					for(let i=0;i<data.feeds.length;i++)
+					{
+						r["feeds"].push(data.feeds[i])
+					}
+					Cache.set("cursor",data.cursor);	
+					delete r["cursor"]				
+					Cache.set("Feeds",r);
+										
+				}
+				else
+				{
+					console.log("in else")
+					Cache.set("cursor",data.cursor);					
+					delete data["cursor"]
+					Cache.set("Feeds",data);
+				}
+
+				console.log(Cache.get("Feeds"))
 				appendData(data,data.cursor);				
 				selectFeed()
 				done=false;
@@ -40,7 +63,7 @@ var getFeeds=(cursor="")=>{
 				    if (done==false && (window.innerHeight + window.scrollY) >= document.body.scrollHeight) {
 				         //console.log("Bottom of page");
 						 done=true;
-						 getFeeds(Cache.get(cursor)["cursor"])
+						 getFeeds(Cache.get("cursor"))
 						
 				     }
 				}
@@ -166,10 +189,13 @@ var addFeed=()=>{
 			xhr.setRequestHeader('Content-Type', 'application/json');
 			xhr.send(JSON.stringify(obj));
 			xhr.onload = function() {
-			document.getElementById("addFeed").value="";
-			document.getElementById("myData").innerHTML="";
-			Cache.clear();
-			getFeeds();
+			    var data = JSON.parse(this.responseText);
+				data.data["comments"]=[]
+				cache.get("Feeds")["feeds"].unshift(data.data)
+				document.getElementById("addFeed").value="";
+
+				//Cache.clear()
+				getFeeds();
 			}
 		}
 	else{
@@ -178,7 +204,7 @@ var addFeed=()=>{
 }
 
 
-var updateFeed=(currentCursor,id,cat)=>{
+var updateFeed=(id,cat)=>{
 	
 		//var content=document.getElementById("updateText"+id).value;
 		var lis = document.getElementById("datac"+id).getElementsByTagName("li")[0];
@@ -194,10 +220,7 @@ var updateFeed=(currentCursor,id,cat)=>{
 		xhr.setRequestHeader('Content-Type', 'application/json');
 		xhr.send(JSON.stringify(obj));
 		xhr.onload = function() {
-		console.log(currentCursor)
-		console.log(cache)
-		Cache.del(currentCursor);
-		console.log(cache)
+
 		updateSingleFeed(id);
 		}
 	}
@@ -236,22 +259,6 @@ var deleteFeed=(id)=>{
 }
 
 
-/*
-var updateSingleFeed=(fid)=>{
-
-	var xhr = new XMLHttpRequest();
-	xhr.open("GET", "/feed/"+fid, true);
-	xhr.setRequestHeader('Content-Type', 'application/json');
-	xhr.send();
-	xhr.onload = function() {
-	  Cache.clear();
-	  var data = JSON.parse(this.responseText);
-	  var like=document.getElementById("flike"+fid);
-		like.innerText=data.feed.likes;			
-
-	}
-}
-*/
 
 var updateSingleFeed=(fid)=>{
 
@@ -267,7 +274,7 @@ var updateSingleFeed=(fid)=>{
 	  like.innerText=data.feed.likes;	
 	  var element=document.getElementById("datac"+fid);
 	  txt=`	<ul>
-				<li>${data["feed"]["content"]}</li>
+				<li>${data["feed"]["feed_content"]}</li>
 				<li>${data["feed"]["date"]}</li>
 			</ul>`
 	  element.innerHTML=txt;
@@ -276,7 +283,7 @@ var updateSingleFeed=(fid)=>{
 }
 
 
-var appendData=(data,currentCursor)=> {
+var appendData=(data,nextCursor)=> {
 		var txt="";
 		var userId=document.getElementById("userId").value;
         var mainContainer = document.getElementById("myData");
@@ -284,62 +291,62 @@ var appendData=(data,currentCursor)=> {
 		//console.log("in append function");
 		var loadMore = document.getElementById("load_more");
 		//console.log("feed length="+data.feeds.length);
-		if(data.code=="200" && data.feeds.length!=0)
+		if(data.feeds.length!=0)
 		{
 		//console.log("Success");
 		//console.log(data)
 		noFeed.style.display="none";
         for (let i = 0; i < data.feeds.length; i++) 
 		{
-			txt+=`<div class="feed" id="${data["feeds"][i]["feedId"]}">
-						<div id="datac${data["feeds"][i]["feedId"]}" class="datac">
+			txt+=`<div class="feed" id="${data["feeds"][i]["feed_id"]}">
+						<div id="datac${data["feeds"][i]["feed_id"]}" class="datac">
 						<ul>
-							<li>${data["feeds"][i]["content"]}</li>
+							<li>${data["feeds"][i]["feed_content"]}</li>
 							<li>${data["feeds"][i]["date"]}</li>
 						</ul>
 						</div>
-						<div id="bar${data["feeds"][i]["feedId"]}" class="bar">
+						<div id="bar${data["feeds"][i]["feed_id"]}" class="bar">
 							
-						  <div id="opBar${data["feeds"][i]["feedId"]}" class="opBars">	
-							<img alt="like" src="images/like.png" width="20" height="20" id="image" onclick="addLike('${data["feeds"][i]["userId"]}','${data["feeds"][i]["feedId"]}','${data["feeds"][i]["content"]}','${data["feeds"][i]["category"]}')"> &nbsp;
-							<wr id="flike${data["feeds"][i]["feedId"]}">${data["feeds"][i]["likes"]}</wr> &nbsp; &nbsp;	
-							<img src="images/comment.png" width="20" height="20" id="image${data["feeds"][i]["feedId"]}" onclick="toggle('mainComment${data["feeds"][i]["feedId"]}')"> &nbsp</a> <br><br>
+						  <div id="opBar${data["feeds"][i]["feed_id"]}" class="opBars">	
+							<img alt="like" src="images/like.png" width="20" height="20" id="image" onclick="addLike('${data["feeds"][i]["userId"]}','${data["feeds"][i]["feed_id"]}','${data["feeds"][i]["feed_content"]}','${data["feeds"][i]["category"]}')"> &nbsp;
+							<wr id="flike${data["feeds"][i]["feed_id"]}">${data["feeds"][i]["likes"]}</wr> &nbsp; &nbsp;	
+							<img src="images/comment.png" width="20" height="20" id="image${data["feeds"][i]["feed_id"]}" onclick="toggle('mainComment${data["feeds"][i]["feed_id"]}')"> &nbsp</a> <br><br>
 						  </div>
-						  <div id="dbBar${data["feeds"][i]["feedId"]}" class=opBars1>`
+						  <div id="dbBar${data["feeds"][i]["feed_id"]}" class=opBars1>`
 							if(data["feeds"][i]["userId"]==userId){
-							txt+=`	<a id="editFeed${data["feeds"][i]["feedId"]}" onclick="editFeed('${currentCursor}','datac${data["feeds"][i]["feedId"]}','${data["feeds"][i]["feedId"]}','${data["feeds"][i]["category"]}')">edit</a> &nbsp;&nbsp;&nbsp;
-								<a onclick="deleteFeed('${data["feeds"][i]["feedId"]}')">delete</a>`
+							txt+=`	<a id="editFeed${data["feeds"][i]["feed_id"]}" onclick="editFeed('datac${data["feeds"][i]["feed_id"]}','${data["feeds"][i]["feed_id"]}','${data["feeds"][i]["category"]}')">edit</a> &nbsp;&nbsp;&nbsp;
+								<a onclick="deleteFeed('${data["feeds"][i]["feed_id"]}')">delete</a>`
 								}
 						txt+=`		
 						  </div>
 						</div>	
-							<div id="mainComment${data["feeds"][i]["feedId"]}"  style="display:none;"><br>
-		  						<textarea class="addComment" id="addComment${data["feeds"][i]["feedId"]}" placeholder="Enter you comment for this feed"></textarea>
-		 						<input type="button" value="share" id="addComment${data["feeds"][i]["feedId"]}" onclick="addComment('${data["feeds"][i]["feedId"]}')">`
+							<div id="mainComment${data["feeds"][i]["feed_id"]}"  style="display:none;"><br>
+		  						<textarea class="addComment" id="addComment${data["feeds"][i]["feed_id"]}" placeholder="Enter you comment for this feed"></textarea>
+		 						<input type="button" value="share" id="addComment${data["feeds"][i]["feed_id"]}" onclick="addComment('${data["feeds"][i]["feed_id"]}')">`
 				if(data.feeds[i].comments.length>0)
 				{
-
+							console.log(data)
 								txt+=`<div class="commentContainer">`;
 								
 								for (let j = 0; j < data.feeds[i].comments.length; j++) 
 									{
 										txt+=`
-										   	        <div class="comments" id="com${data["feeds"][i]["comments"][j]["commentId"]}">
-														<div id="dataComment${data["feeds"][i]["comments"][j]["commentId"]}" class="dataComment">
+										   	        <div class="comments" id="com${data["feeds"][i]["comments"][j]["comment_id"]}">
+														<div id="dataComment${data["feeds"][i]["comments"][j]["comment_id"]}" class="dataComment">
 															<ul>
 																<li>${data["feeds"][i]["comments"][j]["comment"]}</li>
 																<li>${data["feeds"][i]["comments"][j]["date"]}</li>
 															</ul>
 														</div>
-														<div id="Cbar${data["feeds"][i]["comments"][j]["commentId"]}" class="Cbar">
-												  			<div id="cOpBar${data["feeds"][i]["comments"][j]["commentId"]}" class="opBars">
-												  				<img alt="like" src="images/like.png" width="20" height="20" id="image" onclick="addCommentLike('${data["feeds"][i]["comments"][j]["userId"]}','mainComment${data["feeds"][i]["feedId"]}','${data["feeds"][i]["feedId"]}','${data["feeds"][i]["comments"][j]["commentId"]}','${data["feeds"][i]["comments"][j]["comment"]}')"> &nbsp; &nbsp;
-												  				<wr id="clike${data["feeds"][i]["comments"][j]["commentId"]}">${data["feeds"][i]["comments"][j]["likes"]}</wr>
+														<div id="Cbar${data["feeds"][i]["comments"][j]["comment_id"]}" class="Cbar">
+												  			<div id="cOpBar${data["feeds"][i]["comments"][j]["comment_id"]}" class="opBars">
+												  				<img alt="like" src="images/like.png" width="20" height="20" id="image" onclick="addCommentLike('${data["feeds"][i]["comments"][j]["userId"]}','mainComment${data["feeds"][i]["feed_id"]}','${data["feeds"][i]["feed_id"]}','${data["feeds"][i]["comments"][j]["comment_id"]}','${data["feeds"][i]["comments"][j]["comment"]}')"> &nbsp; &nbsp;
+												  				<wr id="clike${data["feeds"][i]["comments"][j]["comment_id"]}">${data["feeds"][i]["comments"][j]["likes"]}</wr>
 															</div>`
 															if(userId==data["feeds"][i]["comments"][j]["userId"]){
-															txt+=`<div id="cdbBars${data["feeds"][i]["comments"][j]["commentId"]}" class="cOpBars1">
-																<a id="editComment${data["feeds"][i]["comments"][j]["commentId"]}" onclick="editComment('dataComment${data["feeds"][i]["comments"][j]["commentId"]}','${data["feeds"][i]["comments"][j]["commentId"]}','${data["feeds"][i]["feedId"]}')">edit</a> &nbsp;&nbsp;&nbsp;
-																<a onclick="deleteComment('mainComment${data["feeds"][i]["feedId"]}','${data["feeds"][i]["feedId"]}','${data["feeds"][i]["comments"][j]["commentId"]}')">delete</a>
+															txt+=`<div id="cdbBars${data["feeds"][i]["comments"][j]["comment_id"]}" class="cOpBars1">
+																<a id="editComment${data["feeds"][i]["comments"][j]["comment_id"]}" onclick="editComment('dataComment${data["feeds"][i]["comments"][j]["commentId"]}','${data["feeds"][i]["comments"][j]["comment_id"]}','${data["feeds"][i]["feed_id"]}')">edit</a> &nbsp;&nbsp;&nbsp;
+																<a onclick="deleteComment('mainComment${data["feeds"][i]["feed_id"]}','${data["feeds"][i]["feed_id"]}','${data["feeds"][i]["comments"][j]["comment_id"]}')">delete</a>
 															</div>
 															`}
 															
@@ -355,7 +362,7 @@ var appendData=(data,currentCursor)=> {
 
 						if(data.feeds.length=30)
 						{
-							txt1=`<a onclick="getFeeds('${data.cursor}')">Load more</a>`
+							txt1=`<a onclick="getFeeds('${nextCursor}')">Load more</a>`
 							loadMore.innerHTML=txt1;	
 						}
 						else
@@ -363,15 +370,8 @@ var appendData=(data,currentCursor)=> {
 							var loadMore = document.getElementById("load_more");
 							loadMore.innerHTML="";
 						}
-						if(currentCursor=="")
-						{
-							mainContainer.innerHTML=txt;
+						mainContainer.innerHTML+=txt;
 						
-						}
-						else
-						{
-							mainContainer.innerHTML+=txt;
-						}
 
 
 		}
@@ -400,22 +400,22 @@ var appendDeletedData=(data)=> {
 		{
         for (let i = 0; i < data.feeds.length; i++) 
 		{
-			txt+=`<div class="feed" id="${data["feeds"][i]["feedId"]}">
-						<div id="datac${data["feeds"][i]["feedId"]}" class="datac">
+			txt+=`<div class="feed" id="${data["feeds"][i]["feed_id"]}">
+						<div id="datac${data["feeds"][i]["feed_id"]}" class="datac">
 						<ul>
-							<li>${data["feeds"][i]["content"]}</li>
+							<li>${data["feeds"][i]["feed_content"]}</li>
 							<li>${data["feeds"][i]["date"]}</li>
 						</ul>
 						</div>
-						<div id="bar${data["feeds"][i]["feedId"]}" class="bar">
+						<div id="bar${data["feeds"][i]["feed_id"]}" class="bar">
 							
-						  <div id="opBar${data["feeds"][i]["feedId"]}" class="opBars">	
+						  <div id="opBar${data["feeds"][i]["feed_id"]}" class="opBars">	
 							<img alt="like" src="images/like.png" width="20" height="20" id="image" > &nbsp;
 							(${data["feeds"][i]["likes"]}) &nbsp; &nbsp;	
-							<img src="images/comment.png" width="20" height="20" id="image" onclick="toggle('mainComment${data["feeds"][i]["feedId"]}')"> &nbsp</a> <br><br>
+							<img src="images/comment.png" width="20" height="20" id="image" onclick="toggle('mainComment${data["feeds"][i]["feed_id"]}')"> &nbsp</a> <br><br>
 						  </div>
 
-						</div>	 {data["feeds"][i]["feedId"]}"  style="display:none;">`
+						</div>`
 													if(data.feeds[i].comments.length>0){
 
 								txt+=`<div class="commentContainer">`;
@@ -423,17 +423,17 @@ var appendDeletedData=(data)=> {
 			for (let j = 0; j < data.feeds[i].comments.length; j++) 
 				{
 					txt+=`
-					   	        <div class="comments" id="com${data["feeds"][i]["comments"][j]["commentId"]}">
-									<div id="dataComment${data["feeds"][i]["comments"][j]["commentId"]}" class="dataComment">
+					   	        <div class="comments" id="com${data["feeds"][i]["comments"][j]["comment_id"]}">
+									<div id="dataComment${data["feeds"][i]["comments"][j]["comment_id"]}" class="dataComment">
 										<ul>
 											<li>${data["feeds"][i]["comments"][j]["comment"]}</li>
 											<li>${data["feeds"][i]["comments"][j]["date"]}</li>
 										</ul>
 									</div>
-									<div id="Cbar${data["feeds"][i]["comments"][j]["commentId"]}" class="Cbar">
-							  			<div id="cOpBar${data["feeds"][i]["comments"][j]["commentId"]}" class="opBars">
+									<div id="Cbar${data["feeds"][i]["comments"][j]["comment_id"]}" class="Cbar">
+							  			<div id="cOpBar${data["feeds"][i]["comments"][j]["comment_id"]}" class="opBars">
 							  				<img alt="like" src="images/like.png" width="20" height="20" id="image"> &nbsp; &nbsp;
-							  				<wr id="clike${data["feeds"][i]["comments"][j]["commentId"]}">${data["feeds"][i]["comments"][j]["likes"]}</wr>
+							  				<wr id="clike${data["feeds"][i]["comments"][j]["comment_id"]}">${data["feeds"][i]["comments"][j]["likes"]}</wr>
 										</div>
 
 									</div>
@@ -458,7 +458,7 @@ var appendDeletedData=(data)=> {
 
 
 
-var editFeed=(currentCursor,feedDivId,feedId,cat)=>{
+var editFeed=(feedDivId,feedId,cat)=>{
 	
 	var lis = document.getElementById(feedDivId).getElementsByTagName("li");
 	var element=document.getElementById(feedDivId);	
@@ -468,7 +468,7 @@ var editFeed=(currentCursor,feedDivId,feedId,cat)=>{
 	lis[0].style["border"]="1px solid black";
 	//editb.remove();
 	txt=`<div class="editer" style="display:flex;">
-				<input type="button" id="update${feedId}" value="save" onclick="updateFeed('${currentCursor}','${feedId}','${cat}')">
+				<input type="button" id="update${feedId}" value="save" onclick="updateFeed('${feedId}','${cat}')">
 				<input type="button" value="close" onclick="updateSingleFeed('${feedId}')">
 		</div>`;
 	element.innerHTML+=txt;
@@ -482,20 +482,55 @@ var editFeed=(currentCursor,feedDivId,feedId,cat)=>{
 
 
 var deleteAllFeeds=()=>{
-	var check=document.getElementById("selection");
-
-	if(check.checked==true)
+	
+	//var check=document.getElementById("selection");
+	var r=Cache.get("Feeds")
+	var n=r["feeds"].length
+	var feeds={}
+	var single={}
+	var data=[]
+	var comments={}
+	var cData=[]
+	for(let i=0;i<=50 && i<n;i++)
 	{
-		Cache.clear();
-		var xhr = new XMLHttpRequest();
-		xhr.open("POST", "/enqueue",true);
-		xhr.send();	
-		xhr.onload=function (){
-			console.log("in delete")
-			showMessage()
+		single={}
+		cData=[]
+		single["feedId"]=r["feeds"][i]["feedId"]
+		var m=r["feeds"][i]["comments"].length
+		for(let j=0;j<m;j++)
+		{
+			comments={}
+			comments["commentId"]=r["feeds"][i]["comments"][j]["commentId"]
+			cData.push(comments)
+			
 		}
+		single["comments"]=cData
+		
+		data.push(single)
 	}
+	feeds["Feeds"]=data
+	console.log(feeds)
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", "/enqueue",true);
+	xhr.send(JSON.stringify(feeds));	
+	xhr.onload=function (){
+			if(cache.get("Feeds")["feeds"].length>=50)
+			{
+				cache.get("Feeds")["feeds"]=cache.get("Feeds")["feeds"].splice(50,cache.get("Feeds")["feeds"].length-1)
+				deleteAllFeeds()	
+			}
+			else
+			{
+				Cache.del("Feeds")
+
+			}				
+		}
+						
+	
+						
 }
+
+
 var showMessage=()=>{
 	var ele=document.getElementById("message");
 	var check=document.getElementById("selection");
@@ -506,16 +541,19 @@ var showMessage=()=>{
 				console.log("done");
 
 	     ele.style["display"] = "none";
-		getFeeds();
+		//getFeeds();
 
 	  }, 5000);
-	var inter=setInterval (()=>{Cache.clear();getFeeds()}, 2000);
+	document.getElementById("myData").innerHTML=""
+	console.log("cursor  "+ Cache.get("cursor"))
+	getFeeds(Cache.get("cursor"))
+	/*var inter=setInterval (()=>{document.getElementById("myData").innerHTML="";Cache.clear();getFeeds()}, 2000);
 	window.setTimeout(function () {
 				console.log("done");
 	
  		 clearInterval(inter);
 
-	  }, 8000);
+	  }, 8000);*/
 
 }
 
@@ -536,7 +574,6 @@ var selectFeed=()=>{
 		feeds.forEach(element => {
 	 	 element.style["border"] = "1px solid black";
 		 //element.style["background-color"]="";
-
 		});	
 	}
 
@@ -547,13 +584,13 @@ var selectFeed=()=>{
 var toggleFeed=(id)=>{
 	var feed=document.getElementById(id);
 	document.getElementById("myData").innerHTML="";
-	feed.onclick=function(){getDeletedFeeds()};
+	feed.onclick=function(){toggleBin("bin");getDeletedFeeds()};
 	feed.src="images/delete.png";
 }
 var toggleBin=(id)=>{
 	var bin=document.getElementById(id);
 	document.getElementById("myData").innerHTML="";
-	bin.onclick=function(){toggleFeed("bin");getFeeds()};
+	bin.onclick=function(){toggleFeed("bin");getFeeds("")};
 	bin.src="images/feed.png"
 	}
 

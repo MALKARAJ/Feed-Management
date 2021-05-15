@@ -18,7 +18,12 @@ if (session1!=null && session1.getAttribute("userId")!=null ){
 <link rel="stylesheet" href="./css/feeds.css">
 </head>
 <body  onload="getFeeds()">
-	<div class="container">
+
+
+
+
+
+	<div class="feedContainer">
 	 <div class="headerContainer">
 	  <div class="title"><h1>Feeds</h1></div>
 	  <img alt="add" src="images/plus.png" width="50" height="50" class="add" id="add"  style="display:block;" onclick="toggleAdd()">
@@ -42,7 +47,7 @@ if (session1!=null && session1.getAttribute("userId")!=null ){
 	
 		  <img src="images/delete.png" onclick="getDeletedFeeds()" id="bin" width="20" height="20">&nbsp;
 		  <input type="button" style="display:block;" onclick="add1000Feeds('<%out.print(session1.getAttribute("userId"));%>')" value="addFeeds"/>
-		  &nbsp;<input type="button" onclick="deleteAllFeeds()" value="Delete All"/>
+		  &nbsp;<input type="button" onclick="showMessage(),deleteAllFeeds()" value="Delete All"/>
 		  <input type="checkbox" onclick="selectFeed()" name="selection" id="selection"/>
 		  
 		  <div class="dataPro">
@@ -71,7 +76,7 @@ if (session1!=null && session1.getAttribute("userId")!=null ){
 	  </div>
 	  
   </div>
-  <a href="#myData"><img src="/images/arrow.png" id="arrow"></a>
+  <img src="/images/arrow.png" id="arrow"  onclick="window.scroll(0,1);">
   
   <div id="load_more"></div>
   
