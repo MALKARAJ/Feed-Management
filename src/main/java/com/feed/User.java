@@ -8,6 +8,8 @@ public class User {
 		 String email;
 		 String password;
 		 String userId;
+		 String image;
+		 Boolean active;
 		 Date date;
 		 String error;
 		public Date getDate() {
@@ -40,6 +42,19 @@ public class User {
 		public void setError(String error) {
 			this.error = error;
 		}
+		public String getImage() {
+			return image;
+		}
+		public void setImage(String image) {
+			this.image = image;
+		}
+		public Boolean getActive() {
+			return active;
+		}
+		public void setActive(Boolean active) {
+			this.active = active;
+		}
+		
 
 		
 }

@@ -68,6 +68,8 @@ public class Register extends HttpServlet {
 				user.setPassword(pass);
 				user.setUserId(id.toString());
 				user.setDate(date);
+				user.setImage("null.png");
+				user.setActive(true);
 				JSONObject obj=userOp.addUser(user);
 				JSONObject obj1=new JSONObject();
 	

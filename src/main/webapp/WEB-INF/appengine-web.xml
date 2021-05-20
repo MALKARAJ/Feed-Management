@@ -10,6 +10,7 @@
   </system-properties>
   <static-files>
     <include path="/images/**.png" expiration="1h"/>
+    <include path="/profile_pics/**.png" expiration="1h"/>
 	<include path="/css/**.css" expiration="1h"/>
 	<include path="/js/**.js" expiration="1h"/>
 </static-files>

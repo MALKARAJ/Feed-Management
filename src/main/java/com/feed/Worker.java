@@ -32,23 +32,26 @@ public class Worker extends HttpServlet {
 		JSONObject obj=new JSONObject(feeds);
         JSONArray arr = obj.getJSONArray("Feeds");
         List<Key> list=new ArrayList<Key>();
+        List<Key> list1=new ArrayList<Key>();
         for (int i = 0; i < arr.length(); i++) {
             String feed_id = arr.getJSONObject(i).getString("feedId");
             JSONArray comment=arr.getJSONObject(i).getJSONArray("comments");
+           // System.out.println(comment);
             Key k=KeyFactory.createKey("Feed",feed_id);
             for(int j=0;j<comment.length();j++)
             {
-	            String comment_id=comment.getJSONObject(i).getString("commentId");
+	            String comment_id=comment.getJSONObject(j).getString("commentId");
 	            Key key=new KeyFactory.Builder("Feed",feed_id)
 				        .addChild("Comment", comment_id)
 				        .getKey();
-	            list.add(key);            	
+	            list1.add(key);            	
             }
 
             list.add(k);
             
         }
         ds.delete(list);
+        ds.delete(list1);
 		/*for(int i=0;i<.size();i++)
 		{
 			Key k=KeyFactory.createKey("Feed",obj.getJSONArray("Feeds").get(i).);

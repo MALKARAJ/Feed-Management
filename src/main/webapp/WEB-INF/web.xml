@@ -16,5 +16,22 @@
     <filter-name>CacheControl</filter-name>
     <url-pattern>/images/*</url-pattern>
 	<dispatcher>REQUEST</dispatcher>  
-</filter-mapping> -->
+</filter-mapping> 
+<servlet>
+	<servlet-name>DestroyUser</servlet-name>
+	<servlet-class>com.feed.DeleteUser</servlet-class>
+</servlet>
+<servlet-mapping>
+	<servlet-name>DestroyUser</servlet-name>
+	<url-pattern>/destruction</url-pattern>
+
+</servlet-mapping>-->
+    <servlet>
+        <servlet-name>Cron</servlet-name>
+        <servlet-class>com.feed.DeleteUser</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Cron</servlet-name>
+        <url-pattern>/cron/*</url-pattern>
+    </servlet-mapping>
 </web-app>

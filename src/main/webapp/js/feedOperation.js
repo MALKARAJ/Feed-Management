@@ -325,7 +325,6 @@ var appendData=(data,nextCursor)=> {
 		 						<input type="button" value="share" id="addComment${data["feeds"][i]["feed_id"]}" onclick="addComment('${data["feeds"][i]["feed_id"]}')">`
 				if(data.feeds[i].comments.length>0)
 				{
-							console.log(data)
 								txt+=`<div class="commentContainer">`;
 								
 								for (let j = 0; j < data.feeds[i].comments.length; j++) 
@@ -495,18 +494,22 @@ var deleteAllFeeds=()=>{
 	{
 		single={}
 		cData=[]
-		single["feedId"]=r["feeds"][i]["feedId"]
-		var m=r["feeds"][i]["comments"].length
-		for(let j=0;j<m;j++)
+		if(r["feeds"][i]!=null)
 		{
-			comments={}
-			comments["commentId"]=r["feeds"][i]["comments"][j]["commentId"]
-			cData.push(comments)
+			single["feedId"]=r["feeds"][i]["feed_id"]
+			var m=r["feeds"][i]["comments"].length
+			for(let j=0;j<m;j++)
+			{
+				comments={}
+				comments["commentId"]=r["feeds"][i]["comments"][j]["comment_id"]
+				cData.push(comments)
+				
+			}
+			single["comments"]=cData
 			
+			data.push(single)			
 		}
-		single["comments"]=cData
-		
-		data.push(single)
+
 	}
 	feeds["Feeds"]=data
 	console.log(feeds)

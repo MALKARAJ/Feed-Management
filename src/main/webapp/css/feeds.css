@@ -9,7 +9,9 @@
 	position:fixed;
 	background-color:#c8ebeb;
 	width:100%;
-	box-shadow: 0 0 5px;
+    box-shadow: 0 0 10px 10px #94abab;
+   transition: .5s ease;
+	
 	margin-top:0px !important;
 	
 }
@@ -180,8 +182,32 @@ li{
 	padding:10px
 	
 }
+.sideBar{
+	display:flex;
+	flex-direction:column;
+	justify-content:center;
+	background-color:#94cad0;
+	height:100vh;
+	position:fixed;
+	 box-shadow: 0 0 28px 0px black;
+	
+	z-index:1;
+	
+}
+.sideBar img{
+	padding:10px;
+}
+.imageHover :hover{
+	background-color:#e4ffff;
+	
+}
+.active{
+		background-color:#e4ffff;
+	
+}
 #myData{
-	padding-top:300px;    
+	padding-top:300px; 
+	   
 }
 @keyframes fadeIn {
     from { opacity:0; }
