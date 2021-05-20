@@ -132,6 +132,7 @@
       <version>4.12</version>
       <scope>test</scope>
     </dependency>
+    
   </dependencies>
 
   <build>
@@ -141,7 +142,7 @@
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
-        <version>${appengine.maven.plugin.version}</version>
+        <version>2.2.0</version>
       </plugin>
 
 		
