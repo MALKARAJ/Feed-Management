@@ -33,12 +33,19 @@
   </dependencyManagement>
 
   <dependencies>
+  
     <!-- Compile/runtime dependencies -->
     <!-- https://mvnrepository.com/artifact/org.json/json -->
 <dependency>
     <groupId>org.json</groupId>
     <artifactId>json</artifactId>
     <version>20210307</version>
+</dependency>
+<dependency>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-dependency-plugin</artifactId>
+  <version>3.1.2</version>
+  <type>maven-plugin</type>
 </dependency>
 <!-- https://mvnrepository.com/artifact/org.mindrot/jbcrypt -->
 <dependency>
@@ -145,7 +152,6 @@
         <version>2.2.0</version>
       </plugin>
 
-		
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
