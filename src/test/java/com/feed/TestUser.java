@@ -38,8 +38,9 @@ public class TestUser {
 		
 	    user.setUserId("user123");
 	    user.setEmail("george@123");
-	    user.setPassword(BCrypt.hashpw("user123123",BCrypt.gensalt()));
-	    
+	    user.setPassword(BCrypt.hashpw("user123123",BCrypt.gensalt(10)));
+	    user.setActive(true);
+	    user.setImage("null.png");
         DateTime now = new DateTime();
         Date millis=new Date(now.getMillis());
         user.setDate(millis);
@@ -56,7 +57,8 @@ public class TestUser {
 		testRegister();
 		User u=new User();
 		u.setEmail("george@123");
-	    u.setPassword(BCrypt.hashpw("user123123", BCrypt.gensalt()));
+	    u.setPassword("user123123");
+	    u.setActive(true);
 		boolean b=user.userAuthenticator(u);
 		assertTrue(b);
 	}

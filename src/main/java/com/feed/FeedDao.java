@@ -9,8 +9,9 @@ import javax.servlet.http.HttpSession;
 
 import org.json.JSONObject;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 
 public interface FeedDao {
@@ -18,10 +19,10 @@ public interface FeedDao {
 	   public List<JSONObject> getDeletedFeeds(Feed f) throws JsonProcessingException, IOException, ParseException;
 	   public JSONObject getNewsFeeds(String startCursor) throws JsonProcessingException, IOException, ParseException, CacheException;
 	   public void updateFeed(Feed f) throws EntityNotFoundException;
-	   public String addFeed(Feed f);
+	   public String addFeed(Feed f) throws CacheException;
 	   public void deleteFeed(Feed f) throws EntityNotFoundException;
 	   public void setLikePojo(Feed f) throws EntityNotFoundException;
-	   public List<JSONObject> getCategoryFeeds(String category) throws JsonProcessingException, IOException, ParseException;      
+	   public JSONObject getCategoryFeeds(String category,String startCursor) throws JsonProcessingException, IOException, ParseException, CacheException;      
 	   
 
 }

@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+
+import javax.cache.CacheException;
+
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
@@ -50,7 +53,7 @@ public class TestFeed {
 	}
 	
 	@Test
-	public void testAddFeed() throws EntityNotFoundException {
+	public void testAddFeed() throws EntityNotFoundException, CacheException {
 		DatastoreService ds=DatastoreServiceFactory.getDatastoreService();
 		FeedDao feed=new FeedOperations();
 		Feed f=new Feed();
@@ -70,7 +73,7 @@ public class TestFeed {
 	    }
 	
 	@Test
-	public void testUpdateFeed() throws EntityNotFoundException {
+	public void testUpdateFeed() throws EntityNotFoundException, CacheException {
 		DatastoreService ds=DatastoreServiceFactory.getDatastoreService();
 		testAddFeed();
 		FeedDao feed=new FeedOperations();
@@ -93,7 +96,7 @@ public class TestFeed {
 	    
 	}
 	@Test
-	public void testFeedLike() throws EntityNotFoundException
+	public void testFeedLike() throws EntityNotFoundException, CacheException
 	{
 		DatastoreService ds=DatastoreServiceFactory.getDatastoreService();
 		testAddFeed();
@@ -132,7 +135,7 @@ public class TestFeed {
 	}
 	
 	@Test
-	public void testFeedUpdateValidator() throws JsonProcessingException, IOException, ParseException, EntityNotFoundException, InterruptedException
+	public void testFeedUpdateValidator() throws JsonProcessingException, IOException, ParseException, EntityNotFoundException, InterruptedException, CacheException
 	{	
 		testAddFeed();
 		Validator v=new Validator();
@@ -147,7 +150,7 @@ public class TestFeed {
 	}
 	
 	@Test
-	public void testUpdateTime() throws InterruptedException, EntityNotFoundException, ParseException
+	public void testUpdateTime() throws InterruptedException, EntityNotFoundException, ParseException, CacheException
 	{
 		testAddFeed();
 		Validator v=new Validator();
@@ -165,7 +168,7 @@ public class TestFeed {
 	}
 	
 	@Test
-	public void testDelete() throws EntityNotFoundException
+	public void testDelete() throws EntityNotFoundException, CacheException
 	{
 		DatastoreService ds=DatastoreServiceFactory.getDatastoreService();
 		TestComments tc=new TestComments();

@@ -12,7 +12,9 @@ var getProfile=()=>{
 		}
 }
 
+/*
 var appendProfile=(data)=>{
+	document.getElementById("load_more").innerHTML=""
 	var element=document.getElementById("myProfile")
 	var element1=document.getElementById("profileHeader")
 	txt=`<h2>Profile</h2>`
@@ -42,9 +44,53 @@ var appendProfile=(data)=>{
 	element1.innerHTML=txt
 	element.innerHTML=txt1
 }
+*/
+
+var appendProfile=(data)=>{
+		document.getElementById("load_more").innerHTML=""
+		document.getElementById("proPic").src="/serve?blob-key="+data.user.image
+		document.getElementById("emailHolder").innerHTML=data.user.email
+
+}
+/*
+var appendProfile=(data)=>{
+	
+	document.getElementById("load_more").innerHTML=""
+	var element=document.getElementById("myProfile")
+	var element1=document.getElementById("profileHeader")
 
 
+	txt=`<h2>Profile</h2>`
+	txt1=`<div class="email">
+		
+			<div class="profilePic" id="profilePic">
+				<div class="img__wrap">
+					<h4 id="text1">Change pic</h4>
+					<img id="proPic" src="<a href='localhost//8080//serve?blob-key=${data.user.image}'></a>" onclick="clicker()" >
+				</div>
+				<form id="myForm"  action="${url}" method="POST" enctype="multipart/form-data">
 
+  		    		<input type="file" id="img" name="img" onchange="preview()" accept="image/*"  style="display:none;"    ><br><br>
+
+					<input type="submit" id="subButton"  value="submit"  style="display:none;">
+					<input type="text" name="email"  style="display:none;" >
+					<input type="text" name="userId"  style="display:none;">
+				<form>
+			</div>
+			<div class="data">
+				<h4>Email:</h4>${data.user.email}
+			</div>		  
+ 		  </div>`
+
+
+			
+
+	element1.innerHTML=txt
+	element.innerHTML=txt1
+}
+
+
+*/
 var clicker=()=>{
 		document.getElementById("img").click()
 		}
@@ -85,11 +131,12 @@ uploadProfile=(email,userId,previousImage)=>{
 		xhr.onload = function() 
 		{
 			var data=JSON.parse(this.responseText);
-			getProfile()
 
 		}
-		//window.setTimeout(function () {
-	    //}, 2000);
+		window.setTimeout(function () {
+			getProfile()
+
+	    }, 2000);
 		console.log("uploaded")
 }		
 		
@@ -110,7 +157,6 @@ var toggleProfile=()=>{
 	var profileHeader=document.getElementById("profileHeader");
 	var myProfile=document.getElementById("myProfile");
 	arrow.style.display="none";
-		document.getElementById("load_more").innerHTML=""
 
 	myData.style.display="none";
 	headerContainer.style.display="none";

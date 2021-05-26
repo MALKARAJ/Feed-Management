@@ -4,7 +4,10 @@
 *{
 	scroll-behavior:smooth;
 }
-
+.tag{
+    box-shadow: 0 0 4px 0px black;
+    width: fit-content;
+}
 .headerContainer{
 	position:fixed;
 	background-color:#c8ebeb;
@@ -14,6 +17,10 @@
 	
 	margin-top:0px !important;
 	
+}
+.catTag{
+	background-color: #e4ffff;
+	height:fit-content;
 }
 input[type=button]{
 	background-color:#d5f5f5;
@@ -182,6 +189,7 @@ li{
 	padding:10px
 	
 }
+
 .sideBar{
 	display:flex;
 	flex-direction:column;
@@ -189,11 +197,11 @@ li{
 	background-color:#94cad0;
 	height:100vh;
 	position:fixed;
-	 box-shadow: 0 0 28px 0px black;
-	
+	transition: 0.3s;
+    box-shadow: 0 0 28px 0px black;
 	z-index:1;
-	
 }
+
 .sideBar img{
 	padding:10px;
 }

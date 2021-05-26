@@ -135,14 +135,14 @@ public class UserOperations implements UserDao{
 
 	}
 	@Override
-	public Boolean udpateImage(String email,String userId,String name) throws EntityNotFoundException {
+	public Boolean udpateImage(String userId,String name) throws EntityNotFoundException {
 		
 		DatastoreService ds= DatastoreServiceFactory.getDatastoreService(); 
 		System.out.println(userId);
 		Key k=KeyFactory.createKey("User", userId);
 		Entity entity=ds.get(k);
 		if(entity!=null) {
-			entity.setProperty("image",name+".png");
+			entity.setProperty("image",name);
 			ds.put(entity);
 			return true;
 		}

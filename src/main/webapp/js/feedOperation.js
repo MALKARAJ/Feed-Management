@@ -9,7 +9,7 @@ var getFeeds=(cursor="")=>{
 	{   
 		document.getElementById("myData").innerHTML="";
 		console.log("From cache");
-		console.log(cache.get("Feeds"))
+		console.log(Cache.get("Feeds"))
 		done=false;
 		window.onscroll = ()=> {
 		    if (done==false && (window.innerHeight + window.scrollY) >= document.body.scrollHeight) {
@@ -19,7 +19,7 @@ var getFeeds=(cursor="")=>{
 				
 		     }
 		}
-		appendData(Cache.get("Feeds"),Cache.get("cursor"))
+		appendData(Cache.get("Feeds"),Cache.get("cursor"),1)
 		selectFeed()	
 	}
 	else
@@ -56,7 +56,7 @@ var getFeeds=(cursor="")=>{
 				}
 
 				console.log(Cache.get("Feeds"))
-				appendData(data,data.cursor);				
+				appendData(data,data.cursor,1);				
 				selectFeed()
 				done=false;
 				window.onscroll = ()=> {
@@ -117,28 +117,41 @@ var add1000Feeds=(userId)=>{
 		getFeeds()
 	}
 	
+var reset=()=>{
+		document.getElementById("myData").innerHTML="";
 
+}
 
-var getCategoryFeed=()=>{
+var getCategoryFeed=(cursor="")=>{
 		var category=document.getElementById("sort").selectedOptions[0].value;
-document.getElementById("myData").innerHTML="";
 			var xhr = new XMLHttpRequest();
 			if(category==="All")
 			{
 				//document.getElementById("myData").innerHTML="";
+
 				getFeeds();
 
 			}
 			else
 			{			
 				console.log("From server")
-				xhr.open("GET", "/feed/category/"+category, true);
+				xhr.open("GET", "/feed/category/"+category+"?cursor="+cursor, true);
 				xhr.setRequestHeader('Content-Type', 'application/json');
 				xhr.send();
 				xhr.onload = function() {
 				  var data = JSON.parse(this.responseText);
-				  toggleFeed("bin");
-				  appendData(data);
+				  console.log("cat "+data)
+				  appendData(data,data.cursor,2);
+				done=false;
+
+				window.onscroll = ()=> {
+						    if (done==false && (window.innerHeight + window.scrollY) >= document.body.scrollHeight) {
+						         //console.log("Bottom of page");
+								 done=true;
+								 getCategoryFeed(data.cursor)
+								
+						     }
+					}
 				}
 			}		
 }
@@ -191,7 +204,12 @@ var addFeed=()=>{
 			xhr.onload = function() {
 			    var data = JSON.parse(this.responseText);
 				data.data["comments"]=[]
-				cache.get("Feeds")["feeds"].unshift(data.data)
+				if(cache.has("Feeds"))
+				{
+					cache.get("Feeds")["feeds"].unshift(data.data)
+
+				}
+
 				document.getElementById("addFeed").value="";
 
 				//Cache.clear()
@@ -204,14 +222,16 @@ var addFeed=()=>{
 }
 
 
-var updateFeed=(id,cat)=>{
+var updateFeed=(id)=>{
 	
 		//var content=document.getElementById("updateText"+id).value;
 		var lis = document.getElementById("datac"+id).getElementsByTagName("li")[0];
 		//var category=document.getElementById("cat"+id).selectedOptions[0].value;
 		lis=lis.innerText.replace(/(\n)/gm," ");
 		var userId=document.getElementById("userId").value;
-		var obj = {"feedId":id,"content":lis,"category":cat,"like":"false","userId":userId};
+		var category=document.getElementById("sort"+id).selectedOptions[0].value;
+		var obj = {"feedId":id,"content":lis,"category":category,"like":"false","userId":userId};
+		document.getElementById("tag"+id).style.display="block"
 		if(isValidFeedUpdate(obj)){
 			
 		console.log(obj);
@@ -220,8 +240,9 @@ var updateFeed=(id,cat)=>{
 		xhr.setRequestHeader('Content-Type', 'application/json');
 		xhr.send(JSON.stringify(obj));
 		xhr.onload = function() {
+			    var data = JSON.parse(this.responseText);
 
-		updateSingleFeed(id);
+				appendSingleFeed(data);
 		}
 	}
 }
@@ -237,9 +258,10 @@ var addLike=(uid,id,content,category)=>{
 		xhr.send(JSON.stringify(obj));
 		xhr.onload = function() {
 						Cache.clear();
-
-			 updateSingleFeed(id);
-		}
+						var data = JSON.parse(this.responseText);
+						var like=document.getElementById("flike"+id);
+ 	  					like.innerText=data.feed.likes;			
+			}
 }
 
 
@@ -269,21 +291,60 @@ var updateSingleFeed=(fid)=>{
 	xhr.onload = function() {
 	  Cache.clear();
 	  var data = JSON.parse(this.responseText);
-	  var like=document.getElementById("flike"+fid);
+	  appendSingleFeed(data)
+/*	  var like=document.getElementById("flike"+fid);
 	  console.log(data)
 	  like.innerText=data.feed.likes;	
 	  var element=document.getElementById("datac"+fid);
 	  txt=`	<ul>
 				<li>${data["feed"]["feed_content"]}</li>
 				<li>${data["feed"]["date"]}</li>
+				<li class="tag" id="tag${fid}">${data["feed"]["category"]}</li>
+
 			</ul>`
 	  element.innerHTML=txt;
-
+*/
 	}
 }
 
 
-var appendData=(data,nextCursor)=> {
+
+var appendSingleFeed=(data)=>{
+				var userId=document.getElementById("userId").value;
+
+				txt=`
+						<div id="datac${data["feed"]["feed_id"]}" class="datac">
+						<ul>
+							<li>${data["feed"]["feed_content"]}</li>
+							<li>${data["feed"]["date"]}</li>
+							<li class="tag" id="tag${data.feed["feed_id"]}">${data["feed"]["category"]}</li>
+						</ul>
+						</div>
+						<div id="bar${data["feed"]["feed_id"]}" class="bar">
+							
+						  <div id="opBar${data["feed"]["feed_id"]}" class="opBars">	
+							<img alt="like" src="images/like.png" width="20" height="20" id="image" onclick="addLike('${data["feed"]["userId"]}','${data["feed"]["feed_id"]}','${data["feed"]["feed_content"]}','${data["feed"]["category"]}')"> &nbsp;
+							<wr id="flike${data["feed"]["feed_id"]}">${data["feed"]["likes"]}</wr> &nbsp; &nbsp;	
+							<img src="images/comment.png" width="20" height="20" id="image${data["feed"]["feed_id"]}" onclick="toggle('mainComment${data["feed"]["feed_id"]}')"> &nbsp</a> <br><br>
+						  </div>
+						  <div id="dbBar${data["feed"]["feed_id"]}" class=opBars1>`
+							if(data["feed"]["userId"]==userId){
+							txt+=`	<a id="editFeed${data["feed"]["feed_id"]}" onclick="editFeed('datac${data["feed"]["feed_id"]}','${data["feed"]["feed_id"]}','${data["feed"]["category"]}')">edit</a> &nbsp;&nbsp;&nbsp;
+								<a onclick="deleteFeed('${data["feed"]["feed_id"]}')">delete</a>`
+								}
+						txt+=`		
+						  </div>
+							
+						</div>	
+							`
+								
+					document.getElementById("mainFeed"+data.feed.feed_id).innerHTML=txt;
+}
+
+
+
+
+var appendData=(data,nextCursor,fn)=> {
 		var txt="";
 		var userId=document.getElementById("userId").value;
         var mainContainer = document.getElementById("myData");
@@ -299,10 +360,12 @@ var appendData=(data,nextCursor)=> {
         for (let i = 0; i < data.feeds.length; i++) 
 		{
 			txt+=`<div class="feed" id="${data["feeds"][i]["feed_id"]}">
+						<div id="mainFeed${data["feeds"][i]["feed_id"]}">
 						<div id="datac${data["feeds"][i]["feed_id"]}" class="datac">
 						<ul>
 							<li>${data["feeds"][i]["feed_content"]}</li>
 							<li>${data["feeds"][i]["date"]}</li>
+							<li class="tag" id="tag${data.feeds[i]["feed_id"]}">${data["feeds"][i]["category"]}</li>
 						</ul>
 						</div>
 						<div id="bar${data["feeds"][i]["feed_id"]}" class="bar">
@@ -320,6 +383,7 @@ var appendData=(data,nextCursor)=> {
 						txt+=`		
 						  </div>
 						</div>	
+						</div>
 							<div id="mainComment${data["feeds"][i]["feed_id"]}"  style="display:none;"><br>
 		  						<textarea class="addComment" id="addComment${data["feeds"][i]["feed_id"]}" placeholder="Enter you comment for this feed"></textarea>
 		 						<input type="button" value="share" id="addComment${data["feeds"][i]["feed_id"]}" onclick="addComment('${data["feeds"][i]["feed_id"]}')">`
@@ -361,7 +425,17 @@ var appendData=(data,nextCursor)=> {
 
 						if(data.feeds.length=30)
 						{
-							txt1=`<a onclick="getFeeds('${nextCursor}')">Load more</a>`
+							console.log(fn)
+							if(fn==1)
+							{
+								txt1=`<a onclick="getFeeds('${nextCursor}')">Load more</a>`
+
+							}
+							else
+							{
+								txt1=`<a onclick="getCategoryFeed('${nextCursor}')">Load more</a>`
+
+							}
 							loadMore.innerHTML=txt1;	
 						}
 						else
@@ -463,11 +537,19 @@ var editFeed=(feedDivId,feedId,cat)=>{
 	var element=document.getElementById(feedDivId);	
 	var editb=document.getElementById("editFeed"+feedId);	
 	var text=lis[0].innerText;
+	document.getElementById("tag"+feedId).style.display="none"
 	lis[0].contentEditable=true;
 	lis[0].style["border"]="1px solid black";
 	//editb.remove();
 	txt=`<div class="editer" style="display:flex;">
-				<input type="button" id="update${feedId}" value="save" onclick="updateFeed('${feedId}','${cat}')">
+	 					<label for="category">Tag :</label>
+						<select class="catTag" name="category" id="sort${feedId}">
+						  <option value="Music">Music</option>
+						  <option value="Movies">Movies</option>
+						  <option value="Technology">Technology</option>
+						  <option value="Sports">Sports</option>
+						</select><br>
+				<input type="button" id="update${feedId}" value="save" onclick="updateFeed('${feedId}')">
 				<input type="button" value="close" onclick="updateSingleFeed('${feedId}')">
 		</div>`;
 	element.innerHTML+=txt;

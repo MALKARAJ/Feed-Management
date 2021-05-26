@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+
+import javax.cache.CacheException;
+
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
@@ -55,7 +58,7 @@ public class TestComments {
 	    assertEquals(millis,c.getDate());
 	}
 	@Test
-	public void testAddComment() throws EntityNotFoundException {
+	public void testAddComment() throws EntityNotFoundException, CacheException {
 		TestFeed f=new TestFeed();
 		f.testAddFeed();
 		createComment();
@@ -72,7 +75,7 @@ public class TestComments {
 	    assertEquals(c.getFeed_id(),e);
 	}
 	@Test
-	public void testUpdateComment() throws EntityNotFoundException {
+	public void testUpdateComment() throws EntityNotFoundException, CacheException {
 		createComment();
 		DatastoreService ds=DatastoreServiceFactory.getDatastoreService();
 		testAddComment();
@@ -94,7 +97,7 @@ public class TestComments {
 	    assertEquals("Updated comment",entity.getProperty("comment"));
 	}
 	@Test
-	public void testCommentLike() throws EntityNotFoundException
+	public void testCommentLike() throws EntityNotFoundException, CacheException
 	{		
 		DatastoreService ds=DatastoreServiceFactory.getDatastoreService();
 		createComment();
@@ -134,7 +137,7 @@ public class TestComments {
 	}
 	
 	@Test
-	public void testCommentUpdateValidator() throws JsonProcessingException, IOException, ParseException, EntityNotFoundException, InterruptedException
+	public void testCommentUpdateValidator() throws JsonProcessingException, IOException, ParseException, EntityNotFoundException, InterruptedException, CacheException
 	{		
 		testAddComment();
 		Validator v=new Validator();
@@ -150,7 +153,7 @@ public class TestComments {
 	
 	
 	  @Test public void testUpdateTime() throws InterruptedException,
-	  EntityNotFoundException, ParseException
+	  EntityNotFoundException, ParseException, CacheException
 	  { 
 		  testAddComment();
 		  Validator v=new Validator(); 
@@ -168,7 +171,7 @@ public class TestComments {
 	 }
 	  
 		@Test
-		public void testDelete() throws EntityNotFoundException
+		public void testDelete() throws EntityNotFoundException, CacheException
 		{
 			DatastoreService ds=DatastoreServiceFactory.getDatastoreService();
 			TestComments tc=new TestComments();

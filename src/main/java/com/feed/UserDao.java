@@ -8,6 +8,6 @@ public interface UserDao {
 		public boolean userAuthenticator(User u);
 		public JSONObject addUser(User user);
 		public JSONObject getUser(String userId) throws EntityNotFoundException;
-		public Boolean udpateImage(String email,String userId,String image) throws EntityNotFoundException;
+		public Boolean udpateImage(String email,String userId) throws EntityNotFoundException;
 		public Boolean deleteUser(String userId);
 }

@@ -76,16 +76,19 @@ public class FeedServlet extends HttpServlet {
 						}
 						else if(path.contains("category"))
 						{
-							List<JSONObject> result;
-							result = feed.getCategoryFeeds(pathParts[2]);
-							if (result.size()>0) 
+							//List<JSONObject> result;
+							//result = feed.getCategoryFeeds(pathParts[2]);
+							String cursor=request.getParameter("cursor");
+
+							JSONObject result = feed.getCategoryFeeds(pathParts[2],cursor);
+							if (result.get("feeds")!=null) 
 							{
-								JSONObject obj = new JSONObject();
+								//JSONObject obj = new JSONObject();
 								response.setStatus(200);
-								obj.put("success", true);
-								obj.put("code", "200");
-								obj.put("feeds", result);
-								out.println(obj);
+								//obj.put("success", true);
+								//obj.put("code", "200");
+								//obj.put("feeds", result);
+								out.println(result);
 							}
 							else
 							{
@@ -205,6 +208,8 @@ public class FeedServlet extends HttpServlet {
 		
 
 	}
+
+
 @Override
 public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException 
 	{
@@ -310,6 +315,7 @@ protected void doPut(HttpServletRequest request, HttpServletResponse response) t
 			    		f.setLike(false);
 					    feed.updateFeed(f);
 					    JSONObject rjson=new JSONObject(f);
+					    System.out.println(rjson);
 						response.setStatus(200);
 						JSONObject obj=new JSONObject();
 						obj.put("code", "200");

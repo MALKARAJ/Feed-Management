@@ -1,4 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+
+
 <!DOCTYPE html>
 <html>
 
@@ -12,7 +14,12 @@ if (session1!=null && session1.getAttribute("userId")!=null ){
 
 <head>
 <meta charset="ISO-8859-1">
+<%@ page import="com.google.appengine.api.blobstore.BlobstoreServiceFactory" %>
+<%@ page import="com.google.appengine.api.blobstore.BlobstoreService" %>
 
+<%
+    BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService(); 
+%>
 <meta http-equiv="Cache-control" content="private">
 <title>Feed Management</title>
 <link rel="stylesheet" href="./css/feeds.css">
@@ -20,6 +27,8 @@ if (session1!=null && session1.getAttribute("userId")!=null ){
 </head>
 <body  onload="getFeeds()">
 	<div class="container">
+			<div class="sideBarHover">
+			</div>
 			<div class="sideBar">
 				<div class="imageHover" id="profileButton">
 				<img src="/images/profile.png" height="50px" width="50px" onclick="getProfile();setActive('profileButton');toggleProfile();" />
@@ -29,7 +38,7 @@ if (session1!=null && session1.getAttribute("userId")!=null ){
 				</div>
 			</div>
 			<div class="feedContainer" id="feedContainer">
-			<div class="profileHeader" id="profileHeader"></div>
+			<div class="profileHeader" id="profileHeader"><h2>Profile</h2></div>
 			 <div class="headerContainer" id="headerContainer">
 			  <div class="title"><h1>Feeds</h1></div>
 			  <img alt="add" src="images/plus.png" width="50" height="50" class="add" id="add"  style="display:block;" onclick="toggleAdd()">
@@ -57,7 +66,7 @@ if (session1!=null && session1.getAttribute("userId")!=null ){
 				  <input type="checkbox" onclick="selectFeed()" name="selection" id="selection"/>
 				  
 				  <div class="dataPro">
-				  	    <label for="category">Sort by:</label>
+				  	    <label for="category">Category:</label>
 						<select name="category" id="sort">
 						  <option value="All">All</option>
 						  <option value="Music">Music</option>
@@ -65,8 +74,7 @@ if (session1!=null && session1.getAttribute("userId")!=null ){
 						  <option value="Technology">Technology</option>
 						  <option value="Sports">Sports</option>
 						</select>
-				  		<input type="button" value="search" onclick="getCategoryFeed()"/>
-				  		<input type="button" id="logout" value="logout" onclick="logout()"/>
+				  		<input type="button" value="search" onclick="reset();getCategoryFeed()"/>
 				  		
 				  </div>
 				 
@@ -78,7 +86,27 @@ if (session1!=null && session1.getAttribute("userId")!=null ){
 			   <div class="feed" id="noFeed" style="text-align:center" style="display:none;"><h4>There are no feeds to display</h4></div>
 			  </div>
 			  <div id="myData"></div>
-			  <div id="myProfile"></div>
+			  <div id="myProfile">
+				  <div class="email">
+					
+						<div class="profilePic" id="profilePic">
+							<div class="img__wrap">
+								<h4 id="text1">Change pic</h4>
+								<img id="proPic" onclick="clicker()" >
+							</div>
+							<form id="myForm"  action="<%=blobstoreService.createUploadUrl("/upload") %>" method="POST" enctype="multipart/form-data">
+			  		    		<input type="file" id="img" name="img" onchange="preview()" accept="image/*"  style="display:none;"    ><br><br>
+								<input type="submit" id="subButton"  value="submit"  style="display:none;">
+							</form>
+						</div>
+						<div class="data">
+							<ul>
+								<li><h4>Email:</h4></li><li id="emailHolder"></li>
+								<li><input type="button" id="logout" value="logout" onclick="logout()"/></li>
+							</ul>
+						</div>		  
+	 		 	 </div>			  
+			</div>
 			    <img src="/images/arrow.png" id="arrow"  onclick="window.scroll(0,1);">
 		  
 		  <div id="load_more"></div>
