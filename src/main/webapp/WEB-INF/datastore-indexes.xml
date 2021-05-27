@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<datastore-indexes autoGenerate="true">
+    
+    
+    <datastore-index kind="Feed" ancestor="false">
+        <property name="delete" direction="asc"/>
+        <property name="Updation_date" direction="desc"/>
+    </datastore-index>
+    
+    <datastore-index kind="Feed" ancestor="false">
+        <property name="category" direction="asc"/>
+        <property name="delete" direction="asc"/>
+        <property name="Updation_date" direction="desc"/>
+    </datastore-index>
+
+    <datastore-index kind="Comment" ancestor="true">
+        <property name="delete" direction="asc"/>
+        <property name="Updation_date" direction="desc"/>
+    </datastore-index>
+
+</datastore-indexes>
