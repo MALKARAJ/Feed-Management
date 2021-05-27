@@ -1,4 +1,0 @@
-cron:
-- description: "daily summary job"
-  url: /cron/destruction
-  schedule: every 1 minutes
