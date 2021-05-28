@@ -35,7 +35,7 @@ public class CommentOperations implements CommentDao{
 			   Entity comment=ds.get(k);
 			   JSONObject obj= new JSONObject();
 
-			   if(comment.getProperty("delete").toString().equals("false")) 
+			   if(comment.getProperty("deleted").toString().equals("false")) 
 			   {
 				   obj.put("feed_id", c.getFeed_id());
 				   obj.put("comment", comment.getProperty("comment").toString());
@@ -55,7 +55,7 @@ public class CommentOperations implements CommentDao{
 		   Key k=KeyFactory.createKey("Feed",c.getFeed_id());
 		   Entity e=ds.get(k);
 		   JSONObject obj= new JSONObject();
-		   if(e.getProperty("delete").toString().equals("false")) 
+		   if(e.getProperty("deleted").toString().equals("false")) 
 		   {
 			   obj.put("feed_id", c.getFeed_id());
 			   obj.put("content", e.getProperty("feed_content").toString());
@@ -66,7 +66,7 @@ public class CommentOperations implements CommentDao{
 			   Date date=new Date(d);
 			   obj.put("date", date);
 			   obj.put("likes", Integer.parseInt(e.getProperty("like").toString()));
-			   Filter delete = new FilterPredicate("delete", FilterOperator.EQUAL,false);
+			   Filter delete = new FilterPredicate("deleted", FilterOperator.EQUAL,false);
 
 			   Query q=new Query("Comment").setAncestor(e.getKey()).addSort("Updation_date", SortDirection.DESCENDING).setFilter(delete);
 			   for (Entity entity : ds.prepare(q).asIterable()) {	
@@ -96,7 +96,7 @@ public class CommentOperations implements CommentDao{
 		   
 		   Key k=KeyFactory.createKey("Feed",c.getFeed_id());
 		   Entity e=ds.get(k);
-		   if(e.getProperty("delete").toString().equals("false")) {
+		   if(e.getProperty("deleted").toString().equals("false")) {
 			   Entity comment=new Entity("Comment",c.getComment_id(),e.getKey());
 			   comment.setProperty("feed_id",c.getFeed_id());
 			   comment.setProperty("comment_id",c.getComment_id());
@@ -107,7 +107,7 @@ public class CommentOperations implements CommentDao{
 			   comment.setProperty("date",d.getMillis());
 			   comment.setProperty("Updation_date",d.getMillis());		  
 			   comment.setProperty("like", 0);
-			   comment.setProperty("delete", false);
+			   comment.setProperty("deleted", false);
 			   ds.put(comment);
 			   int like=(int) comment.getProperty("like");
 			   return comment.getProperty("feed_id").toString();
@@ -120,7 +120,7 @@ public class CommentOperations implements CommentDao{
 				        .addChild("Comment", c.getComment_id())
 				        .getKey();		   
 		   Entity comment=ds.get(k);
-		   if(comment.getProperty("delete").toString().equals("false")) {
+		   if(comment.getProperty("deleted").toString().equals("false")) {
 	
 			   comment.setProperty("feed_id",c.getFeed_id());
 			   comment.setProperty("comment_id",c.getComment_id());
@@ -159,7 +159,7 @@ public class CommentOperations implements CommentDao{
 			        .addChild("Comment", c.getComment_id())
 			        .getKey();	
 		   Entity comment=ds.get(k);
-		   comment.setProperty("delete", true);
+		   comment.setProperty("deleted", true);
 		   ds.put(comment);
 	   }
 }

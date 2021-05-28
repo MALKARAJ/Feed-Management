@@ -50,7 +50,7 @@ public class FeedOperations implements FeedDao{
 			Key k=KeyFactory.createKey("Feed", f.getFeed_id());
 			   Entity feed=ds.get(k);
 			   JSONObject obj= new JSONObject();  
-			if(feed.getProperty("delete").toString().equals("false")) 
+			if(feed.getProperty("deleted").toString().equals("false")) 
 			   {  
 				   obj.put("feed_id", f.getFeed_id());
 				   obj.put("userId",feed.getProperty("userId").toString());
@@ -64,7 +64,7 @@ public class FeedOperations implements FeedDao{
 				   Query qq=new Query("Comment").setAncestor(feed.getKey()).addSort("Updation_date", SortDirection.DESCENDING);
 				   List<JSONObject> comments=new ArrayList<JSONObject>();
 				   for (Entity e : ds.prepare(qq).asIterable()) {
-					   if (e!=null && e.getProperty("delete").toString().equals("false")) {
+					   if (e!=null && e.getProperty("deleted").toString().equals("false")) {
 						JSONObject commentobj = new JSONObject();
 						commentobj.put("feed_id", e.getProperty("feed_id").toString());
 						commentobj.put("comment", new StringBuilder(e.getProperty("comment").toString()));
@@ -94,7 +94,7 @@ public class FeedOperations implements FeedDao{
 				    }
 
 				   List<JSONObject> feeds=new ArrayList<JSONObject>();
-				   Filter delete = new FilterPredicate("delete", FilterOperator.EQUAL,false);
+				   Filter delete = new FilterPredicate("deleted", FilterOperator.EQUAL,false);
 				   Query q=new Query("Feed").addSort("Updation_date", SortDirection.DESCENDING).setFilter(delete);
 				   QueryResultList<Entity> results=ds.prepare(q).asQueryResultList(fetchOptions);
 				   for (Entity entity : results) {	
@@ -139,7 +139,7 @@ public class FeedOperations implements FeedDao{
 	   {
 		   List<JSONObject> feeds=new ArrayList<JSONObject>();
 		   Filter cat = new FilterPredicate("userId", FilterOperator.EQUAL,f.getUserId());
-		   Filter del = new FilterPredicate("delete", FilterOperator.EQUAL,true);
+		   Filter del = new FilterPredicate("deleted", FilterOperator.EQUAL,true);
 		   CompositeFilter catdel =
 				    CompositeFilterOperator.and(cat, del);		   
 		   Query q=new Query("Feed").addSort("Updation_date", SortDirection.DESCENDING).setFilter(catdel);
@@ -211,7 +211,7 @@ public class FeedOperations implements FeedDao{
 			   List<JSONObject> feeds=new ArrayList<JSONObject>();
 			   System.out.println(category);
 			   Filter cat = new FilterPredicate("category", FilterOperator.EQUAL,category);
-			   Filter del = new FilterPredicate("delete", FilterOperator.EQUAL,false);
+			   Filter del = new FilterPredicate("deleted", FilterOperator.EQUAL,false);
 			   CompositeFilter catdel =
 					    CompositeFilterOperator.and(cat, del);
 			   Query q=new Query("Feed").addSort("Updation_date", SortDirection.DESCENDING).setFilter(catdel);
@@ -229,7 +229,7 @@ public class FeedOperations implements FeedDao{
 					   Query qq=new Query("Comment").setAncestor(entity.getKey()).addSort("Updation_date", SortDirection.DESCENDING);
 					   List<JSONObject> comments=new ArrayList<JSONObject>();
 					   for (Entity e : ds.prepare(qq).asIterable()) {
-						   if (e!=null && e.getProperty("delete").toString().equals("false")) 
+						   if (e!=null && e.getProperty("deleted").toString().equals("false")) 
 						   {
 							JSONObject commentobj = new JSONObject();
 							commentobj.put("feed_id", e.getProperty("feed_id").toString());
@@ -287,7 +287,7 @@ public class FeedOperations implements FeedDao{
 		   feed.setProperty("Updation_date",d.getMillis());           
 		   feed.setProperty("like", 0);                     
 		   feed.setProperty("userId", f.getUserId());
-		   feed.setProperty("delete", false);                       
+		   feed.setProperty("deleted", false);                       
 		   ds.put(feed);
 		   MemcacheService cache = MemcacheServiceFactory.getMemcacheService();
 		   System.out.println(f.getUserId());                            
@@ -361,10 +361,10 @@ public class FeedOperations implements FeedDao{
 		   cache.delete(e.getProperty("category").toString());
 		   Query q = new Query("Comment").setAncestor(e.getKey());
 		   for (Entity entity : ds.prepare(q).asIterable()) {	
-			   	entity.setProperty("delete", true);
+			   	entity.setProperty("deleted", true);
 			   	ds.put(entity);
 		   }	
-		   e.setProperty("delete", true); 
+		   e.setProperty("deleted", true); 
 		   
 		   ds.put(e);
 	   }
