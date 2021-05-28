@@ -17,8 +17,8 @@ indexes:
     direction: desc
 
 - kind: Comment
+  ancestor: yes
   properties:
   - name: deleted
   - name: Updation_date
     direction: desc
-

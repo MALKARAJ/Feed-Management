@@ -187,7 +187,7 @@ public class TestComments {
 			        .addChild("Comment", "comment123123")
 			        .getKey();
 		    Entity c1=ds.get(k1);
-			assertEquals("true",c1.getProperty("delete").toString());
+			assertEquals("true",c1.getProperty("deleted").toString());
 			
 		}
 	 

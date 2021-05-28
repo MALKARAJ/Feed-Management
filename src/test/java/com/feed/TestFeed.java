@@ -184,8 +184,8 @@ public class TestFeed {
 		        .addChild("Comment", "comment123123")
 		        .getKey();
 	    Entity comment=ds.get(k1);
-		assertEquals("true",entity.getProperty("delete").toString());
-		assertEquals("true",comment.getProperty("delete").toString());
+		assertEquals("true",entity.getProperty("deleted").toString());
+		assertEquals("true",comment.getProperty("deleted").toString());
 		
 	}
 }
