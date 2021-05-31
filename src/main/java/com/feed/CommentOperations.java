@@ -1,7 +1,4 @@
 package com.feed;
-
-
-
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -109,7 +106,6 @@ public class CommentOperations implements CommentDao{
 			   comment.setProperty("like", 0);
 			   comment.setProperty("deleted", false);
 			   ds.put(comment);
-			   int like=(int) comment.getProperty("like");
 			   return comment.getProperty("feed_id").toString();
 		   }
 		   return "";

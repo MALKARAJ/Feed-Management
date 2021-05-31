@@ -3,24 +3,15 @@ package com.feed;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-import javax.cache.Cache;
+import java.util.Date;
+import java.util.List;
+
 import javax.cache.CacheException;
-import javax.cache.CacheFactory;
-import javax.cache.CacheManager;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -226,7 +217,7 @@ public class FeedOperations implements FeedDao{
 					   Date date=new Date(d);
 					   obj.put("date", date);
 					   obj.put("likes", Integer.parseInt(entity.getProperty("like").toString()));
-					   Query qq=new Query("Comment").setAncestor(entity.getKey()).addSort("Updation_date", SortDirection.DESCENDING);
+					   Query qq=new Query("Comment").setAncestor(entity.getKey()).addSort("Updation_date", SortDirection.DESCENDING).setFilter(del);
 					   List<JSONObject> comments=new ArrayList<JSONObject>();
 					   for (Entity e : ds.prepare(qq).asIterable()) {
 						   if (e!=null && e.getProperty("deleted").toString().equals("false")) 
@@ -307,7 +298,8 @@ public class FeedOperations implements FeedDao{
 			   feeds.put(newFeed);
 			   System.out.println(feeds.get(feeds.length()-1));
 			   //cache.delete(f.getCategory());
-			   cache.put(f.getCategory(), feeds.toString());			   
+               cache.put(f.getCategory(), feeds.toString());	
+               		   
 		   }
 		   else
 		   {

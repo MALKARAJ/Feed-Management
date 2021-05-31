@@ -357,7 +357,7 @@ var appendData=(data,nextCursor,fn)=> {
 		//console.log("Success");
 		//console.log(data)
 		noFeed.style.display="none";
-        for (let i = 0; i < data.feeds.length; i++) 
+        for (let i = 0; i < data.feeds.length && data.feeds[i]!=null;i++) 
 		{
 			txt+=`<div class="feed" id="${data["feeds"][i]["feed_id"]}">
 						<div id="mainFeed${data["feeds"][i]["feed_id"]}">

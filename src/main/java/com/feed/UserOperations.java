@@ -1,19 +1,11 @@
 package com.feed;
 
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.ArrayList;
+
 import java.util.Date;
-import java.util.List;
 
-import javax.servlet.http.HttpSession;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.mindrot.jbcrypt.BCrypt;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -21,12 +13,10 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.CompositeFilter;
-import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
+
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
-import com.google.appengine.api.datastore.Query.SortDirection;
-import com.google.appengine.api.images.Image;
+
 import com.google.appengine.repackaged.org.joda.time.DateTime;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 public class UserOperations implements UserDao{

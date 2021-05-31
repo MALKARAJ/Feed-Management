@@ -1,7 +1,6 @@
 package com.feed;
 
 import java.util.Date;
-import java.util.UUID;
 
 public class User {
 

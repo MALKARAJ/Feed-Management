@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.json.JSONObject;
-import org.mindrot.jbcrypt.BCrypt;
 
 
 @WebServlet("/login")
