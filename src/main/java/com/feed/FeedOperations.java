@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.cache.CacheException;
 
@@ -32,12 +33,14 @@ import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.google.appengine.repackaged.org.joda.time.DateTime;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 public class FeedOperations implements FeedDao{
-	
+	   private static final Logger log = Logger.getLogger(FeedOperations.class.getName());	
+
 	   DatastoreService ds= DatastoreServiceFactory.getDatastoreService(); 
 	   
 	   public JSONObject getSingleFeed(Feed f) throws JsonProcessingException, IOException, ParseException, EntityNotFoundException {
-			
-			
+		   
+		   
+		   log.info("Collecting a single feed");
 			Key k=KeyFactory.createKey("Feed", f.getFeed_id());
 			   Entity feed=ds.get(k);
 			   JSONObject obj= new JSONObject();  
@@ -76,6 +79,7 @@ public class FeedOperations implements FeedDao{
 
 	   public JSONObject getNewsFeeds(String startCursor) throws JsonProcessingException, IOException, ParseException, CacheException{
 
+		   			log.info("Collecting all feeds");
 				 	int PAGE_SIZE=30;
 				 	FetchOptions fetchOptions = FetchOptions.Builder.withLimit(PAGE_SIZE);
 
@@ -128,6 +132,9 @@ public class FeedOperations implements FeedDao{
 
 	   public List<JSONObject> getDeletedFeeds(Feed f) throws JsonProcessingException, IOException, ParseException
 	   {
+		   
+		   
+		   log.info("collecting deleted feeds");
 		   List<JSONObject> feeds=new ArrayList<JSONObject>();
 		   Filter cat = new FilterPredicate("userId", FilterOperator.EQUAL,f.getUserId());
 		   Filter del = new FilterPredicate("deleted", FilterOperator.EQUAL,true);
@@ -173,6 +180,7 @@ public class FeedOperations implements FeedDao{
 
 	   public JSONObject getCategoryFeeds(String category, String startCursor) throws JsonProcessingException, IOException, ParseException, CacheException{
 		
+		   log.info("collecting feeds of category "+category);
 		   MemcacheService cache = MemcacheServiceFactory.getMemcacheService();
 		 	int PAGE_SIZE=30;
 		 	FetchOptions fetchOptions = FetchOptions.Builder.withLimit(PAGE_SIZE);
@@ -267,7 +275,8 @@ public class FeedOperations implements FeedDao{
 	   }
 	                                                                              
 	   public String addFeed(Feed f) 
-	   {                                   
+	   {                                 
+		   log.info("adding a feed");
 		   Entity feed=new Entity("Feed",f.getFeed_id());                       
 		   feed.setProperty("feed_id",f.getFeed_id());                          
 		   feed.setProperty("feed_content",f.getFeed_content());                 
@@ -312,6 +321,7 @@ public class FeedOperations implements FeedDao{
 	   }
 	   
 	   public void updateFeed(Feed f) throws EntityNotFoundException {
+		   log.info("updating the feed with id "+f.getFeed_id());
 		   MemcacheService cache = MemcacheServiceFactory.getMemcacheService();
 		   cache.clearAll();
 		   Key k=KeyFactory.createKey("Feed", f.getFeed_id());
@@ -347,6 +357,7 @@ public class FeedOperations implements FeedDao{
 
 	   public void deleteFeed(Feed f) throws EntityNotFoundException 
 	   {
+		   log.info("deleting the feed "+f.getFeed_id());
 		   Key k=KeyFactory.createKey("Feed",f.getFeed_id());
 		   MemcacheService cache = MemcacheServiceFactory.getMemcacheService("cache");
 		   Entity e= ds.get(k);
