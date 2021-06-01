@@ -77,7 +77,7 @@ var getFeeds=(cursor="")=>{
 
 var add1000Feeds=(userId)=>{
 
-		for(let i=0;i<250;i++){
+		for(let i=0;i<5;i++){
 			var obj = {"content":"Feed"+i,"category":"Music","userId":userId};
 			var xhr = new XMLHttpRequest();
 			xhr.open("POST", "/feed",true);
@@ -86,8 +86,8 @@ var add1000Feeds=(userId)=>{
 			
 		}
 	
-		for(let i=0;i<250;i++){
-			var obj = {"content":"Feed"+(250+i),"category":"Movies","userId":userId};
+		for(let i=0;i<5;i++){
+			var obj = {"content":"Feed"+(5+i),"category":"Movies","userId":userId};
 			var xhr = new XMLHttpRequest();
 			xhr.open("POST", "/feed",true);
 			xhr.setRequestHeader('Content-Type', 'application/json');
@@ -95,8 +95,8 @@ var add1000Feeds=(userId)=>{
 			
 		}
 	
-		for(let i=0;i<250;i++){
-			var obj = {"content":"Feed"+(500+i),"category":"Technology","userId":userId};
+		for(let i=0;i<5;i++){
+			var obj = {"content":"Feed"+(10+i),"category":"Technology","userId":userId};
 			var xhr = new XMLHttpRequest();
 			xhr.open("POST", "/feed",true);
 			xhr.setRequestHeader('Content-Type', 'application/json');
@@ -104,9 +104,9 @@ var add1000Feeds=(userId)=>{
 		
 		}
 	
-		for(let i=0;i<250;i++)
+		for(let i=0;i<5;i++)
 		{
-			var obj = {"content":"Feed"+(750+i),"category":"Sports","userId":userId};
+			var obj = {"content":"Feed"+(15+i),"category":"Sports","userId":userId};
 			var xhr = new XMLHttpRequest();
 			xhr.open("POST", "/feed",true);
 			xhr.setRequestHeader('Content-Type', 'application/json');

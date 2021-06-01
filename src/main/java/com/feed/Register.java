@@ -32,12 +32,14 @@ public class Register extends HttpServlet {
 
         HttpSession session=request.getSession(false);  
 
-		if(session.getAttribute("email")==null||session==null) {
-			request.getRequestDispatcher("/jsp/register.jsp").forward(request,response);
+		if(session.getAttribute("userId")!=null && session!=null) {
+      			response.sendRedirect("/");
+
 		}
 		else
 		{
-			request.getRequestDispatcher("/jsp/feed.jsp");
+      			request.getRequestDispatcher("/jsp/register.jsp").forward(request,response);
+
 		}
 	}
 

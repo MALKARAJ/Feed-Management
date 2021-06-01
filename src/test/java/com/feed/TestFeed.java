@@ -125,7 +125,8 @@ public class TestFeed {
 	
 	@Test
 	public void testFeedValidator() throws JsonProcessingException, IOException
-	{	Validator v=new Validator();
+	{	
+        Validator v=new Validator();
 		Feed f=new Feed();
 		JSONObject obj = new JSONObject();
 		obj.put("content", "Content");

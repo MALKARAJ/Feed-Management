@@ -79,7 +79,7 @@ public class FeedOperations implements FeedDao{
 
 	   public JSONObject getNewsFeeds(String startCursor) throws JsonProcessingException, IOException, ParseException, CacheException{
 
-		   			log.info("Collecting all feeds");
+		   			log.warning("Collecting all feeds");
 				 	int PAGE_SIZE=30;
 				 	FetchOptions fetchOptions = FetchOptions.Builder.withLimit(PAGE_SIZE);
 

@@ -68,7 +68,6 @@ public class TestUser {
 	{
 		CredentialValidator c=new CredentialValidator();
 		testRegister();
-		User u=new User();
 		assertTrue(c.isValidateCredentials("george@123.com"));
 	}
 	@Test
@@ -76,7 +75,6 @@ public class TestUser {
 	{
 		CredentialValidator c=new CredentialValidator();
 		testRegister();
-		User u=new User();
 		assertFalse(c.isValidateCredentials("george"));
 	}
 }
