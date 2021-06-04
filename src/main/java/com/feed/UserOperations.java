@@ -33,7 +33,6 @@ public class UserOperations implements UserDao{
 			Entity e= new Entity("User",user.getUserId());
 			e.setProperty("email", user.getEmail());
 			e.setProperty("password", user.getPassword());
-			e.setProperty("userId", user.getUserId().toString());
 			e.setProperty("image", user.getImage());
 			e.setProperty("active", user.getActive());
 			e.setProperty("date", new DateTime(user.getDate()).getMillis());
@@ -87,7 +86,7 @@ public class UserOperations implements UserDao{
  	   {
 	 	   if (BCrypt.checkpw(u.getPassword(), entity.getProperty("password").toString()))
 	 		{
-	 			u.setUserId((String)entity.getProperty("userId"));
+	 			u.setUserId(entity.getKey().getName());
 	 			return true;
 	 		}
 	 		else
@@ -111,7 +110,7 @@ public class UserOperations implements UserDao{
 	  	    obj.put("email",entity.getProperty("email").toString());
 			obj.put("image", entity.getProperty("image").toString());
 			obj.put("active",(boolean) entity.getProperty("active"));
-			obj.put("userId", entity.getProperty("userId").toString());
+			obj.put("userId", entity.getKey().getName());
 			long d=Long.parseLong(entity.getProperty("date").toString());
 			Date date=new Date(d);
 			obj.put("date", date);

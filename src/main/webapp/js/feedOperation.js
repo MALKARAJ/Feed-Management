@@ -408,7 +408,7 @@ var appendData=(data,nextCursor,fn)=> {
 															</div>`
 															if(userId==data["feeds"][i]["comments"][j]["userId"]){
 															txt+=`<div id="cdbBars${data["feeds"][i]["comments"][j]["comment_id"]}" class="cOpBars1">
-																<a id="editComment${data["feeds"][i]["comments"][j]["comment_id"]}" onclick="editComment('dataComment${data["feeds"][i]["comments"][j]["commentId"]}','${data["feeds"][i]["comments"][j]["comment_id"]}','${data["feeds"][i]["feed_id"]}')">edit</a> &nbsp;&nbsp;&nbsp;
+																<a id="editComment${data["feeds"][i]["comments"][j]["comment_id"]}" onclick="editComment('dataComment${data["feeds"][i]["comments"][j]["comment_id"]}','${data["feeds"][i]["comments"][j]["comment_id"]}','${data["feeds"][i]["feed_id"]}')">edit</a> &nbsp;&nbsp;&nbsp;
 																<a onclick="deleteComment('mainComment${data["feeds"][i]["feed_id"]}','${data["feeds"][i]["feed_id"]}','${data["feeds"][i]["comments"][j]["comment_id"]}')">delete</a>
 															</div>
 															`}

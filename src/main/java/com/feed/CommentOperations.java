@@ -40,7 +40,7 @@ public class CommentOperations implements CommentDao{
 			   {
 				   obj.put("feed_id", c.getFeed_id());
 				   obj.put("comment", comment.getProperty("comment").toString());
-				   obj.put("comment_id", comment.getProperty("comment_id").toString());
+				   obj.put("comment_id", comment.getKey().getName());				   
 				   obj.put("userId", comment.getProperty("userId"));
 				   long d=Long.parseLong(comment.getProperty("date").toString());
 				   Date date=new Date(d);
@@ -77,7 +77,7 @@ public class CommentOperations implements CommentDao{
 					   JSONObject obj1= new JSONObject();
 					   obj1.put("feed_id", c.getFeed_id());
 					   obj1.put("comment", entity.getProperty("comment").toString());
-					   obj1.put("comment_id", entity.getProperty("comment_id").toString());
+					   obj.put("comment_id", entity.getKey().getName());				   
 					   obj1.put("userId", entity.getProperty("userId"));
 
 					   long d1=Long.parseLong(entity.getProperty("date").toString());
@@ -104,8 +104,6 @@ public class CommentOperations implements CommentDao{
 		   Entity e=ds.get(k);
 		   if(e.getProperty("deleted").toString().equals("false")) {
 			   Entity comment=new Entity("Comment",c.getComment_id(),e.getKey());
-			   comment.setProperty("feed_id",c.getFeed_id());
-			   comment.setProperty("comment_id",c.getComment_id());
 			   comment.setProperty("comment",c.getComment());
 			   comment.setProperty("userId", c.getUser_id());
 			   Date date=c.getDate();
@@ -115,7 +113,7 @@ public class CommentOperations implements CommentDao{
 			   comment.setProperty("like", 0);
 			   comment.setProperty("deleted", false);
 			   ds.put(comment);
-			   return comment.getProperty("feed_id").toString();
+			   return comment.getParent().getName();
 		   }
 		   return "";
 	   }
@@ -129,8 +127,6 @@ public class CommentOperations implements CommentDao{
 		   Entity comment=ds.get(k);
 		   if(comment.getProperty("deleted").toString().equals("false")) {
 	
-			   comment.setProperty("feed_id",c.getFeed_id());
-			   comment.setProperty("comment_id",c.getComment_id());
 			   comment.setProperty("userId", c.getUser_id());
 
 			   comment.setProperty("comment",c.getComment());
