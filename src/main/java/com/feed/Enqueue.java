@@ -40,7 +40,7 @@ public class Enqueue extends HttpServlet {
 	        JSONObject json=new JSONObject(str);
             System.out.println(json);
             Queue queue = QueueFactory.getQueue("delete");
-            queue.add(TaskOptions.Builder.withUrl("/worker").param("key", json.toString()));
+            queue.add(TaskOptions.Builder.withUrl("20210604t092208-dot-georgefulltraining12.uc.r.appspot.com/worker").param("key", json.toString()));
 
 
 		} 
