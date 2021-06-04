@@ -1,0 +1,45 @@
+runtime: java8
+inbound_services:
+- warmup
+derived_file_type:
+- java_precompiled
+threadsafe: True
+auto_id_policy: default
+beta_settings:
+  'source_reference': 'https://github.com/GeorgeJ1010/Feed-Management.git#d865804370b12e0287c2b47707f5b303b4e9e121'
+api_version: 'user_defined'
+handlers:
+- url: (/.*/)
+  static_files: __static__\1index.html
+  upload: __NOT_USED__
+  require_matching_file: True
+  login: optional
+  secure: optional
+- url: (/)
+  static_files: __static__\1index.html
+  upload: __NOT_USED__
+  require_matching_file: True
+  login: optional
+  secure: optional
+- url: (/.*)
+  static_files: __static__\1
+  upload: __NOT_USED__
+  require_matching_file: True
+  login: optional
+  secure: optional
+- url: /
+  script: unused
+  login: optional
+  secure: optional
+- url: /.*/
+  script: unused
+  login: optional
+  secure: optional
+- url: /_ah/.*
+  script: unused
+  login: optional
+  secure: optional
+- url: /worker
+  script: unused
+  login: optional
+  secure: optional
