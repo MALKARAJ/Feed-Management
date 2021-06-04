@@ -4,6 +4,8 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
+
 import org.json.JSONObject;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.appengine.api.datastore.DatastoreService;
@@ -22,8 +24,10 @@ import com.google.appengine.repackaged.org.joda.time.DateTime;
 public class CommentOperations implements CommentDao{
 	
 	   DatastoreService ds= DatastoreServiceFactory.getDatastoreService();
-	   
+	   	private static final Logger log = Logger.getLogger(FeedOperations.class.getName());	
+
 		public JSONObject getSingleComment(Comment c) throws JsonProcessingException, IOException, ParseException, EntityNotFoundException {
+		   log.info("Collecting a single comment");
 
 			   Key k=new KeyFactory.Builder("Feed", c.getFeed_id())
 				        .addChild("Comment", c.getComment_id())
@@ -48,7 +52,10 @@ public class CommentOperations implements CommentDao{
 		}
 		
 	   public JSONObject getComments(Comment c) throws JsonProcessingException, IOException, EntityNotFoundException, ParseException{
-		   List<JSONObject> comments=new ArrayList<JSONObject>();
+          
+           log.info("Collecting all comments");
+
+           List<JSONObject> comments=new ArrayList<JSONObject>();
 		   Key k=KeyFactory.createKey("Feed",c.getFeed_id());
 		   Entity e=ds.get(k);
 		   JSONObject obj= new JSONObject();
@@ -90,7 +97,9 @@ public class CommentOperations implements CommentDao{
 	   
 	   public String addComment(Comment c) throws EntityNotFoundException
 	   {
-		   
+        
+           log.info("Adding a comment");
+
 		   Key k=KeyFactory.createKey("Feed",c.getFeed_id());
 		   Entity e=ds.get(k);
 		   if(e.getProperty("deleted").toString().equals("false")) {
@@ -112,6 +121,8 @@ public class CommentOperations implements CommentDao{
 	   }
 	   
 	   public void updateComment(Comment c) throws EntityNotFoundException {
+           log.info("Updating all comments");
+
 		   Key k=new KeyFactory.Builder("Feed", c.getFeed_id())
 				        .addChild("Comment", c.getComment_id())
 				        .getKey();		   
