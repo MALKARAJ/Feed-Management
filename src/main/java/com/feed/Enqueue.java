@@ -42,12 +42,12 @@ public class Enqueue extends HttpServlet {
             JSONObject json=new JSONObject(str);
             
 
-            ModulesService modulesApi = ModulesServiceFactory.getModulesService();
-            URL url = new URL("http://" +modulesApi.getVersionHostname("taskqueue","20210604t110736") +"/worker");
+           // ModulesService modulesApi = ModulesServiceFactory.getModulesService();
+           // URL url = new URL("http://" +modulesApi.getVersionHostname("taskqueue","20210604t110736") +"/worker");
             System.out.println(json);
             Queue queue = QueueFactory.getQueue("delete");
-            System.out.println(url.toString());
-            queue.add(TaskOptions.Builder.withUrl(url.toString()).param("key", json.toString()));
+            //System.out.println(url.toString());
+            queue.add(TaskOptions.Builder.withUrl("/worker").param("key", json.toString()));
 
 
 		} 
