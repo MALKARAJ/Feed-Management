@@ -68,7 +68,6 @@ public class TestFeed {
 	    Key k=KeyFactory.createKey("Feed",e);
 	    Entity entity=ds.get(k);
 	    assertEquals("Content",entity.getProperty("feed_content"));	    
-	    assertEquals("feed123123",entity.getProperty("feed_id"));
 	    assertEquals("movie",entity.getProperty("category"));
 	    }
 	
@@ -91,7 +90,6 @@ public class TestFeed {
 	    Key k=KeyFactory.createKey("Feed",e);
 	    Entity entity=ds.get(k);
 	    assertEquals("Updated Content",entity.getProperty("feed_content"));	    
-	    assertEquals("feed123123",entity.getProperty("feed_id"));
 	    assertEquals("movie",entity.getProperty("category"));
 	    
 	}
