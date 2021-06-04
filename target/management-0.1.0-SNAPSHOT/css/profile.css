@@ -1,0 +1,53 @@
+@charset "ISO-8859-1";
+.profileHeader{
+	position:fixed;
+	text-align:center;
+	background-color:#c8ebeb;
+	padding:20px;
+	width:100%;
+	box-shadow: 0 0 5px;
+	margin-top:0px !important;
+	
+}
+#text1{
+  position: absolute;
+  top: 35%;
+  left: 35%;
+  color: #fff;
+  visibility:hidden;
+  opacity:0;
+   transition: .5s ease;
+  
+
+ }
+.email{
+	display:flex;
+	justify-content:center;
+	padding:20px;
+	margin-left:300px;
+	margin-right:300px;
+}
+.img__wrap {
+  position: relative;
+  text-align:center;
+  height: 250px;
+  width: 250px;
+}
+.img__wrap:hover  #text1{
+	visibility:visible;
+	opacity:1;
+}
+.email img{
+	border-radius:150px;
+	width:inherit;
+	box-shadow: 0 0 14px 3px #596b6b;
+	
+	height:inherit;
+}
+#myProfile{
+		padding-top:300px;    
+		display:none;
+}
+.data{
+	margin-left:100px;
+}

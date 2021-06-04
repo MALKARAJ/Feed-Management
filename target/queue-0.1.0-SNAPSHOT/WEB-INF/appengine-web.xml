@@ -8,5 +8,6 @@
   <system-properties>
     <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
   </system-properties>
-
+  <module>taskqueue</module>
+  <version>task</version>
 </appengine-web-app>

@@ -1,4 +1,5 @@
 runtime: java8
+module: 'taskqueue'
 inbound_services:
 - warmup
 derived_file_type:
@@ -6,7 +7,7 @@ derived_file_type:
 threadsafe: True
 auto_id_policy: default
 beta_settings:
-  'source_reference': 'https://github.com/GeorgeJ1010/Feed-Management.git#d865804370b12e0287c2b47707f5b303b4e9e121'
+  'source_reference': 'https://github.com/GeorgeJ1010/Feed-Management.git#c79c9c24dc4fb441e1ed77e26b3fce3ce30e42dd'
 api_version: 'user_defined'
 handlers:
 - url: (/.*/)
