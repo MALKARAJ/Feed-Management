@@ -2,7 +2,7 @@ package com.feed;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-
+import java.net.URL;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.appengine.api.modules.ModulesService;
+import com.google.appengine.api.modules.ModulesServiceFactory;
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
@@ -37,10 +39,15 @@ public class Enqueue extends HttpServlet {
 		        jb.append(line);
 		    String str=jb.toString();
 
-	        JSONObject json=new JSONObject(str);
+            JSONObject json=new JSONObject(str);
+            
+
+            ModulesService modulesApi = ModulesServiceFactory.getModulesService();
+            URL url = new URL("http://" +modulesApi.getVersionHostname("taskqueue","20210604t110736") +"/worker");
             System.out.println(json);
             Queue queue = QueueFactory.getQueue("delete");
-            queue.add(TaskOptions.Builder.withUrl("/worker").param("key", json.toString()));
+            System.out.println(url.toString());
+            queue.add(TaskOptions.Builder.withUrl(url.toString()).param("key", json.toString()));
 
 
 		} 
