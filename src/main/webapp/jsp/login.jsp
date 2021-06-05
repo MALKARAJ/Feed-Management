@@ -6,6 +6,7 @@
 <meta charset="ISO-8859-1">
 <title>Login</title>
 <link rel="stylesheet" href="./css/login.css"/>
+<meta name="google-signin-client_id" content="330149014446-918mp1mtuakch6p0vokknncpj276tm1m.apps.googleusercontent.com">
 </head>
 <body>
 	<div class="container">
@@ -18,8 +19,32 @@
 
 	 	<p id="dbError" class="error"></p>
 	 	<input type="button" value="Login" onclick="userLogin()"><br>
+	 	<div class="g-signin2" data-onsuccess="onSignIn"></div>
+	 	
 	 	<a onclick="location.href='/register';">Register</a><br>
+	 	
 	</div>
+	<script>
+		function onSignIn(googleUser) {
+		  var profile = googleUser.getBasicProfile();
+		  console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+		  console.log('Name: ' + profile.getName());
+		  console.log('Image URL: ' + profile.getImageUrl());
+		  console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+		}
+		</script>
+		
+		<a href="#" onclick="signOut();">Sign out</a>
+		<script>
+		  function signOut() {
+		    var auth2 = gapi.auth2.getAuthInstance();
+		    auth2.signOut().then(function () {
+		      console.log('User signed out.');
+		    });
+		  }
+		</script>
+	  <script src="https://apis.google.com/js/platform.js" async defer></script>
+	
 	  <script type="text/javascript" src="./js/user.js"></script>
 	
 </body>

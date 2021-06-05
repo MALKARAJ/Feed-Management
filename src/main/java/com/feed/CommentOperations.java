@@ -77,7 +77,7 @@ public class CommentOperations implements CommentDao{
 					   JSONObject obj1= new JSONObject();
 					   obj1.put("feed_id", c.getFeed_id());
 					   obj1.put("comment", entity.getProperty("comment").toString());
-					   obj.put("comment_id", entity.getKey().getName());				   
+					   obj1.put("comment_id", entity.getKey().getName());				   
 					   obj1.put("userId", entity.getProperty("userId"));
 
 					   long d1=Long.parseLong(entity.getProperty("date").toString());
