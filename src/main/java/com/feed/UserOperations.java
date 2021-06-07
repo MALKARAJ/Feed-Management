@@ -44,6 +44,11 @@ public class UserOperations implements UserDao{
 					ds.put(e);
 					return obj;
 				}
+			else
+			{
+				e=null;
+				obj=null;
+			}
 			return null;
 		} catch (JSONException e) {
 			e.printStackTrace();

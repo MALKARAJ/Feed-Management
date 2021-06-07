@@ -1,4 +1,33 @@
 
+var onSignIn=(googleUser)=> {
+
+/*	var profile = googleUser.getBasicProfile()
+	console.log('ID: ' + profile.getId())
+	console.log('Name: ' + profile.getName())
+	console.log('Image URL: ' + profile.getImageUrl())
+  	console.log('Email: ' + profile.getEmail())
+*/
+	var id_token = googleUser.getAuthResponse().id_token
+	var xhr = new XMLHttpRequest()
+	xhr.open("POST", "/google.signin", true)
+	xhr.setRequestHeader('Content-Type', 'application/json')
+	xhr.send('idtoken=' + id_token)
+	xhr.onload = function() {
+	  var data = JSON.parse(this.responseText)
+	  if(data["success"]==true)
+		{
+			window.location.href = "/"
+		}
+	  else
+		{
+			window.location.href = "/login"
+		}
+	 
+	}
+	
+}
+
+
 var userLogin=()=>{
 	var xhr = new XMLHttpRequest();
 	xhr.open("POST", "/login", true);
