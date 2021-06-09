@@ -1,7 +1,7 @@
 queue:
 - name: delete
   rate: 5/s
-  target: https://taskqueue-dot-georgefulltraining12.uc.r.appspot.com/
+  target: 20210609t101818.taskqueue 
   retry_parameters:
     task_retry_limit: 7
     task_age_limit: 2d
