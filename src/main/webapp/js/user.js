@@ -21,7 +21,7 @@ var onSignIn=(googleUser)=> {
 		}
 	  else
 		{
-			window.location.href = "/login"
+			throwError(data)
 		}
 	 
 	}

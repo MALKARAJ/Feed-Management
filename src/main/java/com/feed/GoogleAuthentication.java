@@ -88,7 +88,8 @@ public class GoogleAuthentication extends HttpServlet {
 				  user.setActive(true);
 				  JSONObject obj=u.addUser(user);
 				  session.setAttribute("userId", userId);
-				  JSONObject obj1=new JSONObject();
+                  JSONObject obj1=new JSONObject();
+                  
 			  	  if(obj!=null) {
 						response.setStatus(200);
 						obj1.put("success", true);
@@ -98,10 +99,10 @@ public class GoogleAuthentication extends HttpServlet {
 				  }
 			  	  else
 			  	  {
-						response.setStatus(200);
-						obj1.put("success", true);
-						obj1.put("code",200);
-						obj1.put("message","existing user");
+						response.setStatus(400);
+						obj1.put("success", false);
+						obj1.put("code",400);
+						obj1.put("message","please sign in using your email");
 						out.println(obj1);
 
 						
