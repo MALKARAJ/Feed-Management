@@ -1,12 +1,13 @@
 package com.feed;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.Date;
+import java.util.logging.Logger;
 
-import javax.mail.Transport;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -16,35 +17,48 @@ import javax.servlet.http.HttpSession;
 
 import org.json.JSONObject;
 
+
 import com.google.appengine.repackaged.com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.appengine.repackaged.com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 import com.google.appengine.repackaged.com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.appengine.repackaged.com.google.api.client.http.HttpTransport;
-import com.google.appengine.repackaged.com.google.api.client.json.JsonFactory;
+import com.google.appengine.repackaged.com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.appengine.repackaged.com.google.api.client.json.jackson.JacksonFactory;
 import com.google.appengine.repackaged.org.joda.time.DateTime;
 
 
 
 
-@WebServlet("/google/signin")
+@WebServlet("/google")
 public class GoogleAuthentication extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
+    private static final Logger log = Logger.getLogger(FeedOperations.class.getName());	
 
     public GoogleAuthentication() {
         super();
     }
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.getWriter().append("Served at: ").append(request.getContextPath());
-	}
-
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		HttpTransport transport=null;
-		JsonFactory jsonFactory=null;
-		PrintWriter out=response.getWriter();
-		String idTokenString=request.getParameter("idtoken");
-		GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(transport, jsonFactory)
+        
+        StringBuffer jb = new StringBuffer();
+	    PrintWriter out=response.getWriter();
+	    String line = null;
+	    BufferedReader reader = request.getReader();
+	    while ((line = reader.readLine()) != null)
+	        jb.append(line);
+	    String str=jb.toString();
+        JSONObject json=new JSONObject(str);
+
+        
+        
+        
+        
+        HttpTransport transport = new NetHttpTransport();
+        JacksonFactory jacksonFactory = new JacksonFactory();
+        String idTokenString=json.getString("idtoken");
+        log.warning(idTokenString);
+        System.out.println(idTokenString);
+		GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(transport, jacksonFactory)
 		    .setAudience(Collections.singletonList("330149014446-918mp1mtuakch6p0vokknncpj276tm1m.apps.googleusercontent.com"))
 		    .build();
 
@@ -118,7 +132,19 @@ public class GoogleAuthentication extends HttpServlet {
 			  obj1.put("error","Security Issues");
  			  out.println(obj1);			
  			  e.printStackTrace();
+        }
+            catch (Exception e) {
+			
+			  JSONObject obj1=new JSONObject();
+			  System.out.println("Invalid ID token.");
+			  response.setStatus(500);
+			  obj1.put("success", false);
+			  obj1.put("code",500);
+			  obj1.put("error","Exception");
+ 			  out.println(obj1);			
+ 			  e.printStackTrace();
 		}
-	}
+    }
+
 
 }
