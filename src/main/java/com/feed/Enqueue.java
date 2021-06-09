@@ -45,7 +45,7 @@ public class Enqueue extends HttpServlet {
            // ModulesService modulesApi = ModulesServiceFactory.getModulesService();
            // URL url = new URL("http://" +modulesApi.getVersionHostname("taskqueue","20210604t110736") +"/worker");
             System.out.println(json);
-            Queue queue = QueueFactory.getQueue("delete");
+            Queue queue = QueueFactory.getQueue("deleteFeed");
             //System.out.println(url.toString());
             queue.add(TaskOptions.Builder.withUrl("/worker").param("key", json.toString()));
 
