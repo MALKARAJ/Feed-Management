@@ -7,7 +7,7 @@ derived_file_type:
 threadsafe: True
 auto_id_policy: default
 beta_settings:
-  'source_reference': 'https://github.com/GeorgeJ1010/Feed-Management.git#355f8de0a410a97d5217dc5c465d3a2ea3ff30db'
+  'source_reference': 'https://github.com/GeorgeJ1010/Feed-Management.git#18c9f8be3f524bfe41bbdb62ca3673036b857e3f'
 api_version: 'user_defined'
 handlers:
 - url: (/.*/)

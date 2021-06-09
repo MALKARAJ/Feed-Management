@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -24,16 +25,18 @@ import com.google.appengine.api.datastore.KeyFactory;
 @WebServlet("/worker")
 public class Worker extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+   	private static final Logger log = Logger.getLogger(Worker.class.getName());	
 
     public Worker() {
         super();
     }
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		
+		log.info("inside worker class");
 		DatastoreService ds= DatastoreServiceFactory.getDatastoreService(); 	    
-		String feeds = request.getParameter("key");
+    try
+    {
+        String feeds = request.getParameter("key");
 		JSONObject obj=new JSONObject(feeds);
         JSONArray arr = obj.getJSONArray("Feeds");
         List<Key> list=new ArrayList<Key>();
@@ -58,8 +61,16 @@ public class Worker extends HttpServlet {
         ds.delete(list);
         ds.delete(list1);
 
-		
-		response.setStatus(200);
+        log.info("Deletion is successfull");
+     	response.setStatus(HttpServletResponse.SC_OK);
+
+    }
+    catch(Exception e)
+    {
+        log.info("message :"+e);
+     	response.setStatus(500);
+
+    }
 	}
 
 }
