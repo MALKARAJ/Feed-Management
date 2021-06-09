@@ -22,6 +22,8 @@ if (session1!=null && session1.getAttribute("userId")!=null ){
 %>
 <meta http-equiv="Cache-control" content="private">
 <title>Feed Management</title>
+<meta name="google-signin-client_id" content="330149014446-918mp1mtuakch6p0vokknncpj276tm1m.apps.googleusercontent.com">
+
 <link rel="stylesheet" href="./css/feeds.css">
 <link rel="stylesheet" href="./css/profile.css">
 </head>
@@ -103,7 +105,10 @@ if (session1!=null && session1.getAttribute("userId")!=null ){
 							<ul>
 								<li><h4>Email:</h4></li><li id="emailHolder"></li>
 								<li><input type="button" id="logout" value="logout" onclick="logout()"/></li>
-							</ul>
+
+
+
+                            </ul>
 						</div>		  
 	 		 	 </div>			  
 			</div>
@@ -123,8 +128,16 @@ if (session1!=null && session1.getAttribute("userId")!=null ){
   <script type="text/javascript" src="./js/commentOperation.js"></script>
   <img src="images/like.png"  id="bin" width="20" height="20" style="display:none">
   <img src="images/comment.png"  id="bin" width="20" height="20" style="display:none">
-    
   
+  <script>
+      function onLoad() {
+      gapi.load('auth2', function() {
+        gapi.auth2.init();
+      });
+    }
+  </script>  
+  <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+
 </body>
 </html>
 <%}

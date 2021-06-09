@@ -151,7 +151,7 @@ public class TestComments {
 	    assertTrue(v.isValidCommentUpdate(obj, c));
 	}
 	
-	
+	/*
 	  @Test public void testUpdateTime() throws InterruptedException,
 	  EntityNotFoundException, ParseException, CacheException
 	  { 
@@ -160,16 +160,15 @@ public class TestComments {
 		  Comment c=new Comment();
 		  Date d=new Date();
 		  c.setDate(d);
-		  TimeUnit.SECONDS.sleep(16); 
 		  JSONObject obj = new JSONObject();
 		  obj.put("comment", "Content"); 
 		  obj.put("feedId", "feed123123");
 		  obj.put("commentId", "comment123123"); 
 		  obj.put("userId","user123");
 		  obj.put("like", "false");
-		  assertTrue(v.isValidCommentUpdate(obj,c)); 
+		  assertFalse(v.isValidCommentUpdate(obj,c)); 
 	 }
-	  
+	  */
 		@Test
 		public void testDelete() throws EntityNotFoundException, CacheException
 		{

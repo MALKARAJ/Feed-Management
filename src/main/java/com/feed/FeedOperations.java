@@ -28,10 +28,7 @@ import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.datastore.QueryResultList;
-import com.google.appengine.api.memcache.MemcacheService;
-import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.google.appengine.repackaged.org.joda.time.DateTime;
-import com.google.appengine.repackaged.org.joda.time.DateTimeField;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 public class FeedOperations implements FeedDao{
 	   private static final Logger log = Logger.getLogger(FeedOperations.class.getName());	
