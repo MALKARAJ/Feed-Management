@@ -264,12 +264,6 @@ public class FeedOperations implements FeedDao{
 		   feed.setProperty("category", f.getCategory());
 		   feed.setProperty("userId",f.getUserId());
 		   
-		   if(!f.isLike())
-		   {
-			   Date date=f.getUpdateDate();
-			   DateTime d=new DateTime(date);
-			   feed.setProperty("Updation_date", d.getMillis());
-		   }		   
 		   if(f.isLike())
 		   {
 			   feed.setProperty("like", f.getLikes()+1);

@@ -11,4 +11,5 @@ public interface UserDao {
 		public Boolean udpateImage(String email,String userId) throws EntityNotFoundException;
 		public Boolean deleteUser(String userId);
 		public boolean isValidNewUser(String email);
+		public JSONObject getUserByEmail(String email) throws EntityNotFoundException;
 }

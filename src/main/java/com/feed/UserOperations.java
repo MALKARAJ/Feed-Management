@@ -159,5 +159,32 @@ public class UserOperations implements UserDao{
 			return false;
 		}
 	}
+	@Override
+	public JSONObject getUserByEmail(String email) throws EntityNotFoundException {
+
+		DatastoreService ds= DatastoreServiceFactory.getDatastoreService(); 
+		Filter mailConstraint = new FilterPredicate("email", FilterOperator.EQUAL,email);
+		Query q=new Query("User").setFilter(mailConstraint);
+ 	    Entity entity=ds.prepare(q).asSingleEntity();
+		
+		
+		if(entity!=null) {
+			
+			JSONObject obj= new JSONObject();
+	  	    obj.put("email",entity.getProperty("email").toString());
+			obj.put("image", entity.getProperty("image").toString());
+			obj.put("active",(boolean) entity.getProperty("active"));
+			obj.put("userId", entity.getKey().getName());
+			long d=Long.parseLong(entity.getProperty("date").toString());
+			Date date=new Date(d);
+			obj.put("date", date);
+			return obj;
+			
+		}
+		else
+		{
+			return null;
+		}
+	}
 	
 }

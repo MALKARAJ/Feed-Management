@@ -87,10 +87,11 @@ public class GoogleAuthentication extends HttpServlet {
 				  user.setImage(pictureUrl);
 				  user.setActive(true);
 				  JSONObject obj=u.addUser(user);
-				  session.setAttribute("userId", userId);
                   JSONObject obj1=new JSONObject();
                   
 			  	  if(obj!=null) {
+			  		   log.fine("Signed up succesfully");
+			  		  	session.setAttribute("userId", userId);
 						response.setStatus(200);
 						obj1.put("success", true);
 						obj1.put("code",200);
@@ -99,11 +100,22 @@ public class GoogleAuthentication extends HttpServlet {
 				  }
 			  	  else
 			  	  {
-						response.setStatus(400);
-						obj1.put("success", false);
-						obj1.put("code",400);
-						obj1.put("message","please sign in using your email");
-						out.println(obj1);
+  	                    JSONObject obj2=u.getUserByEmail(email);
+  	                    if(obj2!=null)
+  	                    {
+  	                    	log.fine("Log in succesfull");
+  				  		  	session.setAttribute("userId", obj2.get(userId).toString());
+  							response.setStatus(200);
+  							obj1.put("success", true);
+  							obj1.put("code",200);
+  							obj1.put("message","please sign in using your email");
+  							out.println(obj2);  	                    	
+  	                    }
+  	                    else
+  	                    {
+  	                    	log.severe("Google log in failure");
+  	                    }
+
 
 						
 			  	  }
@@ -112,6 +124,9 @@ public class GoogleAuthentication extends HttpServlet {
 			} 
 			else 
 			{
+			  
+			  log.severe("Google log in failure due to invalid token");
+
 			  JSONObject obj1=new JSONObject();
 			  System.out.println("Invalid ID token.");
 			  response.setStatus(400);
@@ -124,6 +139,9 @@ public class GoogleAuthentication extends HttpServlet {
 			}
 		
 		} catch (GeneralSecurityException | IOException e) {
+
+			  log.severe("Google log in failure due to security exception");
+
 			
 			  JSONObject obj1=new JSONObject();
 			  System.out.println("Invalid ID token.");
@@ -135,6 +153,9 @@ public class GoogleAuthentication extends HttpServlet {
  			  e.printStackTrace();
         }
             catch (Exception e) {
+             
+  			  log.severe("Google log in failure due to server issues");
+
 			
 			  JSONObject obj1=new JSONObject();
 			  System.out.println("Invalid ID token.");
