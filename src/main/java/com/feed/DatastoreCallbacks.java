@@ -13,7 +13,7 @@ public class DatastoreCallbacks {
 	
     static Logger logger = Logger.getLogger("logger");
 
-    @PrePut(kinds = {"Feed","Comment"})
+    @PrePut
     void log(PutContext context) {
         logger.fine("Finished putting " + context.getCurrentElement().getKey());
     }
