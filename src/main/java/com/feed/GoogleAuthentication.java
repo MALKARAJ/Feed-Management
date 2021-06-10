@@ -56,8 +56,6 @@ public class GoogleAuthentication extends HttpServlet {
         HttpTransport transport = new NetHttpTransport();
         JacksonFactory jacksonFactory = new JacksonFactory();
         String idTokenString=json.getString("idtoken");
-        log.warning(idTokenString);
-        System.out.println(idTokenString);
 		GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(transport, jacksonFactory)
 		    .setAudience(Collections.singletonList("330149014446-918mp1mtuakch6p0vokknncpj276tm1m.apps.googleusercontent.com"))
 		    .build();
@@ -90,7 +88,7 @@ public class GoogleAuthentication extends HttpServlet {
                   JSONObject obj1=new JSONObject();
                   
 			  	  if(obj!=null) {
-			  		   log.fine("Signed up succesfully");
+			  		   log.info("Signed up succesfully");
 			  		  	session.setAttribute("userId", userId);
 						response.setStatus(200);
 						obj1.put("success", true);
@@ -103,13 +101,13 @@ public class GoogleAuthentication extends HttpServlet {
   	                    JSONObject obj2=u.getUserByEmail(email);
   	                    if(obj2!=null)
   	                    {
-  	                    	log.fine("Log in succesfull");
-  				  		  	session.setAttribute("userId", obj2.get(userId).toString());
+  	                    	log.info("Log in succesfull");
+  				  		  	session.setAttribute("userId", obj2.get("userId").toString());
   							response.setStatus(200);
   							obj1.put("success", true);
   							obj1.put("code",200);
   							obj1.put("message","please sign in using your email");
-  							out.println(obj2);  	                    	
+  							out.println(obj1);  	                    	
   	                    }
   	                    else
   	                    {
@@ -158,7 +156,6 @@ public class GoogleAuthentication extends HttpServlet {
 
 			
 			  JSONObject obj1=new JSONObject();
-			  System.out.println("Invalid ID token.");
 			  response.setStatus(500);
 			  obj1.put("success", false);
 			  obj1.put("code",500);
