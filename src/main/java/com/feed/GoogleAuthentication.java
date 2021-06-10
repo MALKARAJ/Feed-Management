@@ -85,16 +85,12 @@ public class GoogleAuthentication extends HttpServlet {
 				  user.setImage(pictureUrl);
 				  user.setActive(true);
 				  JSONObject obj=u.addUser(user);
-                  JSONObject obj1=new JSONObject();
                   
 			  	  if(obj!=null) {
 			  		   log.info("Signed up succesfully");
 			  		  	session.setAttribute("userId", userId);
 						response.setStatus(200);
-						obj1.put("success", true);
-						obj1.put("code",200);
-						obj1.put("detail",obj);
-						out.println(obj1);
+                        response.sendRedirect("/");
 				  }
 			  	  else
 			  	  {
@@ -104,10 +100,8 @@ public class GoogleAuthentication extends HttpServlet {
   	                    	log.info("Log in succesfull");
   				  		  	session.setAttribute("userId", obj2.get("userId").toString());
   							response.setStatus(200);
-  							obj1.put("success", true);
-  							obj1.put("code",200);
-  							obj1.put("message","please sign in using your email");
-  							out.println(obj1);  	                    	
+                            response.sendRedirect("/");
+                    	
   	                    }
   	                    else
   	                    {

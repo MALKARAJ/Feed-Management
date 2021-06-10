@@ -61,7 +61,6 @@ public class TestComments {
 	public void testAddComment() throws EntityNotFoundException, CacheException {
 		TestFeed f=new TestFeed();
 		f.testAddFeed();
-		createComment();
 		CommentDao comment=new CommentOperations();
 		Comment c=new Comment();
 	    c.setComment("Comment");
@@ -70,13 +69,12 @@ public class TestComments {
 	    c.setComment_id("comment123123");
         DateTime now = new DateTime();
         Date millis=new Date(now.getMillis());
-	    c.setDate(millis);
+        c.setDate(millis);
 	    String e=comment.addComment(c);
 	    assertEquals(c.getFeed_id(),e);
 	}
 	@Test
 	public void testUpdateComment() throws EntityNotFoundException, CacheException {
-		createComment();
 		DatastoreService ds=DatastoreServiceFactory.getDatastoreService();
 		testAddComment();
 		CommentDao comment=new CommentOperations();
@@ -100,7 +98,6 @@ public class TestComments {
 	public void testCommentLike() throws EntityNotFoundException, CacheException
 	{		
 		DatastoreService ds=DatastoreServiceFactory.getDatastoreService();
-		createComment();
 		testAddComment();
 		CommentDao comment=new CommentOperations();
 		Comment c=new Comment();

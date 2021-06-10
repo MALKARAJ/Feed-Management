@@ -130,13 +130,6 @@ public class CommentOperations implements CommentDao{
 			   comment.setProperty("userId", c.getUser_id());
 
 			   comment.setProperty("comment",c.getComment());
-
-			   if(!c.isLike())
-			   {
-				   Date date=c.getUpdateDate();
-				   DateTime d=new DateTime(date);
-				   comment.setProperty("Updation_date", d.getMillis());
-			   }
 			   if(c.isLike())
 			   {
 				   comment.setProperty("like", c.getLikes()+1);

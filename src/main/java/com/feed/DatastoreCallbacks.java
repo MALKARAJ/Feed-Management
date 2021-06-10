@@ -13,12 +13,12 @@ public class DatastoreCallbacks {
 	
     static Logger logger = Logger.getLogger("logger");
 
-    @PrePut(kinds = "Feed")
+    @PrePut(kinds = {"Feed","Comment"})
     void log(PutContext context) {
         logger.fine("Finished putting " + context.getCurrentElement().getKey());
     }
 
-    @PrePut(kinds = "Feed")
+    @PrePut(kinds = {"Feed","Comment"})
     void updateTimestamp(PutContext context) {
         logger.info(context.getCurrentElement().getProperty("Updation_date").toString());
         	Date date=new Date();
