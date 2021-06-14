@@ -83,7 +83,7 @@ var userRegister=()=>{
                 
                 .then(response => response.json())
                 .then(json => console.log(json));
-				//window.location.href = "/login";
+				window.location.href = "/login";
 	
 			}
 			 else
