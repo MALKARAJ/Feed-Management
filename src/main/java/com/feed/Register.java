@@ -31,7 +31,8 @@ public class Register extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         HttpSession session=request.getSession(false);  
-
+        response.addHeader("Access-Control-Allow-Origin", "*");
+        response.addHeader("Access-Control-Allow-Headers","*");
 		if(session.getAttribute("userId")!=null && session!=null) {
       			response.sendRedirect("/");
 
@@ -56,6 +57,8 @@ public class Register extends HttpServlet {
         UserDao userOp=new UserOperations();
         CredentialValidator v=new CredentialValidator();
         response.setContentType("application/json");
+        response.addHeader("Access-Control-Allow-Origin", "*");
+        response.addHeader("Access-Control-Allow-Headers","*");
         User user=new User();
         try {
 	    	UUID id=UUID.randomUUID();
