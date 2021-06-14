@@ -40,16 +40,7 @@ var userLogin=()=>{
 		  var data = JSON.parse(this.responseText);
 		  if(data["success"]==true)
 			{
-				var d = {
-				  'email': email,
-				  'password': pass
-				};
 
-				var options = {
-				  'method' : 'post',
-				  'payload' : d
-				};
-				UrlFetchApp.fetch('https://malkarajtraining12.uc.r.appspot.com/register', options);
 				window.location.href = "/";
 			}
 		  else
@@ -77,7 +68,30 @@ var userRegister=()=>{
 			var data=JSON.parse(this.responseText);
 		    if(data["success"]==true)
 			{
-				window.location.href = "/login";
+                fetch("https://malkarajtraining12.uc.r.appspot.com/register", {
+                    
+                method: "POST",
+
+                    
+                    body: JSON.stringify({
+
+                        email: email,
+                        password: pass,
+                    }),
+                    
+                    headers: {
+                        "Access-Control-Allow-Origin" : "*",
+                        "Access-Control-Allow-Methods" : "GET, POST, PATCH, PUT, DELETE, OPTIONS",
+                        "Access-Control-Allow-Headers" : "*",
+
+
+                    },
+
+                })
+                
+                .then(response => response.json())
+                .then(json => console.log(json));
+				//window.location.href = "/login";
 	
 			}
 			 else
