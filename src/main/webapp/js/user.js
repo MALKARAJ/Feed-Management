@@ -12,8 +12,8 @@ var onSignIn=(googleUser)=> {
 	xhr.open("POST", "/google", true)
     xhr.setRequestHeader('Content-Type', 'application/json')
     var obj={"idtoken":id_token};
-    xhr.send(JSON.stringify(obj))
-    xhr.onload = function() {
+	xhr.send(JSON.stringify(obj))
+	xhr.onload = function() {
 	  var data = JSON.parse(this.responseText)
 	  if(data["success"]==true)
 		{
@@ -23,7 +23,8 @@ var onSignIn=(googleUser)=> {
 		{
 			throwError(data)
 		}
-    }
+	 
+	}
 	
 }
       
@@ -40,7 +41,6 @@ var userLogin=()=>{
 		  var data = JSON.parse(this.responseText);
 		  if(data["success"]==true)
 			{
-
 				window.location.href = "/";
 			}
 		  else
@@ -68,30 +68,7 @@ var userRegister=()=>{
 			var data=JSON.parse(this.responseText);
 		    if(data["success"]==true)
 			{
-                fetch("https://malkarajtraining12.uc.r.appspot.com/register", {
-                    
-                method: "POST",
-
-                    
-                    body: JSON.stringify({
-
-                        email: email,
-                        password: pass,
-                    }),
-                    
-                    headers: {
-                        "Access-Control-Allow-Origin" : "*",
-                        "Access-Control-Allow-Methods" : "GET, POST, PATCH, PUT, DELETE, OPTIONS",
-                        "Access-Control-Allow-Headers" : "*",
-
-
-                    },
-
-                })
-                
-                .then(response => response.json())
-                .then(json => console.log(json));
-				//window.location.href = "/login";
+				window.location.href = "/login";
 	
 			}
 			 else
