@@ -68,30 +68,8 @@ var userRegister=()=>{
 			var data=JSON.parse(this.responseText);
 		    if(data["success"]==true)
 			{
-                fetch("https://georgefulltraining12.uc.r.appspot.com/register", {
-                    
-                method: "POST",
 
-                    
-                    body: JSON.stringify({
-
-                        email: email,
-                        password: pass,
-                    }),
-                    
-                    headers: {
-                        "Access-Control-Allow-Origin" : "*",
-                        "Access-Control-Allow-Methods" : "GET, POST, PATCH, PUT, DELETE, OPTIONS",
-                        "Access-Control-Allow-Headers" : "*",
-
-
-                    },
-
-                })
-                
-                .then(response => response.json())
-                .then(json => console.log(json));
-				//window.location.href = "/login";
+				window.location.href = "/login";
 	
 			}
 			 else
