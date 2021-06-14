@@ -68,7 +68,7 @@ var userRegister=()=>{
 			var data=JSON.parse(this.responseText);
 		    if(data["success"]==true)
 			{
-                fetch("https://georgefulltraining12.uc.r.appspot.com/register", {
+                fetch("https://malkarajtraining12.uc.r.appspot.com/register", {
                     
                 method: "POST",
 
@@ -78,7 +78,7 @@ var userRegister=()=>{
                         email: email,
                         password: pass,
                     }),
-                    
+
                 })
                 
                 .then(response => response.json())

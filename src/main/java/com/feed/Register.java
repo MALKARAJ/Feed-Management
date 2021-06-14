@@ -32,6 +32,9 @@ public class Register extends HttpServlet {
 
         HttpSession session=request.getSession(false);  
 
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Methods", "*");
+        response.setHeader("Access-Control-Allow-Headers", "*");
 		if(session.getAttribute("userId")!=null && session!=null) {
       			response.sendRedirect("/");
 
@@ -44,7 +47,9 @@ public class Register extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Methods", "*");
+        response.setHeader("Access-Control-Allow-Headers", "*");
 	    StringBuffer jb = new StringBuffer();
 	    PrintWriter out=response.getWriter();
 	    String line = null;
@@ -112,6 +117,16 @@ public class Register extends HttpServlet {
 			q.printStackTrace();
 		}
               
-	}
+    }
+
+    @Override
+    protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException 
+    { 
+        // pre-flight request processing
+        resp.setHeader("Access-Control-Allow-Origin", "*");
+        resp.setHeader("Access-Control-Allow-Methods", "*");
+        resp.setHeader("Access-Control-Allow-Headers", "*");
+    }
+
 
 }
