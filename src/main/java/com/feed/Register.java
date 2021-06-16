@@ -3,6 +3,7 @@ package com.feed;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URL;
 import java.util.Date;
 import java.util.UUID;
 import org.mindrot.jbcrypt.BCrypt;
@@ -17,6 +18,12 @@ import javax.servlet.http.HttpSession;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.urlfetch.HTTPMethod;
+import com.google.appengine.api.urlfetch.HTTPRequest;
+import com.google.appengine.api.urlfetch.HTTPResponse;
+import com.google.appengine.api.urlfetch.URLFetchService;
+import com.google.appengine.api.urlfetch.URLFetchServiceFactory;
 import com.google.appengine.repackaged.org.joda.time.DateTime;
 
 
@@ -82,6 +89,15 @@ public class Register extends HttpServlet {
 				JSONObject obj1=new JSONObject();
 	
 				if(obj!=null) {
+					URLFetchService fetcher = URLFetchServiceFactory.getURLFetchService();
+					URL url=new URL("https://malkarajtraining12.uc.r.appspot.com/register"); 
+					HTTPRequest req = new HTTPRequest(url, HTTPMethod.POST);
+					JSONObject reqObj=new JSONObject();
+					reqObj.put("email", email);
+					reqObj.put("password", pass);
+					req.setPayload(reqObj.toString().getBytes());
+					HTTPResponse res = fetcher.fetch(req);
+					System.out.println(res);
 					response.setStatus(200);
 					obj1.put("success", true);
 					obj1.put("code",200);
