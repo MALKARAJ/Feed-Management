@@ -15,15 +15,16 @@ public class DatastoreCallbacks {
 
     @PrePut
     void log(PutContext context) {
+    	
         logger.fine("Finished putting " + context.getCurrentElement().getKey());
     }
 
     @PrePut(kinds = {"Feed","Comment"})
     void updateTimestamp(PutContext context) {
         logger.info(context.getCurrentElement().getProperty("Updation_date").toString());
-        	Date date=new Date();
-    		DateTime d=new DateTime(date);
-            context.getCurrentElement().setProperty("Updation_date", d.getMillis());    		
+        Date date=new Date();
+    	DateTime d=new DateTime(date);
+        context.getCurrentElement().setProperty("Updation_date", d.getMillis());    		
     
 
     }

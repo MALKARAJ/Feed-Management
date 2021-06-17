@@ -1,6 +1,8 @@
 package com.feed;
 
 import java.io.IOException;
+import java.util.logging.Logger;
+
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -14,6 +16,7 @@ import javax.servlet.http.HttpSession;
 
 @WebFilter("/SessionController")
 public class SessionController implements Filter {
+    static Logger logger = Logger.getLogger("logger");
 
     public SessionController() {
     }
@@ -25,13 +28,17 @@ public class SessionController implements Filter {
 
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
-        System.out.println("In Session Controller filter");
+
         HttpSession session = req.getSession(false);
+        
+        logger.info("In session control filter");
+        
         if (session == null) {   
-        		
+        	logger.severe("User not logged in");	
         	req.getRequestDispatcher("/login").forward(request, response);
         } 
         else {
+        	logger.info("User logged in and redirected successfully");	
         	req.getRequestDispatcher("/").forward(request, response);
             chain.doFilter(request, response);
         }
