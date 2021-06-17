@@ -13,17 +13,7 @@ var onSignIn=(googleUser)=> {
     xhr.setRequestHeader('Content-Type', 'application/json')
     var obj={"idtoken":id_token};
     xhr.send(JSON.stringify(obj))
-    xhr.onload = function() {
-	  var data = JSON.parse(this.responseText)
-	  if(data["success"]==true)
-		{
-			window.location.href = "/"
-		}
-	  else
-		{
-			throwError(data)
-		}
-    }
+
 	
 }
       
