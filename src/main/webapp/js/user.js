@@ -68,7 +68,8 @@ var userRegister=()=>{
 			var data=JSON.parse(this.responseText);
 		    if(data["success"]==true)
 			{
-                 window.location.href = "/login";
+
+				window.location.href = "/login";
 	
 			}
 			 else
