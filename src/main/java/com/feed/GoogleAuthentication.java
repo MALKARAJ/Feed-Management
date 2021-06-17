@@ -92,11 +92,10 @@ public class GoogleAuthentication extends HttpServlet {
 			  		   log.info("Signed up succesfully");
 			  		  	session.setAttribute("userId", userId);
 						response.setStatus(200);
-						request.getRequestDispatcher("/").forward(request, response);
-						//obj1.put("success", true);
-						//obj1.put("code",200);
-						//obj1.put("detail",obj);
-						//out.println(obj1);
+						obj1.put("success", true);
+						obj1.put("code",200);
+						obj1.put("detail",obj);
+						out.println(obj1);
 				  }
 			  	  else
 			  	  {
@@ -106,18 +105,14 @@ public class GoogleAuthentication extends HttpServlet {
   	                    	log.info("Log in succesfull");
   				  		  	session.setAttribute("userId", obj2.get("userId").toString());
   							response.setStatus(200);
-  							request.getRequestDispatcher("/").forward(request, response);
-
-  							//obj1.put("success", true);
-  							//obj1.put("code",200);
-  							//obj1.put("message","User already present");
-  							//out.println(obj1);  	                    	
+  							obj1.put("success", true);
+  							obj1.put("code",200);
+  							obj1.put("message","User already present");
+  							out.println(obj1);  	                    	
   	                    }
   	                    else
   	                    {
   	                    	log.severe("Google log in failure");
-  							request.getRequestDispatcher("/login").forward(request, response);
-
   	                    }
 
 
@@ -133,7 +128,6 @@ public class GoogleAuthentication extends HttpServlet {
 			  JSONObject obj1=new JSONObject();
 			  System.out.println("Invalid ID token.");
 			  response.setStatus(400);
-
 			  obj1.put("success", false);
 			  obj1.put("code",400);
 			  obj1.put("error","Invalid ID token");
