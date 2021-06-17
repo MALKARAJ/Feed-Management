@@ -20,7 +20,7 @@
 	 	<p id="dbError" class="error"></p>
 	 	<input type="button" value="Login" onclick="userLogin()"><br>
 	 	<div class="g-signin2" data-onsuccess="onSignIn"></div>
-	 	
+	 	<br><br>
 	 	<a onclick="location.href='/register';">Register</a><br>
 	 	
 	</div>

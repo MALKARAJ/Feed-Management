@@ -1,16 +1,28 @@
 @charset "ISO-8859-1";
 
-.container{
-	display:flex;
-	flex-direction:column;
-	padding:20px;
-	width:200px;
-	border:2px solid black;
-	margin-left:40%;
-	margin-top:15%;
-	text-align:center;
-	background-color:#D7D7D7;
+
+
+
+body{
+    background-color: #e4ffff;
 }
+.container{
+	display: flex;
+    flex-direction: column;
+    padding: 20px;
+    width: 200px;
+    box-shadow: 0 0 7px 0px black;
+    margin-left: 40%;
+    margin-top: 15%;
+    text-align: center;
+    background-color: #c8ebeb;
+}
+input{
+    border-radius: 5px;
+    border: 1px solid;
+    text-align: center;
+    height: 30px;
+    background-color: #e4ffff;}
 a{
 	cursor:pointer;
 }
@@ -20,13 +32,16 @@ a{
 	color:red;
 	font-size:15px;
 }
-
+.abcRioButtonLightBlue {
+    background-color: #c8ebeb !important;
+    color: #000000 !important;
+}
 .abcRioButtonContents {
-
     margin-left: 0px !important;
     margin-right: 32px !important;
 }
 .abcRioButton {
+	box-shadow: 0 0px 4px 0 rgb(0 0 0) !important;
     width: inherit !important;
 
 }
