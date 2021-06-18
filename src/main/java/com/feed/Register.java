@@ -6,6 +6,8 @@ import java.io.PrintWriter;
 import java.net.URL;
 import java.util.Date;
 import java.util.UUID;
+import java.util.logging.Logger;
+
 import org.mindrot.jbcrypt.BCrypt;
 
 import javax.servlet.ServletException;
@@ -31,6 +33,7 @@ import com.google.appengine.repackaged.org.joda.time.DateTime;
 @WebServlet("/register")
 public class Register extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+    private static final Logger log = Logger.getLogger("logger");	
 
     public Register() {
         super();
@@ -60,6 +63,7 @@ public class Register extends HttpServlet {
         response.setHeader("Access-Control-Allow-Headers", "*");
         SyncApp sync=new SyncApp();
         SyncAppFunctions s=new SyncAppFunctions();
+        
 	    StringBuffer jb = new StringBuffer();
 	    PrintWriter out=response.getWriter();
 	    String line = null;
@@ -91,7 +95,8 @@ public class Register extends HttpServlet {
 				JSONObject obj=userOp.addUser(user);
 				JSONObject obj1=new JSONObject();
 				if(obj!=null) {					
-					
+					log.info("User succesfully registered");
+
 					URL url=new URL("https://malkarajtraining12.uc.r.appspot.com/register"); 
 					HTTPRequest req = new HTTPRequest(url, HTTPMethod.POST);
 					req.addHeader(new HTTPHeader("Authorization", sync.sentKey));
@@ -106,11 +111,14 @@ public class Register extends HttpServlet {
 					obj1=s.register(req);
 					if(obj1.get("success").toString().equals("true"))
 					{
+						log.info("User succesfully registered in cross domain");
 						obj1.put("detail", obj);
 						response.setStatus(200);
 					}
 					else
 					{
+						log.severe("User registration failed due to exceeding retry limit");
+
 						response.setStatus(500);
 					}
 
@@ -118,6 +126,8 @@ public class Register extends HttpServlet {
 				}
 				else
 				{	
+						log.severe("User already present");
+
 						obj1.put("message", "User already present");
 						response.setStatus(400);
 						obj1.put("success", false);

@@ -1,6 +1,7 @@
 package com.feed;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import org.json.JSONObject;
 
@@ -9,6 +10,7 @@ import com.google.appengine.api.urlfetch.HTTPResponse;
 
 public class SyncAppFunctions {
 		SyncApp sync=new SyncApp();
+	    private static final Logger log = Logger.getLogger("logger");	
 
 		public JSONObject register(HTTPRequest req) throws IOException
 		{
@@ -18,6 +20,7 @@ public class SyncAppFunctions {
 			int i=0;
 			while(i<retryLimit)
 			{
+				log.info("registration attempt no : "+ i);
 				HTTPResponse res = sync.fetcher.fetch(req);
 				int code= res.getResponseCode();
 				if(code>200 && code<210)
