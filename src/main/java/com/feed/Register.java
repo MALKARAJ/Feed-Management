@@ -19,6 +19,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.urlfetch.HTTPHeader;
 import com.google.appengine.api.urlfetch.HTTPMethod;
 import com.google.appengine.api.urlfetch.HTTPRequest;
 import com.google.appengine.api.urlfetch.HTTPResponse;
@@ -57,6 +58,8 @@ public class Register extends HttpServlet {
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.setHeader("Access-Control-Allow-Methods", "*");
         response.setHeader("Access-Control-Allow-Headers", "*");
+        SyncApp sync=new SyncApp();
+        SyncAppFunctions s=new SyncAppFunctions();
 	    StringBuffer jb = new StringBuffer();
 	    PrintWriter out=response.getWriter();
 	    String line = null;
@@ -87,21 +90,31 @@ public class Register extends HttpServlet {
 				user.setActive(true);
 				JSONObject obj=userOp.addUser(user);
 				JSONObject obj1=new JSONObject();
-	
-				if(obj!=null) {
-					URLFetchService fetcher = URLFetchServiceFactory.getURLFetchService();
+				if(obj!=null) {					
+					
 					URL url=new URL("https://malkarajtraining12.uc.r.appspot.com/register"); 
 					HTTPRequest req = new HTTPRequest(url, HTTPMethod.POST);
+					req.addHeader(new HTTPHeader("Authorization", sync.sentKey));
+					req.setHeader(new HTTPHeader("retry", "0"));
 					JSONObject reqObj=new JSONObject();
 					reqObj.put("email", email);
 					reqObj.put("password", pass);
 					req.setPayload(reqObj.toString().getBytes());
-					HTTPResponse res = fetcher.fetch(req);
-					System.out.println(res);
-					response.setStatus(200);
-					obj1.put("success", true);
-					obj1.put("code",200);
-					obj1.put("detail",obj);
+					
+					
+					System.out.println(sync.fetcher.DEFAULT_DEADLINE_PROPERTY);
+					obj1=s.register(req);
+					if(obj1.get("success").toString().equals("true"))
+					{
+						obj1.put("detail", obj);
+						response.setStatus(200);
+					}
+					else
+					{
+						response.setStatus(500);
+					}
+
+	
 				}
 				else
 				{	
