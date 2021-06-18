@@ -96,8 +96,8 @@ public class Register extends HttpServlet {
 				JSONObject obj1=new JSONObject();
 				if(obj!=null) {					
 					log.info("User succesfully registered");
-
-					URL url=new URL("https://malkarajtraining12.uc.r.appspot.com/register"); 
+                    final String uri="https://malkarajtraining12.uc.r.appspot.com/register";
+					URL url=new URL(uri); 
 					HTTPRequest req = new HTTPRequest(url, HTTPMethod.POST);
 					req.addHeader(new HTTPHeader("Authorization", sync.sentKey));
 					req.setHeader(new HTTPHeader("retry", "0"));
@@ -106,8 +106,6 @@ public class Register extends HttpServlet {
 					reqObj.put("password", pass);
 					req.setPayload(reqObj.toString().getBytes());
 					
-					
-					System.out.println(sync.fetcher.DEFAULT_DEADLINE_PROPERTY);
 					obj1=s.register(req);
 					if(obj1.get("success").toString().equals("true"))
 					{
