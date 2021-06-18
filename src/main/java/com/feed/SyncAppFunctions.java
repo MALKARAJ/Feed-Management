@@ -22,8 +22,9 @@ public class SyncAppFunctions {
 			{
 				log.info("registration attempt no : "+ i);
 				HTTPResponse res = sync.fetcher.fetch(req);
-				int code= res.getResponseCode();
-				if(code>200 && code<210)
+                int code= res.getResponseCode();
+                log.info("code :"+code);
+				if(code>=200 && code<300)
 				{
 					
 					obj1.put("success", true);
