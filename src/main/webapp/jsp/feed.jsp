@@ -9,7 +9,6 @@
 //response.setHeader("Cache-Control", "private,max-age=15000");
 HttpSession session1 =request.getSession(false);
 System.out.println(session1.getAttribute("userId"));
-if (session1!=null && session1.getAttribute("userId")!=null ){
 %>
 
 <head>
@@ -140,10 +139,7 @@ if (session1!=null && session1.getAttribute("userId")!=null ){
 
 </body>
 </html>
-<%}
-else{
-	response.sendRedirect("/login");
-	} %>
+
 	
 	
 	

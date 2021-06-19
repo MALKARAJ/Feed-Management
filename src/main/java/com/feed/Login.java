@@ -23,17 +23,18 @@ public class Login extends HttpServlet {
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+       
+		HttpSession session=request.getSession(false);  
 
-        HttpSession session2=request.getSession(false);
-        if(session2!=null && session2.getAttribute("userId")!=null)
-        {
-        	response.sendRedirect("/");
+		if(session==null || session.getAttribute("userId")==null) {
+	        request.getRequestDispatcher("/jsp/login.jsp").forward(request, response);
 
-        }
-        else
-        {
-        	request.getRequestDispatcher("/jsp/login.jsp").forward(request, response);;
-        }
+		}
+		else
+		{
+  			response.sendRedirect("/");
+
+		}
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

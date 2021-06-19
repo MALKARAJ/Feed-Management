@@ -21,16 +21,8 @@ public class MainFeed extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session2=request.getSession(false);
-        if(session2!=null && session2.getAttribute("userId")!=null)
-        {
-          request.getRequestDispatcher("jsp/feed.jsp").forward(request, response);
-
-        }
-        else
-        {
+        request.getRequestDispatcher("jsp/feed.jsp").forward(request, response);
             // response.sendError(400, "not logged in ");
-        	response.sendRedirect("/login");
-        }
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

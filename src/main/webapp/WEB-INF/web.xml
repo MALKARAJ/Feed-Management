@@ -6,14 +6,23 @@
          
          
 		<filter>
-		    <filter-name>SessionControl</filter-name>
-		    <filter-class>com.feed.SessionController</filter-class>
+		    <filter-name>SessionFilter</filter-name>
+		    <filter-class>com.feed.SessionFilter</filter-class>
 		</filter>
 		 
 		<filter-mapping>
-		    <filter-name>SessionControl</filter-name>
+		    <filter-name>SessionFilter</filter-name>
 		    <url-pattern>/</url-pattern>
 		</filter-mapping>
         
+        <filter>
+		    <filter-name>RegisterFilter</filter-name>
+		    <filter-class>com.feed.RegisterFilter</filter-class>
+		</filter>
+		 
+		<filter-mapping>
+		    <filter-name>RegisterFilter</filter-name>
+		    <url-pattern>/register</url-pattern>
+		</filter-mapping>
         
 </web-app>

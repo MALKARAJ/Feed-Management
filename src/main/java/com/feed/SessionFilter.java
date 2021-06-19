@@ -15,10 +15,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 @WebFilter("/SessionController")
-public class SessionController implements Filter {
+public class SessionFilter implements Filter {
     static Logger logger = Logger.getLogger("logger");
 
-    public SessionController() {
+    public SessionFilter() {
     }
 
 	public void destroy() {
@@ -32,17 +32,15 @@ public class SessionController implements Filter {
         HttpSession session = req.getSession(false);
         
         logger.info("In session control filter");
-        
-        if (session == null) {   
+
+        if (session == null || session.getAttribute("userId")==null) {   
         	logger.severe("User not logged in");	
         	req.getRequestDispatcher("/login").forward(request, response);
         } 
         else {
         	logger.info("User logged in and redirected successfully");	
-        	req.getRequestDispatcher("/").forward(request, response);
             chain.doFilter(request, response);
         }
-		chain.doFilter(request, response);
 	}
 
 

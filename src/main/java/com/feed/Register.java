@@ -71,7 +71,7 @@ public class Register extends HttpServlet {
 	    while ((line = reader.readLine()) != null)
 	        jb.append(line);
 	    String str=jb.toString();
-        JSONObject json=new JSONObject(str);
+        JSONObject json=new JSONObject(str.toString());
         UserDao userOp=new UserOperations();
         CredentialValidator v=new CredentialValidator();
         response.setContentType("application/json");
@@ -86,7 +86,6 @@ public class Register extends HttpServlet {
 		        DateTime now = new DateTime();
 		        Date date=new Date(now.getMillis());
 				user.setEmail(email);
-	
 				user.setPassword(pass);
 				user.setUserId(id.toString());
 				user.setDate(date);
@@ -94,31 +93,44 @@ public class Register extends HttpServlet {
 				user.setActive(true);
 				JSONObject obj=userOp.addUser(user);
 				JSONObject obj1=new JSONObject();
-				if(obj!=null) {					
-					log.info("User succesfully registered");
-                    final String uri="https://malkarajtraining12.uc.r.appspot.com/register";
-					URL url=new URL(uri); 
-					HTTPRequest req = new HTTPRequest(url, HTTPMethod.POST);
-					req.addHeader(new HTTPHeader("Authorization", sync.sentKey));
-					req.setHeader(new HTTPHeader("retry", "0"));
-					JSONObject reqObj=new JSONObject();
-					reqObj.put("email", email);
-					reqObj.put("password", pass);
-					req.setPayload(reqObj.toString().getBytes());
+				
+				if(obj!=null) {			
 					
-					obj1=s.register(req);
-					if(obj1.get("success").toString().equals("true"))
-					{
-						log.info("User succesfully registered in cross domain");
-						obj1.put("detail", obj);
-						response.setStatus(200);
-					}
+					log.info("User succesfully registered");
+					
+			        String origin = request.getHeader("Origin");
+					System.out.println("Origin: "+ origin);
+					if(origin.equals("https://georgefulltraining12.uc.r.appspot.com"))
+						{
+			              final String uri="https://malkarajtraining12.uc.r.appspot.com/register";
+			              URL url=new URL(uri); 
+						  HTTPRequest req = new HTTPRequest(url, HTTPMethod.POST);
+						  req.addHeader(new HTTPHeader("Authorization", BCrypt.hashpw(sync.sentKey,BCrypt.gensalt(10))));
+						  JSONObject reqObj=new JSONObject();
+						  reqObj.put("email", email);
+						  reqObj.put("password", pass);
+						  reqObj.put("user_id", id);
+						  req.setPayload(reqObj.toString().getBytes());
+						  obj1=s.register(req);
+						  if(obj1.get("success").toString().equals("true"))
+							{
+								log.info("User succesfully registered in cross domain");
+								obj1.put("detail", obj);
+								response.setStatus(200);
+							}
+						  else
+							{
+								log.severe("User registration failed due to exceeding retry limit");
+								response.setStatus(500);
+							}						
+						}
 					else
 					{
-						log.severe("User registration failed due to exceeding retry limit");
-
-						response.setStatus(500);
+						obj1.put("success", true);
+						obj1.put("code", 200);
+						obj1.put("detail", obj);
 					}
+
 
 	
 				}
@@ -143,7 +155,7 @@ public class Register extends HttpServlet {
 	            out.println(obj);
 
 	        }
-		} catch (JSONException q) {
+		} catch (Exception q) {
             JSONObject obj=new JSONObject();
             response.setStatus(400);
             obj.put("success", false);
