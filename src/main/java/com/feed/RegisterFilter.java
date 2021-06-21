@@ -18,8 +18,8 @@ import org.mindrot.jbcrypt.BCrypt;
 
 @WebFilter("/RegisterFilter")
 public class RegisterFilter implements Filter {
-    static Logger logger = Logger.getLogger("logger");
 
+	static Logger logger = Logger.getLogger("logger");
     public RegisterFilter() {
     }
 
@@ -41,11 +41,9 @@ public class RegisterFilter implements Filter {
 	        if(Origin.equals("http://localhost:8080") || Origin.equals("https://georgefulltraining12.uc.r.appspot.com"))
 	        {
 	            logger.info("register API request from same-origin");
-	
 	    		chain.doFilter(request, response);
 	
 	        }
-	        
 	        else 
 	        {
 	        	
@@ -57,8 +55,7 @@ public class RegisterFilter implements Filter {
 	        	}
 	        	else
 	        	{
-	                logger.severe("register API request from unknown device");
-	
+	                logger.severe("register API request from unknown Origin :"+ Origin);
 	        		res.sendError(HttpServletResponse.SC_FORBIDDEN);
 	        	}
 	        	

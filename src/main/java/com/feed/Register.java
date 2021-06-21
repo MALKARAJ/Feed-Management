@@ -78,7 +78,7 @@ public class Register extends HttpServlet {
 
         User user=new User();
         try {
-	    	UUID id=UUID.randomUUID();
+        	String origin = request.getHeader("Origin");
 	    	String email=json.get("email").toString();
 			String pass=BCrypt.hashpw(json.get("password").toString(),BCrypt.gensalt(10));
 	        if(v.isValidateCredentials(email))
@@ -87,7 +87,18 @@ public class Register extends HttpServlet {
 		        Date date=new Date(now.getMillis());
 				user.setEmail(email);
 				user.setPassword(pass);
-				user.setUserId(id.toString());
+		    	UUID id=UUID.randomUUID();
+
+				if(origin.equals("https://georgefulltraining12.uc.r.appspot.com") || origin.equals("http://localhost:8080"))
+				{		
+					user.setUserId(id.toString());
+				}
+				else
+				{
+			    	String userId=json.get("userId").toString();
+					user.setUserId(userId.toString());
+
+				}
 				user.setDate(date);
 				user.setImage("null.png");
 				user.setActive(true);
@@ -97,11 +108,10 @@ public class Register extends HttpServlet {
 				if(obj!=null) {			
 					
 					log.info("User succesfully registered");
-					
-			        String origin = request.getHeader("Origin");
 					System.out.println("Origin: "+ origin);
+					
 					if(origin.equals("https://georgefulltraining12.uc.r.appspot.com"))
-						{
+					{
 			              final String uri="https://malkarajtraining12.uc.r.appspot.com/register";
 			              URL url=new URL(uri); 
 						  HTTPRequest req = new HTTPRequest(url, HTTPMethod.POST);
@@ -123,7 +133,7 @@ public class Register extends HttpServlet {
 								log.severe("User registration failed due to exceeding retry limit");
 								response.setStatus(500);
 							}						
-						}
+					}
 					else
 					{
 						obj1.put("success", true);
