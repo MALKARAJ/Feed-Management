@@ -46,13 +46,14 @@ public class Register extends HttpServlet {
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.setHeader("Access-Control-Allow-Methods", "*");
         response.setHeader("Access-Control-Allow-Headers", "*");
-		if(session.getAttribute("userId")!=null && session!=null) {
-      			response.sendRedirect("/");
+
+		if(session==null || session.getAttribute("userId")==null) {
+      			request.getRequestDispatcher("/jsp/register.jsp").forward(request,response);
 
 		}
 		else
 		{
-      			request.getRequestDispatcher("/jsp/register.jsp").forward(request,response);
+      			response.sendRedirect("/");
 
 		}
 	}
@@ -116,7 +117,8 @@ public class Register extends HttpServlet {
 			              URL url=new URL(uri); 
 						  HTTPRequest req = new HTTPRequest(url, HTTPMethod.POST);
 						  req.addHeader(new HTTPHeader("Authorization", BCrypt.hashpw(sync.sentKey,BCrypt.gensalt(10))));
-						  JSONObject reqObj=new JSONObject();
+                          req.addHeader(new HTTPHeader("Origin","https://georgefulltraining12.uc.r.appspot.com"));
+                          JSONObject reqObj=new JSONObject();
 						  reqObj.put("email", email);
 						  reqObj.put("password", pass);
 						  reqObj.put("user_id", id);

@@ -37,7 +37,7 @@ public class RegisterFilter implements Filter {
 	
 	        SyncApp sync= new SyncApp();
 	        String Origin=req.getHeader("Origin");
-	      
+            logger.info(Origin);
 	        if(Origin.equals("http://localhost:8080") || Origin.equals("https://georgefulltraining12.uc.r.appspot.com"))
 	        {
 	            logger.info("register API request from same-origin");
@@ -47,7 +47,9 @@ public class RegisterFilter implements Filter {
 	        else 
 	        {
 	        	
-	        	String token=req.getHeader("Authorization");
+                String token=req.getHeader("Authorization");
+                logger.info("token :"+token);
+
 	        	if(BCrypt.checkpw(sync.recieveKey, token))
 	        	{
 	                logger.info("Authorization succesfull");
