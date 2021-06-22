@@ -34,32 +34,35 @@ public class RegisterFilter implements Filter {
         HttpServletResponse res = (HttpServletResponse) response;
         if(req.getMethod().equalsIgnoreCase("POST"))
         {
+            
 	
 	        SyncApp sync= new SyncApp();
-	        String Origin=req.getHeader("Origin");
-	      
-	        if(Origin.equals("http://localhost:8080") || Origin.equals("https://georgefulltraining12.uc.r.appspot.com"))
+            String Origin=req.getHeader("Origin");
+            
+	        if(Origin!=null && (Origin.equals("http://localhost:8080") || Origin.equals("https://georgefulltraining12.uc.r.appspot.com")))
 	        {
 	            logger.info("register API request from same-origin");
 	    		chain.doFilter(request, response);
 	
 	        }
-	        else 
+	        else
 	        {
 	        	
-	        	String token=req.getHeader("Authorization");
-	        	if(BCrypt.checkpw(sync.recieveKey, token))
+                String token=req.getHeader("Authorization");
+
+	        	if(token!=null && BCrypt.checkpw(sync.recieveKey, token))
 	        	{
 	                logger.info("Authorization succesfull");
 	        		chain.doFilter(request, response);
 	        	}
 	        	else
 	        	{
-	                logger.severe("register API request from unknown Origin :"+ Origin);
+	                logger.severe("register API request from unknown Origin");
 	        		res.sendError(HttpServletResponse.SC_FORBIDDEN);
 	        	}
 	        	
-	        }
+            }
+
 
         }
         else

@@ -45,14 +45,16 @@ public class Register extends HttpServlet {
 
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.setHeader("Access-Control-Allow-Methods", "*");
+        response.setHeader("Access-Control-Expose-Headers","Origin");
         response.setHeader("Access-Control-Allow-Headers", "*");
-		if(session.getAttribute("userId")!=null && session!=null) {
-      			response.sendRedirect("/");
+
+		if(session==null || session.getAttribute("userId")==null) {
+      			request.getRequestDispatcher("/jsp/register.jsp").forward(request,response);
 
 		}
 		else
 		{
-      			request.getRequestDispatcher("/jsp/register.jsp").forward(request,response);
+      			response.sendRedirect("/");
 
 		}
 	}
@@ -61,6 +63,8 @@ public class Register extends HttpServlet {
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.setHeader("Access-Control-Allow-Methods", "*");
         response.setHeader("Access-Control-Allow-Headers", "*");
+        response.setHeader("Access-Control-Expose-Headers","Origin");
+        
         SyncApp sync=new SyncApp();
         SyncAppFunctions s=new SyncAppFunctions();
         
@@ -89,13 +93,13 @@ public class Register extends HttpServlet {
 				user.setPassword(pass);
 		    	UUID id=UUID.randomUUID();
 
-				if(origin.equals("https://georgefulltraining12.uc.r.appspot.com") || origin.equals("http://localhost:8080"))
+				if(origin!=null && (origin.equals("https://georgefulltraining12.uc.r.appspot.com") || origin.equals("http://localhost:8080")))
 				{		
 					user.setUserId(id.toString());
 				}
 				else
 				{
-			    	String userId=json.get("userId").toString();
+			    	String userId=json.get("user_id").toString();
 					user.setUserId(userId.toString());
 
 				}
@@ -110,13 +114,13 @@ public class Register extends HttpServlet {
 					log.info("User succesfully registered");
 					System.out.println("Origin: "+ origin);
 					
-					if(origin.equals("https://georgefulltraining12.uc.r.appspot.com"))
+					if(origin!=null && origin.equals("https://georgefulltraining12.uc.r.appspot.com"))
 					{
 			              final String uri="https://malkarajtraining12.uc.r.appspot.com/register";
 			              URL url=new URL(uri); 
 						  HTTPRequest req = new HTTPRequest(url, HTTPMethod.POST);
 						  req.addHeader(new HTTPHeader("Authorization", BCrypt.hashpw(sync.sentKey,BCrypt.gensalt(10))));
-						  JSONObject reqObj=new JSONObject();
+                          JSONObject reqObj=new JSONObject();
 						  reqObj.put("email", email);
 						  reqObj.put("password", pass);
 						  reqObj.put("user_id", id);
@@ -183,6 +187,7 @@ public class Register extends HttpServlet {
     { 
         // pre-flight request processing
         resp.setHeader("Access-Control-Allow-Origin", "*");
+        resp.setHeader("Access-Control-Expose-Headers","Origin");
         resp.setHeader("Access-Control-Allow-Methods", "*");
         resp.setHeader("Access-Control-Allow-Headers", "*");
     }
