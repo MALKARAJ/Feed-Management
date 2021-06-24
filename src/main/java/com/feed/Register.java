@@ -118,13 +118,16 @@ public class Register extends HttpServlet {
 			              final String uri="https://malkarajtraining12.uc.r.appspot.com/register";
 			              URL url=new URL(uri); 
 						  HTTPRequest req = new HTTPRequest(url, HTTPMethod.POST);
+						
 						  req.addHeader(new HTTPHeader("Authorization", BCrypt.hashpw(sync.sentKey,BCrypt.gensalt(10))));
                           JSONObject reqObj=new JSONObject();
 						  reqObj.put("email", email);
 						  reqObj.put("password", pass);
 						  reqObj.put("user_id", id);
 						  req.setPayload(reqObj.toString().getBytes());
-						  obj1=sync.sentRequest(req);
+						 
+						  //obj1=sync.sentRequest(req);
+						  obj1=sync.sentRequest(url, reqObj);
 						  if(obj1.get("success").toString().equals("true"))
 							{
 								log.info("User succesfully registered in cross domain");
