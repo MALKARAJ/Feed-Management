@@ -66,7 +66,6 @@ public class Register extends HttpServlet {
         response.setHeader("Access-Control-Expose-Headers","Origin");
         
         SyncApp sync=new SyncApp();
-        SyncAppFunctions s=new SyncAppFunctions();
         
 	    StringBuffer jb = new StringBuffer();
 	    PrintWriter out=response.getWriter();
@@ -125,7 +124,7 @@ public class Register extends HttpServlet {
 						  reqObj.put("password", pass);
 						  reqObj.put("user_id", id);
 						  req.setPayload(reqObj.toString().getBytes());
-						  obj1=s.register(req);
+						  obj1=sync.sentRequest(req);
 						  if(obj1.get("success").toString().equals("true"))
 							{
 								log.info("User succesfully registered in cross domain");
