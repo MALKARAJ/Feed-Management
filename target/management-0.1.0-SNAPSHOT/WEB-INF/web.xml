@@ -24,5 +24,16 @@
 		    <filter-name>RegisterFilter</filter-name>
 		    <url-pattern>/register</url-pattern>
 		</filter-mapping>
+		
+		 <filter>
+		 	<filter-name>SessionValidator</filter-name>
+		    <filter-class>com.feed.SessionValidator</filter-class>
+		</filter>
+		 
+		<filter-mapping>
+		    <filter-name>SessionValidator</filter-name>
+		    <url-pattern>/feed/*</url-pattern>
+		</filter-mapping>
+		
         
 </web-app>

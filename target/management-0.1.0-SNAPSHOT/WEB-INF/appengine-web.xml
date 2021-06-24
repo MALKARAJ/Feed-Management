@@ -6,10 +6,8 @@
   <runtime>java8</runtime>
   <system-properties>
     <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
-    <property name="appengine.api.urlfetch.defaultDeadline" value="30"/>
     
   </system-properties>
-  <url-stream-handler>urlfetch</url-stream-handler>
 
   <static-files>
     <include path="/images/**.png" expiration="1h"/>

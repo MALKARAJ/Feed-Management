@@ -9,6 +9,7 @@ import java.net.URL;
 import java.util.logging.Logger;
 
 import org.json.JSONObject;
+import org.mindrot.jbcrypt.BCrypt;
 
 import com.google.appengine.api.urlfetch.HTTPRequest;
 import com.google.appengine.api.urlfetch.HTTPResponse;
@@ -64,26 +65,37 @@ public class SyncApp {
 	 */
      public JSONObject sentRequest(URL url, JSONObject obj) throws IOException
 	 {
+         SyncApp sync=new SyncApp();
     	HttpURLConnection conn = (HttpURLConnection) url.openConnection();
     	conn.setDoOutput(true);
     	conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-    	conn.setRequestProperty("Accept", "application/json");
+        conn.setRequestProperty("Accept", "application/json");
+        conn.setRequestProperty("Authorization",  BCrypt.hashpw(sync.sentKey,BCrypt.gensalt(10)));
     	conn.setRequestMethod("POST");
-    	conn.setConnectTimeout(1000);
-    	conn.setReadTimeout(2000);
-    	
+    	conn.setReadTimeout(30000);
+    	StringBuilder response =null;
 		JSONObject obj1=new JSONObject();
 		int code = 500;
 		int retryLimit=3;
 		int i=0;
 		while(i<retryLimit)
 		{
-			log.info("registration attempt no : "+ i);
+			log.info("registration attempt : "+ i);
 			OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
 			writer.write(obj.toString());
 			writer.close();
-			code = conn.getResponseCode(); 
+            code = conn.getResponseCode(); 
+            
+            response = new StringBuilder();
+            String line;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            
+            while ((line = reader.readLine()) != null) {
+            response.append(line);
+            }
 
+            reader.close();
+            
             log.info("code :"+code);
 			if(code>=200 && code<300)
 			{
@@ -97,16 +109,9 @@ public class SyncApp {
 				i++;
 			}
 		}
-		StringBuilder response = new StringBuilder();
-		String line;
-		BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-		
-		while ((line = reader.readLine()) != null) {
-		   response.append(line);
-		}
-		reader.close();
-		
-		JSONObject json=new JSONObject(response);
+
+        JSONObject json=new JSONObject(response.toString());
+        log.info("code :"+json.get("code").toString());
 		if(i>2)
 		{
 			obj1.put("message", json.get("message"));

@@ -8,7 +8,6 @@
     <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
     
   </system-properties>
-  <url-stream-handler>urlfetch</url-stream-handler>
 
   <static-files>
     <include path="/images/**.png" expiration="1h"/>
